@@ -21,14 +21,12 @@ public class PostClass {
         Response response = client.newCall(request).execute();
         return response.body().string();
     }
-    String LoginJson(){
-        return "'email' : 'emailemail', "
-                + "'name' : 'namename',"
-                + "'password' : '1q2w3e4r'";
+    String LoginJson(String email, String name, String password){
+        return "'email'" + email + "'name'" + name + "'password'" + password;
     }
     public static void main(String[] args) throws  IOException{
         PostClass postc = new PostClass();
-        String json = postc.LoginJson();
+        String json = postc.LoginJson("emailemail", "nameaname", "passwordpasword");
         String response = postc.post("blazingcode.asuscomm.com/api/register", json);
         System.out.println(response);
     }
