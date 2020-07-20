@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color> //메뉴색
-    <color name="colorPrimaryDark">#3F51B5</color> //상단바색
-    <color name="colorAccent">#969696</color> //단체채팅방색
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#3F51B5</color>
+    <color name="colorAccent">#969696</color>
 </resources>
