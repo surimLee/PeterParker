@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_home"
+        android:icon="@drawable/home_icon"
+        android:title="홈"/>
+
+    <item
+        android:id="@+id/action_map"
+        android:icon="@drawable/map_icon"
+        android:title="지도"/>
+
+    <item
+        android:id="@+id/action_bookingList"
+        android:icon="@drawable/bookinglist_icon"
+        android:title="예약내역"/>
+
+    <item
+        android:id="@+id/action_parking"
+        android:icon="@drawable/parking_icon"
+        android:title="입차/출차"/>
+</menu>
