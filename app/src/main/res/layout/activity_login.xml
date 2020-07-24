@@ -52,4 +52,11 @@
         android:layout_marginTop="5dp"
         android:text="회원가입" />
 
+    <Button
+        android:id="@+id/loginActivity_button_token"
+        android:layout_width="337dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="5dp"
+        android:text="토큰확인" />
+
 </LinearLayout>
