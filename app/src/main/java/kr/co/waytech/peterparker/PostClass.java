@@ -12,7 +12,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class PostClass {
-    String realtoken;
+    protected String realtoken;
     String status = "none";
     int Thread_Status = 3 ;
     int Login_Status = 3;

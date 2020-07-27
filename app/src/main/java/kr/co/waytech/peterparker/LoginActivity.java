@@ -11,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
     Button LoginBtn, SignupBtn, TokenBtn;
-    EditText EdID, EdPW;
-    String VID, VPW;
+    private EditText EdID, EdPW;
+    private String VID, VPW;
     public static Activity loginActivity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +41,8 @@ public class LoginActivity extends AppCompatActivity {
         SignupBtn.setOnClickListener(new View.OnClickListener()
         {
             public void onClick (View v) {
-                Postc.send_signup("Email@naver.com", "eomky2005", "NameName", "testtest",
-                        "NICKNICK", "01048136286", "123허1234");
+                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+                startActivity(intent);
             }
         });
         TokenBtn =(Button)findViewById(R.id.loginActivity_button_token);
