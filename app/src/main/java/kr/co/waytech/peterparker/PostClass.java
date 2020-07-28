@@ -1,8 +1,20 @@
 package kr.co.waytech.peterparker;
+import android.app.Service;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -10,12 +22,19 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import android.content.Intent;
+import android.net.Uri;
+
+import androidx.annotation.Nullable;
+
 
 public class PostClass {
-    protected String realtoken;
+    public static int imgcount;
+    protected static String realtoken;
     String status = "none";
     int Thread_Status = 3 ;
     int Login_Status = 3;
+    static File tempSelectFile;
     LoginActivity LogA = new LoginActivity();
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
@@ -40,8 +59,6 @@ public class PostClass {
             }
         }.start();
     }
-
-
 
     protected void send_signup(final String SEmail, final String SID, final String SName, final String SPassword,
                                final String SNick_Name, final String SPhone, final String SCar){
@@ -69,6 +86,21 @@ public class PostClass {
                 handler.sendMessage(msg);
                 try {
                     Post_token();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+    public void send_Img(){
+        new Thread() {
+            public void run() {
+                Bundle bun = new Bundle();
+                Message msg = handler.obtainMessage();
+                msg.setData(bun);
+                handler.sendMessage(msg);
+                try {
+                    Post_Img();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -149,5 +181,66 @@ public class PostClass {
         else {
             Login_Status = 0;
         }
+    }
+    private void Post_Img() throws IOException{
+        String token = "Bearer " + realtoken;
+        Bitmap orgImage = BitmapFactory.decodeFile("/sdcard/DCIM/Camera/20160528_115613.jpg");
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        orgImage.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+        byte[] ImgByte = stream.toByteArray();
+
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = null;
+        switch (imgcount){
+            case 1:
+                body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("profile_image1","20160528_115613.jpeg",
+                                RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                        .build();
+                break;
+            case 2:
+                body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("profile_image1","20160528_115613.jpeg",
+                                RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                        .addFormDataPart("profile_image2","20160528_115613.jpeg",
+                                RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                        .build();
+                break;
+            case 3:
+                body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("profile_image1","20160528_115613.jpeg",
+                                RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                        .addFormDataPart("profile_image2","20160528_115613.jpeg",
+                                RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                        .addFormDataPart("profile_image3","20160528_115613.jpeg",
+                                RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                        .build();
+                break;
+            case 4:
+                body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                        .addFormDataPart("profile_image1","20160528_115613.jpeg",
+                                RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                        .addFormDataPart("profile_image2","20160528_115613.jpeg",
+                                RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                        .addFormDataPart("profile_image3","20160528_115613.jpeg",
+                                RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                        .addFormDataPart("profile_image4","20160528_115613.jpeg",
+                                RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                        .build();
+                break;
+            default:
+        }
+
+
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/profile/image_upload")
+                .method("POST", body)
+                .addHeader("Authorization", token)
+                .build();
+        Response response = client.newCall(request).execute();
+        System.out.println("Response Body is " + response.body().string());
+
     }
 }

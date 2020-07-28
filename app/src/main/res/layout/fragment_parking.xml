@@ -16,6 +16,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="로그인하기"/>
+        <Button
+            android:id="@+id/UploadButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="사진보내기"/>
     </LinearLayout>
 
 </LinearLayout>
