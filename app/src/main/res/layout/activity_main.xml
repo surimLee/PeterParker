@@ -22,9 +22,10 @@
         android:id="@+id/mainactivity_bottomnavigationview"
         android:layout_alignParentBottom="true"
         app:itemBackground="@android:color/white"
-        app:itemTextColor="@android:color/black"
-        app:itemIconTint="@android:color/black"
-        app:menu="@menu/bottom_navigation_login"
+        app:itemIconTint="@drawable/selector"
+        app:itemTextColor="@drawable/selector"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_navigation_menu"
         />
 
 </RelativeLayout>

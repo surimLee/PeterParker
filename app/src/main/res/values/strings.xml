@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Peter Parker</string>
+    <string name="title_Map">탐색</string>
+    <string name="title_Bookinglist">내역</string>
+    <string name="title_Profile">내정보</string>
+    <string name="title_Parking">내 주차장</string>
 </resources>

@@ -8,9 +8,9 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import kr.co.waytech.peterparker.fragment.BookingListFragment;
-import kr.co.waytech.peterparker.fragment.HomeFragment;
 import kr.co.waytech.peterparker.fragment.MapFragment;
 import kr.co.waytech.peterparker.fragment.ParkingFragment;
+import kr.co.waytech.peterparker.fragment.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,9 +24,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
-                            case R.id.action_home:
-                                getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new HomeFragment()).commit();
-                                return true;
                             case R.id.action_map:
                                 getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new MapFragment()).commit();
                                 return true;
@@ -34,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
                                 getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new BookingListFragment()).commit();
                                 return true;
                             case R.id.action_parking:
+                                getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new ProfileFragment()).commit();
+                                return true;
+                            case R.id.action_profile:
                                 getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new ParkingFragment()).commit();
                                 return true;
                         }
