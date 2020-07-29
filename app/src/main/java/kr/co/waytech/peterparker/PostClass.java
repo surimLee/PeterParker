@@ -19,7 +19,7 @@ import okhttp3.Response;
 
 
 public class PostClass {
-    public static int imgcount;
+    public static int imgcount = 1;
     protected static String realtoken;
     String status = "none";
     int Thread_Status = 3 ;
@@ -186,7 +186,7 @@ public class PostClass {
         switch (imgcount){
             case 1:
                 body = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                        .addFormDataPart("profile_image1","20160528_115613.jpeg",
+                        .addFormDataPart("profile_image","20160528_115613.jpeg",
                                 RequestBody.create(MediaType.parse("image/*"), ImgByte))
                         .build();
                 break;
