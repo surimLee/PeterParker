@@ -36,20 +36,23 @@ public class SplashActivity extends AppCompatActivity {
                 .translationY(textView.getHeight())
                 .alpha(1f)
                 .setStartDelay(1000)
-                .setDuration(1200);
+                .setDuration(1000);
 
         textView2.animate()
                 .translationY(textView.getHeight())
                 .alpha(1f)
-                .setStartDelay(1500)
-                .setDuration(1000);
+                .setStartDelay(500)
+                .setDuration(1200);
 
         ImageView imageView = findViewById(R.id.imageView3);
         imageView.setAlpha(0f);
+        imageView.setX(-50f);
         imageView.animate()
                 .translationY(textView.getHeight())
                 .alpha(1f)
-                .setDuration(800);
+                .setStartDelay(1000)
+                .translationX(-5f)
+                .setDuration(1000);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -58,7 +61,7 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        }, 4000);
+        }, 2800);
 
     }
 }
