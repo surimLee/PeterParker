@@ -9,7 +9,7 @@
 
     <item
         android:id="@+id/action_bookingList"
-        android:icon="@drawable/bookinglist_icon"
+        android:icon="@drawable/booking_icon"
         android:label = "@string/title_Bookinglist"
         android:title="@string/title_Bookinglist"/>
 
