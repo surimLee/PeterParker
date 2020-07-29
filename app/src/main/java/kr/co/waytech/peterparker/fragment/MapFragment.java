@@ -16,6 +16,11 @@ import kr.co.waytech.peterparker.ParkingItem;
 import kr.co.waytech.peterparker.R;
 
 import android.util.DisplayMetrics;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,15 +45,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     Marker selectedMarker;
     View marker_root_view;
     TextView tv_marker;
+    ImageButton search_btn;
+    Button filter_btn;
+    EditText search_edt;
+
+    String search_result;
+
     private GoogleMap mMap;
     private Context homeFragment;
     private MapView mapView = null;
 
     public MapFragment()
     {
+
         // required
     }
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,13 +70,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.fragment_home, container, false);
-
-        mapView = (MapView)layout.findViewById(R.id.map);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        setHasOptionsMenu(true);
+        mapView = (MapView)view.findViewById(R.id.map);
         mapView.getMapAsync(this);
 
-        return layout;
+        search_edt = (EditText)view.findViewById(R.id.search_edt);
+        search_btn = (ImageButton)view.findViewById(R.id.search_btn);
+        filter_btn = (Button)view.findViewById(R.id.filter_btn);
+        search_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                search_result = search_edt.getText().toString();
+            }
+        });
+        return view;
     }
+
 
     @Override
     public void onStart() {
