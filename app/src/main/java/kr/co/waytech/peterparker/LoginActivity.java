@@ -17,8 +17,27 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(1);
 
-        Button button = findViewById(R.id.btn_signup);
-        button.setOnClickListener(new View.OnClickListener() {
+
+        Button button_findID = findViewById(R.id.btn_find_id);
+        button_findID.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent2 = new Intent(LoginActivity.this, FineIDActivity.class);
+                startActivity(intent2);
+            }
+        });
+
+        Button button_findPW = findViewById(R.id.btn_find_pw);
+        button_findPW.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent3 = new Intent(LoginActivity.this, FinePWActivity.class);
+                startActivity(intent3);
+            }
+        });
+
+        Button button_signup = findViewById(R.id.btn_signup);
+        button_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent4 = new Intent(LoginActivity.this, SignupActivity.class);

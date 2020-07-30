@@ -38,5 +38,11 @@
         <activity android:name=".LoginActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
+        <activity android:name=".FineIDActivity"
+            android:theme="@style/ActionBarTheme">
+        </activity>
+        <activity android:name=".FinePWActivity"
+            android:theme="@style/ActionBarTheme">
+        </activity>
     </application>
 </manifest>

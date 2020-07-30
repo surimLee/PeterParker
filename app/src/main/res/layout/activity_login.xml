@@ -65,14 +65,14 @@
 
         <Button
             android:id="@+id/btn_find_id"
-            android:layout_width="70dp"
+            android:layout_width="100dp"
             android:layout_height="18dp"
             android:textColor="@color/darkgray"
             android:background="@android:color/white"
             android:fontFamily="@font/nanumgothicbold"
             android:text="아이디 찾기"
             style="?android:attr/borderlessButtonStyle"
-            android:textSize="12sp"/>
+            android:textSize="13sp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -83,14 +83,14 @@
 
         <Button
             android:id="@+id/btn_find_pw"
-            android:layout_width="80dp"
+            android:layout_width="110dp"
             android:layout_height="18dp"
             android:background="@android:color/white"
             android:textColor="@color/darkgray"
             android:fontFamily="@font/nanumgothicbold"
-            android:text="비밀번호 찾기"
+            android:text=" 비밀번호 찾기"
             style="?android:attr/borderlessButtonStyle"
-            android:textSize="12sp"/>
+            android:textSize="13sp"/>
 
     </LinearLayout>
 
