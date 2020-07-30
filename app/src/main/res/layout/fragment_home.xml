@@ -7,15 +7,17 @@
     android:layout_height="match_parent"
     android:gravity="bottom"
     tools:context=".MainActivity"
-    app:umanoPanelHeight="30dp"
-    app:umanoShadowHeight="5dp"
-    app:umanoScrollableView="@id/viewPager"
+    app:umanoPanelHeight="45dp"
+    app:umanoShadowHeight="0dp"
     app:umanoDragView="@id/dragView"
+    app:umanoOverlay = "true"
+    android:background="@android:color/transparent"
     >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/transparent"
         android:orientation="vertical">
 
         <LinearLayout
@@ -23,6 +25,7 @@
             android:layout_height="50dp"
             android:id="@+id/homefragment"
             android:orientation="horizontal"
+            android:background="@android:color/transparent"
             >
             <Button
                 android:layout_width="50dp"
@@ -51,6 +54,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@android:color/transparent"
             android:layout_weight="1">
             <com.google.android.gms.maps.MapView
                 android:id="@+id/map"
@@ -66,10 +70,14 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="false"
+        android:background="@drawable/radiuswhite"
         android:orientation="vertical">
+
         <com.google.android.material.tabs.TabLayout
+            app:tabTextAppearance="@style/tab_text"
+            android:background="@android:color/transparent"
             android:layout_width="250dp"
-            android:layout_height="30dp"
+            android:layout_height="45dp"
             android:layout_marginLeft="15dp"
             android:id="@+id/tabs">
 
@@ -77,10 +85,10 @@
 
         <!-- 스크롤 해서 보여줄 부분은 listview 또는 custom listview 또는 recyclerview를 사용 -->
         <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewPager"
-        android:layout_width="355dp"
-        android:layout_height="455dp"
-        tools:layout_editor_absoluteX="8dp" />
+            android:id="@+id/viewPager"
+            android:layout_width="355dp"
+            android:layout_height="455dp"
+            tools:layout_editor_absoluteX="8dp" />
     </RelativeLayout>
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
