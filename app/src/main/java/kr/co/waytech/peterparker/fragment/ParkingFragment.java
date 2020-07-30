@@ -13,6 +13,17 @@ import androidx.annotation.Nullable;
 import kr.co.waytech.peterparker.R;
 
 public class ParkingFragment extends Fragment {
+
+    public ParkingFragment()
+    {
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

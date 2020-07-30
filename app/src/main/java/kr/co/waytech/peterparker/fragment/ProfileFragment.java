@@ -16,6 +16,17 @@ import kr.co.waytech.peterparker.PostClass;
 import kr.co.waytech.peterparker.R;
 
 public class ProfileFragment extends android.app.Fragment {
+
+    public ProfileFragment()
+    {
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     Button LoginBtn, UploadBtn;
     @Nullable
     @Override

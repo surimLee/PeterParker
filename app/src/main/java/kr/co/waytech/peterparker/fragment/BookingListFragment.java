@@ -13,6 +13,16 @@ import androidx.annotation.Nullable;
 import kr.co.waytech.peterparker.R;
 
 public class BookingListFragment extends Fragment {
+    public BookingListFragment()
+    {
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
