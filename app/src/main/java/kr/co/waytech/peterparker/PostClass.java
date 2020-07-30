@@ -9,6 +9,9 @@ import android.os.Message;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
+
+import kr.co.waytech.peterparker.fragment.MapFragment;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -91,6 +94,21 @@ public class PostClass {
                 handler.sendMessage(msg);
                 try {
                     Post_Img();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+    public void send_Location(final double x1, final double y1, final double x2, final double y2){
+        new Thread() {
+            public void run() {
+                Bundle bun = new Bundle();
+                Message msg = handler.obtainMessage();
+                msg.setData(bun);
+                handler.sendMessage(msg);
+                try {
+                    Get_Location(x1, y1, x2, y2);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -222,8 +240,6 @@ public class PostClass {
                 break;
             default:
         }
-
-
         Request request = new Request.Builder()
                 .url("http://blazingcode.asuscomm.com/api/profile/image_upload")
                 .method("POST", body)
@@ -232,5 +248,15 @@ public class PostClass {
         Response response = client.newCall(request).execute();
         System.out.println("Response Body is " + response.body().string());
 
+    }
+    public void Get_Location(double x1, double y1, double x2, double y2) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/"+ x1 +"-"+ y1 +"-"+ x2 + "-" + y2)
+                .method("GET", null)
+                .build();
+        Response response = client.newCall(request).execute();
+        System.out.println("Response Body is " + response.body().string());
     }
 }

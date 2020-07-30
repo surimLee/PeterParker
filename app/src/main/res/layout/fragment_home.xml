@@ -78,7 +78,7 @@
                 android:layout_width="50dp"
                 android:layout_height="30dp"
                 android:clickable="true"
-                android:text="현재 PICK"/>
+                android:text="현재 PICK" />
 
                 <com.google.android.material.tabs.TabItem
                     android:id="@+id/tabItem2"
@@ -101,11 +101,7 @@
             android:id="@+id/listView"
             android:layout_width="match_parent"
             android:layout_height="300dp">
-
         </ListView>
-
-
-
     </RelativeLayout>
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
