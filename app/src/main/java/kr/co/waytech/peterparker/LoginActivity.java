@@ -1,63 +1,36 @@
 package kr.co.waytech.peterparker;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import java.io.IOException;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
-    Button LoginBtn, SignupBtn, TokenBtn;
-    private EditText EdID, EdPW;
-    private String VID, VPW;
-    public static Activity loginActivity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        final PostClass Postc = new PostClass();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        loginActivity = LoginActivity.this;
-        EdID = (EditText)findViewById(R.id.loginActivity_edittext_id);
-        EdPW = (EditText)findViewById(R.id.loginActivity_edittext_password);
-        LoginBtn =(Button)findViewById(R.id.loginActivity_button_login);
-        LoginBtn.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick (View v) {
-                VID = EdID.getText().toString();
-                VPW = EdPW.getText().toString();
-                try {
-                    Postc.send_login(VID, VPW);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
+        getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>로그인</font>"));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setElevation(1);
 
-            }
-        });
-        SignupBtn =(Button)findViewById(R.id.loginActivity_button_signup);
-        SignupBtn.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick (View v) {
-                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivity(intent);
-            }
-        });
-        TokenBtn =(Button)findViewById(R.id.loginActivity_button_token);
-        TokenBtn.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick (View v) {
-                Postc.send_token();
+        Button button = findViewById(R.id.btn_signup);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent4 = new Intent(LoginActivity.this, SignupActivity.class);
+                startActivity(intent4);
             }
         });
     }
-    public void Success_Login(){
-        loginActivity.finish();
+
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 }
-
-
-
-

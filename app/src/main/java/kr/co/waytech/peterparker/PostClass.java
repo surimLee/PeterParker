@@ -25,7 +25,7 @@ public class PostClass {
     int Thread_Status = 3 ;
     int Login_Status = 3;
     static File tempSelectFile;
-    LoginActivity LogA = new LoginActivity();
+    LoginActivity2 LogA = new LoginActivity2();
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             Bundle bun = msg.getData();
