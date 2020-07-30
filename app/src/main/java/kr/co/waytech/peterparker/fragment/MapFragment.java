@@ -1,18 +1,29 @@
 package kr.co.waytech.peterparker.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.app.Fragment;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.Nullable;
+import androidx.viewpager.widget.ViewPager;
 
 import kr.co.waytech.peterparker.ParkingItem;
+import kr.co.waytech.peterparker.PostClass;
 import kr.co.waytech.peterparker.R;
 
 import android.util.DisplayMetrics;
@@ -27,33 +38,50 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.VisibleRegion;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import kr.co.waytech.peterparker.MarkerItem;
 
+import static android.content.ContentValues.TAG;
+import static android.content.Context.LOCATION_SERVICE;
+
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
 
     private static final LatLng ABC = null;
+    public static Float ZoomLevel;
+    public static int Connect_Flag = 0;
+    public static final LatLng target = null;
     Marker selectedMarker;
     View marker_root_view;
     TextView tv_marker;
     ImageButton search_btn;
     Button filter_btn;
     EditText search_edt;
-
+    public static double lat, lng;
+    public static double x1, y1, x2, y2;
+    final PostClass Postc = new PostClass();
     String search_result;
-
-    private GoogleMap mMap;
+    TabLayout tabLayout;
+    ViewPager viewPager;
+    public static GoogleMap mMap;
     private Context homeFragment;
     private MapView mapView = null;
+    TabItem tab1, tab2, tab3;
 
     public MapFragment()
     {
@@ -83,10 +111,45 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 search_result = search_edt.getText().toString();
             }
         });
+        tabLayout=(TabLayout)view.findViewById(R.id.tabs);
+        viewPager=(ViewPager)view.findViewById(R.id.viewPager);
+        tabLayout.addTab(tabLayout.newTab().setText("현재 Pick"));
+        tabLayout.addTab(tabLayout.newTab().setText("거리순"));
+        tabLayout.addTab(tabLayout.newTab().setText("가격순"));
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
         return view;
     }
+    private void changeView(int index) {
 
+        switch (index) {
+            case 0 :
+                System.out.println("첫번째 탭");
+                break ;
+            case 1 :
+                System.out.println("두번째 탭");
+                break ;
+            case 2 :
+                System.out.println("세번째 탭");
+                break ;
 
+        }
+    }
     @Override
     public void onStart() {
         super.onStart();
@@ -141,16 +204,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
     }
 
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        LatLng ABC = new LatLng(37.12, 126.312312);
-        double ABC_LAT = 37.12;
-        double ABC_LNG = 126.312312;
+        LatLng ABC = new LatLng(37.340917, 126.7336682);
+        double ABC_LAT = 37.339917;
+        double ABC_LNG = 126.7336682;
         mMap = googleMap;
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
         setCustomMarkerView();
         getSampleMarkerItems();
+        mMap.setMinZoomPreference((float) 7.5);
         mMap.addMarker(new MarkerOptions().position(ABC));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ABC, 14.0f));
         ClusterManager<ClusterItem> clusterManager = new ClusterManager<>(homeFragment, mMap);
@@ -160,12 +225,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             double lng = ABC_LNG + (i / 200d);
             clusterManager.addItem(new ParkingItem(new LatLng(lat, lng), "Parking" + i));
         }
+        mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+            @Override
+            public void onCameraMove() {
+                ZoomLevel = mMap.getCameraPosition().zoom;
+                lat = mMap.getCameraPosition().target.latitude;
+                lng = mMap.getCameraPosition().target.longitude;
+                // 줌레벨이 11, 13, 15일때 통신
+                if(setConnectBool() && Connect_Flag == 1 || (lng > y2 || lng < y1 || lat > x1 || lat < x2)){
+                    System.out.println("통신---------------------------------------------------------");
+                    x1 = (lat + 3*(0.012 * (2^(int)(15.0 - ZoomLevel))));
+                    y1 = (lng - 3*(0.012 * (2^(int)(15.0 - ZoomLevel))));
+                    x2 = (lat - 3*(0.012 * (2^(int)(15.0 - ZoomLevel))));
+                    y2 = (lng + 3*(0.012 * (2^(int)(15.0 - ZoomLevel))));
+                    Postc.send_Location(x1, y1, x2, y2);
+                    System.out.println(ZoomLevel + "    (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
+                }
+            }
+        });
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback(){
             @Override
             public void onMapLoaded() {
-                LatLng latLng = new LatLng(37.33848, 126.732826);
+                LatLng latLng = new LatLng(37.340917, 126.7336682);
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(9));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
             }
         });
 
@@ -177,22 +260,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             }
         });
     }
+    public boolean setConnectBool(){
+        if((ZoomLevel >= 10.8000 && ZoomLevel <= 11.2000) || (ZoomLevel >= 12.8000 && ZoomLevel <= 13.2000) || (ZoomLevel >= 14.8000 && ZoomLevel <= 15.2000)){
+            Connect_Flag++;
+            return true;
+            // 통신 시작
+
+        }
+        else {
+            Connect_Flag = 0;
+            return false;
+        }
+    }
     private void setCustomMarkerView() {
 
         marker_root_view = LayoutInflater.from(homeFragment).inflate(R.layout.marker_layout, null);
         tv_marker = (TextView) marker_root_view.findViewById(R.id.tv_marker);
     }
     private void getSampleMarkerItems() {
-        ArrayList<MarkerItem> sampleList = new ArrayList();
+        ArrayList<MarkerItem> ParkingList = new ArrayList();
 
 
-        sampleList.add(new MarkerItem(37.538523, 126.96568, 2500000));
-        sampleList.add(new MarkerItem(37.527523, 126.96568, 100000));
-        sampleList.add(new MarkerItem(37.549523, 126.96568, 15000));
-        sampleList.add(new MarkerItem(37.538523, 126.95768, 5000));
+        ParkingList.add(new MarkerItem(37.538523, 126.96568, 2500000));
+        ParkingList.add(new MarkerItem(37.527523, 126.96568, 100000));
+        ParkingList.add(new MarkerItem(37.549523, 126.96568, 15000));
+        ParkingList.add(new MarkerItem(37.538523, 126.95768, 5000));
 
 
-        for (MarkerItem markerItem : sampleList) {
+
+        for (MarkerItem markerItem : ParkingList) {
             addMarker(markerItem, false);
         }
 
@@ -271,4 +367,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public boolean onMarkerClick(Marker marker) {
         return false;
     }
+
+
 }
