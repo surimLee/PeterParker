@@ -9,7 +9,7 @@
     tools:context=".MainActivity"
     app:umanoPanelHeight="30dp"
     app:umanoShadowHeight="5dp"
-    app:umanoScrollableView="@id/listView"
+    app:umanoScrollableView="@id/viewPager"
     app:umanoDragView="@id/dragView"
     >
 
@@ -73,35 +73,14 @@
             android:layout_marginLeft="15dp"
             android:id="@+id/tabs">
 
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/tabItem1"
-                android:layout_width="50dp"
-                android:layout_height="30dp"
-                android:clickable="true"
-                android:text="현재 PICK" />
-
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/tabItem2"
-                    android:layout_width="50dp"
-                    android:layout_height="30dp"
-                    android:clickable="true"
-                    android:text="거리순"  />
-
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/tabItem3"
-                    android:layout_width="50dp"
-                    android:layout_height="30dp"
-                    android:clickable="true"
-                    android:text="가격순" />
-
         </com.google.android.material.tabs.TabLayout>
 
         <!-- 스크롤 해서 보여줄 부분은 listview 또는 custom listview 또는 recyclerview를 사용 -->
-        <ListView
-            android:id="@+id/listView"
-            android:layout_width="match_parent"
-            android:layout_height="300dp">
-        </ListView>
+        <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="355dp"
+        android:layout_height="455dp"
+        tools:layout_editor_absoluteX="8dp" />
     </RelativeLayout>
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>

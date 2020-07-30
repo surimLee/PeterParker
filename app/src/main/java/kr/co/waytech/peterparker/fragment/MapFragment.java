@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.Nullable;
+import androidx.viewpager.widget.ViewPager;
 
 import kr.co.waytech.peterparker.ParkingItem;
 import kr.co.waytech.peterparker.PostClass;
@@ -45,6 +46,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 
@@ -73,10 +76,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public static double x1, y1, x2, y2;
     final PostClass Postc = new PostClass();
     String search_result;
-
+    TabLayout tabLayout;
+    ViewPager viewPager;
     public static GoogleMap mMap;
     private Context homeFragment;
     private MapView mapView = null;
+    TabItem tab1, tab2, tab3;
 
     public MapFragment()
     {
@@ -106,11 +111,45 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 search_result = search_edt.getText().toString();
             }
         });
+        tabLayout=(TabLayout)view.findViewById(R.id.tabs);
+        viewPager=(ViewPager)view.findViewById(R.id.viewPager);
+        tabLayout.addTab(tabLayout.newTab().setText("현재 Pick"));
+        tabLayout.addTab(tabLayout.newTab().setText("거리순"));
+        tabLayout.addTab(tabLayout.newTab().setText("가격순"));
 
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
         return view;
     }
+    private void changeView(int index) {
 
+        switch (index) {
+            case 0 :
+                System.out.println("첫번째 탭");
+                break ;
+            case 1 :
+                System.out.println("두번째 탭");
+                break ;
+            case 2 :
+                System.out.println("세번째 탭");
+                break ;
 
+        }
+    }
     @Override
     public void onStart() {
         super.onStart();
@@ -328,4 +367,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public boolean onMarkerClick(Marker marker) {
         return false;
     }
+
+
 }
