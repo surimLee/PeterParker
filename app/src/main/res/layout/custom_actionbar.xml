@@ -6,21 +6,24 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/White"
+    android:elevation="1dp"
     app:popupTheme="@style/ActionBarTheme">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         >
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/actionbar_logo"
-            android:layout_centerHorizontal="true"
+            android:layout_width="110dp"
+            android:layout_height="52dp"
+            android:background="@drawable/actionbar_logo3"
+            android:layout_marginRight="10dp"
+            android:adjustViewBounds="true"
             />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 
 </androidx.appcompat.widget.Toolbar>
