@@ -9,7 +9,6 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import kr.co.waytech.peterparker.LoginActivity;
 import kr.co.waytech.peterparker.PostClass;
@@ -32,7 +31,7 @@ public class ProfileFragment extends android.app.Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final PostClass Postc = new PostClass();
-        View view = inflater.inflate(R.layout.fragment_parking, container,false);
+        View view = inflater.inflate(R.layout.fragment_profile, container,false);
         LoginBtn = (Button)view.findViewById(R.id.LoginButton);
         LoginBtn.setOnClickListener(new View.OnClickListener()
         {
