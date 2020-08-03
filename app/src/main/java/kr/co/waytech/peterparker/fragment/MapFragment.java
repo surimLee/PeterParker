@@ -290,7 +290,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public void getMarkerItems() {
         ArrayList<MarkerItem> ParkingList = new ArrayList();
 
-        ParkingList.add();
         for (MarkerItem markerItem : ParkingList) {
             addMarker(markerItem, false);
         }
