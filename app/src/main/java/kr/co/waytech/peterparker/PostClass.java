@@ -6,6 +6,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import androidx.fragment.app.Fragment;
+
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +25,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static kr.co.waytech.peterparker.fragment.MapFragment.mMap;
+
 
 public class PostClass {
     public static int imgcount = 1;
@@ -27,7 +34,13 @@ public class PostClass {
     String status = "none";
     int Thread_Status = 3 ;
     int Login_Status = 3;
+    public static Integer Count_Parkinglot;
+    public static int[] ParkingPrice;
+    public static double[] ParkingLat, ParkingLng;
+    public static String[] split_location;
+    public static int b = 7;
     static File tempSelectFile;
+    String body_parkinglot = null;
     LoginActivity2 LogA = new LoginActivity2();
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
@@ -257,6 +270,65 @@ public class PostClass {
                 .method("GET", null)
                 .build();
         Response response = client.newCall(request).execute();
-        System.out.println("Response Body is " + response.body().string());
+        body_parkinglot = response.body().string();
+        System.out.println("Body is" + body_parkinglot);
+        String[] split_locationcount = body_parkinglot.split(",");
+        System.out.println("splited Body is " + split_locationcount[0]);
+
+        String[] split_onebody = body_parkinglot.split("\\{");
+
+        System.out.println(split_onebody[0]);
+
+
+        String[] data = new String[500];
+        split_location = data;
+        split_location = body_parkinglot.split("\"");
+        String[] count_parkinglot = split_locationcount[0].split(":");
+        Count_Parkinglot = new Integer(Integer.parseInt(count_parkinglot[1]));
+        int count = Count_Parkinglot.intValue();
+        int[] Price = new int[Count_Parkinglot+3];
+        double[] Lat = new double[Count_Parkinglot+3];
+        double[] Lng = new double[Count_Parkinglot+3];
+        String[][] dataArray = new String[count][11];
+        b = 7;
+        for(int countbody = 2; countbody < count + 2; countbody++){
+            String[] split_onedata = split_onebody[countbody].split(","); // split_onedata[0] = "parking_lot_id":"0"
+            for(int amount = 0; amount < 11; amount++){
+                String[] splitedData = split_onedata[amount].split(":"); // splitedData[1] = "0"
+                dataArray[countbody-2][amount] = splitedData[1];
+                System.out.println("dataArray : [" + (countbody - 2) + "]" + "[" + (amount) + "] = " + dataArray[countbody-2][amount]);
+            }
+            String[] splitedLng = dataArray[countbody-2][10].split("\\}");
+            dataArray[countbody-2][10] = splitedLng[0];
+            System.out.println(dataArray[countbody-2][10]);
+      }
+        /*
+        for(int i = 0; i < count; i++){
+            System.out.println("Data is.. " + split_location[b + 0] + "/" + split_location[b +  4] + "/" + split_location[b +  8] + "/" + split_location[b +  12]
+                    + "/" + split_location[b +  15] + "/" + split_location[b +  18] + "/" + split_location[b +  22]  + "/" + split_location[b +  26]  + "/" + split_location[b +  30]
+                    + "/" + split_location[b +  33]  + "/" + split_location[b +  35]);
+            String replacePrice = split_location[b +  15].replace(",", ":");
+            String[] parking_price = replacePrice.split(":");
+            ParkingPrice = Price;
+            ParkingPrice[i] = Integer.parseInt(parking_price[1]);
+            System.out.println("Price is.. " + (i) + "번째 "+ ParkingPrice[i]);
+
+            String replaceLat = split_location[b +  33].replace(",", ":");
+            String[] parking_Lat = replaceLat.split(":");
+            ParkingLat = Lat;
+            ParkingLat[i] =  Double.parseDouble(parking_Lat[1]);
+            System.out.println("Lat is.. " + ParkingLat[i]);
+
+            String replaceLng = split_location[b +  35].replace("}", ":");
+            String[] parking_Lng = replaceLng.split(":");
+            ParkingLng = Lng;
+            ParkingLng[i] =  Double.parseDouble(parking_Lng[1]);
+            System.out.println("Lng is.. " + ParkingLng[i]);
+
+            b = b + 38;
+        }
+
+         */
+        // ID : 7 , ownerID : 11, Name : 15, Address : 19, Price : 22, Image1 : 25, Image2 : 29, Image3 : 33, Image4 : 37, Lat : 40, Lng : 42
     }
 }

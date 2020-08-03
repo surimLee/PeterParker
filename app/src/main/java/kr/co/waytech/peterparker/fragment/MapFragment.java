@@ -59,6 +59,10 @@ import kr.co.waytech.peterparker.MarkerItem;
 
 import static android.content.ContentValues.TAG;
 import static android.content.Context.LOCATION_SERVICE;
+import static kr.co.waytech.peterparker.PostClass.ParkingLat;
+import static kr.co.waytech.peterparker.PostClass.ParkingLng;
+import static kr.co.waytech.peterparker.PostClass.b;
+import static kr.co.waytech.peterparker.PostClass.split_location;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
 
@@ -214,7 +218,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
         setCustomMarkerView();
-        getSampleMarkerItems();
+        getMarkerItems();
         mMap.setMinZoomPreference((float) 7.5);
         mMap.addMarker(new MarkerOptions().position(ABC));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ABC, 14.0f));
@@ -241,6 +245,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     Postc.send_Location(x1, y1, x2, y2);
                     System.out.println(ZoomLevel + "    (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
                 }
+
+                getMarkerItems();
             }
         });
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback(){
@@ -249,6 +255,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 LatLng latLng = new LatLng(37.340917, 126.7336682);
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                getMarkerItems();
             }
         });
 
@@ -277,17 +284,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         marker_root_view = LayoutInflater.from(homeFragment).inflate(R.layout.marker_layout, null);
         tv_marker = (TextView) marker_root_view.findViewById(R.id.tv_marker);
     }
-    private void getSampleMarkerItems() {
+    public void getMarkerItems() {
         ArrayList<MarkerItem> ParkingList = new ArrayList();
 
-
-        ParkingList.add(new MarkerItem(37.538523, 126.96568, 2500000));
-        ParkingList.add(new MarkerItem(37.527523, 126.96568, 100000));
-        ParkingList.add(new MarkerItem(37.549523, 126.96568, 15000));
-        ParkingList.add(new MarkerItem(37.538523, 126.95768, 5000));
-
-
-
+        ParkingList.add();
         for (MarkerItem markerItem : ParkingList) {
             addMarker(markerItem, false);
         }
