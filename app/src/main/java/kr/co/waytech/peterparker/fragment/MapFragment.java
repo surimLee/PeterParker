@@ -20,8 +20,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.viewpager.widget.ViewPager;
 
+import kr.co.waytech.peterparker.MainActivity;
 import kr.co.waytech.peterparker.ParkingItem;
 import kr.co.waytech.peterparker.PostClass;
 import kr.co.waytech.peterparker.R;
@@ -97,6 +99,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         homeFragment = getActivity();
+
     }
 
     @Nullable

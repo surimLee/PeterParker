@@ -23,7 +23,9 @@
             android:value="AIzaSyBuUaUGWSjkYACiYNTcxNZTHXgXJ3_4l6o"/>
         <uses-library android:name="com.google.android.maps" />
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme">
+        </activity>
         <activity android:name=".SignupActivity2"/>
         <activity android:name=".LoginActivity2"/>
         <activity android:name=".SignupActivity"
