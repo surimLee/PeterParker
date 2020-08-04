@@ -7,18 +7,19 @@ import android.os.Handler;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SplashActivity extends AppCompatActivity {
-
+    final PostClass Postc = new PostClass();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
+        Postc.Post_alllocation();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow(); // in Activity's onCreate() for instance
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
@@ -36,23 +37,27 @@ public class SplashActivity extends AppCompatActivity {
                 .translationY(textView.getHeight())
                 .alpha(1f)
                 .setStartDelay(1000)
-                .setDuration(1000);
+                .setDuration(1000)
+                .setInterpolator(AnimationUtils.loadInterpolator(this,android.R.anim.accelerate_decelerate_interpolator));
 
         textView2.animate()
                 .translationY(textView.getHeight())
                 .alpha(1f)
                 .setStartDelay(500)
-                .setDuration(1200);
+                .setDuration(1200)
+                .setInterpolator(AnimationUtils.loadInterpolator(this,android.R.anim.accelerate_decelerate_interpolator));
 
         ImageView imageView = findViewById(R.id.imageView3);
         imageView.setAlpha(0f);
-        imageView.setX(-50f);
+        imageView.setX(-80f);
         imageView.animate()
                 .translationY(textView.getHeight())
                 .alpha(1f)
-                .setStartDelay(1000)
+                .setStartDelay(1600)
                 .translationX(-5f)
-                .setDuration(1000);
+                .setDuration(600)
+                .setInterpolator(AnimationUtils.loadInterpolator(this,android.R.anim.overshoot_interpolator));
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

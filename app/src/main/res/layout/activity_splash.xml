@@ -20,11 +20,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@id/splash_title"
-            android:fontFamily="@font/nanumgothic"
+            android:fontFamily="@font/notosans_regular"
             android:text="내 손안의 주차장"
             android:textColor="@color/White"
             android:layout_marginLeft="2dp"
-            android:textSize="13sp" />
+            android:layout_marginBottom="-10dp"
+            android:textSize="14sp" />
 
         <LinearLayout
             android:id="@+id/splash_title"
@@ -40,17 +41,19 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView2"
                 android:layout_centerHorizontal="true"
-                android:fontFamily="@font/nanumgothicbold"
+                android:layout_marginLeft="1dp"
+                android:fontFamily="@font/notosans_regular"
                 android:text="PICKER PARKER"
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/White"
-                android:textSize="30sp" />
+                android:textSize="28sp" />
 
             <ImageView
                 android:id="@+id/imageView3"
                 android:layout_width="60dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
+                android:layout_marginTop="1dp"
                 app:srcCompat="@drawable/whitecar" />
 
         </LinearLayout>

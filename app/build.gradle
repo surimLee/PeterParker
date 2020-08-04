@@ -5,7 +5,7 @@ android {
     buildToolsVersion "30.0.0"
     defaultConfig {
         applicationId "kr.co.waytech.peterparker"
-        minSdkVersion 16
+        minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -39,4 +39,5 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0-beta01'
     implementation 'jp.wasabeef:blurry:2.1.1'
     implementation 'com.github.navasmdc:MaterialDesign:1.5@aar'
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
 }

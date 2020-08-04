@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:letterSpacing="-0.8"
+        android:textScaleX="0.4"
+        app:font="@font/notosans_regular"
+        app:fontStyle="normal"
+        app:fontWeight="400"
+        tools:ignore="UnusedAttribute"
+        android:font="@font/notosans_regular" />
+
+</font-family>

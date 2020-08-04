@@ -1,37 +1,28 @@
 package kr.co.waytech.peterparker.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.app.Fragment;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
-import kr.co.waytech.peterparker.MainActivity;
+import kr.co.waytech.peterparker.MyAdapter;
 import kr.co.waytech.peterparker.ParkingItem;
 import kr.co.waytech.peterparker.PostClass;
 import kr.co.waytech.peterparker.R;
 
 import android.util.DisplayMetrics;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,31 +31,20 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import kr.co.waytech.peterparker.MarkerItem;
 
-import static android.content.ContentValues.TAG;
-import static android.content.Context.LOCATION_SERVICE;
-import static kr.co.waytech.peterparker.PostClass.ParkingLat;
-import static kr.co.waytech.peterparker.PostClass.ParkingLng;
-import static kr.co.waytech.peterparker.PostClass.b;
-import static kr.co.waytech.peterparker.PostClass.split_location;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
 
@@ -87,7 +67,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public static GoogleMap mMap;
     private Context homeFragment;
     private MapView mapView = null;
+    FrameLayout frameLayout;
+    private ListView mListView;
     TabItem tab1, tab2, tab3;
+    public static ArrayList<MarkerItem> ParkingList;
 
     public MapFragment()
     {
@@ -107,6 +90,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         setHasOptionsMenu(true);
+
         mapView = (MapView)view.findViewById(R.id.map);
         mapView.getMapAsync(this);
 
@@ -119,15 +103,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             }
         });
         tabLayout=(TabLayout)view.findViewById(R.id.tabs);
-        viewPager=(ViewPager)view.findViewById(R.id.viewPager);
+        frameLayout=(FrameLayout)view.findViewById(R.id.frame_view);
+        //mListView = (ListView)view.findViewById(R.id.listView);
         tabLayout.addTab(tabLayout.newTab().setText("현재 Pick"));
         tabLayout.addTab(tabLayout.newTab().setText("거리순"));
         tabLayout.addTab(tabLayout.newTab().setText("가격순"));
-
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
+                int pos = tab.getPosition();
+                if (pos == 0){
+                   // dataSetting();
+                }
+                else if (pos == 1){
+                    System.out.println("거리순---------------------------------------------------------");
+                    ZoomLevel = mMap.getCameraPosition().zoom;
+                    lat = mMap.getCameraPosition().target.latitude;
+                    lng = mMap.getCameraPosition().target.longitude;
+                    // 줌레벨이 11, 13, 15일때 통신
+                    System.out.println("통신---------------------------------------------------------");
+                    x1 = (lat + 1*(0.012 * (2^(int)(15.0 - ZoomLevel))));
+                    y1 = (lng - 1*(0.012 * (2^(int)(15.0 - ZoomLevel))));
+                    x2 = (lat - 1*(0.012 * (2^(int)(15.0 - ZoomLevel))));
+                    y2 = (lng + 1*(0.012 * (2^(int)(15.0 - ZoomLevel))));
+                    Postc.send_Location(x1, y1, x2, y2);
+                    System.out.println(ZoomLevel + " 위치 :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
+                }
             }
 
             @Override
@@ -142,25 +143,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         });
         return view;
     }
-    private void changeView(int index) {
+    private void dataSetting(){
 
-        switch (index) {
-            case 0 :
-                System.out.println("첫번째 탭");
-                break ;
-            case 1 :
-                System.out.println("두번째 탭");
-                break ;
-            case 2 :
-                System.out.println("세번째 탭");
-                break ;
+        MyAdapter mMyAdapter = new MyAdapter();
 
+
+        for (int i=0; i<10; i++) {
+            mMyAdapter.addItem(ContextCompat.getDrawable(homeFragment.getApplicationContext(), R.drawable.home_icon), "name_" + i, "contents_" + i);
         }
+
+        /* 리스트뷰에 어댑터 등록 */
+        mListView.setAdapter(mMyAdapter);
     }
     @Override
     public void onStart() {
-        super.onStart();
-        mapView.onStart();
+            super.onStart();
+            mapView.onStart();
     }
 
     @Override
@@ -221,7 +219,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
         setCustomMarkerView();
-        getMarkerItems();
         mMap.setMinZoomPreference((float) 7.5);
         mMap.addMarker(new MarkerOptions().position(ABC));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ABC, 14.0f));
@@ -238,18 +235,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 ZoomLevel = mMap.getCameraPosition().zoom;
                 lat = mMap.getCameraPosition().target.latitude;
                 lng = mMap.getCameraPosition().target.longitude;
-                // 줌레벨이 11, 13, 15일때 통신
-                if(setConnectBool() && Connect_Flag == 1 || (lng > y2 || lng < y1 || lat > x1 || lat < x2)){
-                    System.out.println("통신---------------------------------------------------------");
-                    x1 = (lat + 3*(0.012 * (2^(int)(15.0 - ZoomLevel))));
-                    y1 = (lng - 3*(0.012 * (2^(int)(15.0 - ZoomLevel))));
-                    x2 = (lat - 3*(0.012 * (2^(int)(15.0 - ZoomLevel))));
-                    y2 = (lng + 3*(0.012 * (2^(int)(15.0 - ZoomLevel))));
-                    Postc.send_Location(x1, y1, x2, y2);
-                    System.out.println(ZoomLevel + "    (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
-                }
-
-                getMarkerItems();
+                x1 = (lat + 1*(0.012 * (2^(int)(15.0 - ZoomLevel))));
+                y1 = (lng - 1*(0.012 * (2^(int)(15.0 - ZoomLevel))));
+                x2 = (lat - 1*(0.012 * (2^(int)(15.0 - ZoomLevel))));
+                y2 = (lng + 1*(0.012 * (2^(int)(15.0 - ZoomLevel))));
+                Postc.AddMarker(Postc.getcountnumber(), x1, x2, y1, y2);
+                Postc.RemoveMarker(x1, x2, y1, y2);
             }
         });
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback(){
@@ -283,45 +274,33 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
     }
     private void setCustomMarkerView() {
-
         marker_root_view = LayoutInflater.from(homeFragment).inflate(R.layout.marker_layout, null);
         tv_marker = (TextView) marker_root_view.findViewById(R.id.tv_marker);
     }
     public void getMarkerItems() {
+<<<<<<< HEAD
+        try {
+            ArrayList<MarkerItem> ParkingList = new ArrayList();
+            for (int i = 0; i < Postc.count; i++) {
+                ParkingList.add(new MarkerItem(Postc.ParkingLat[i], Postc.ParkingLng[i], Postc.ParkingPrice[i]));
+                System.out.println("핑" + Postc.ParkingLat[i] + ", " + Postc.ParkingLng[i]);
+            }
+            for (MarkerItem markerItem : ParkingList) {
+                //addMarker(markerItem, false);
+            }
+=======
         ArrayList<MarkerItem> ParkingList = new ArrayList();
 
-        ParkingList.add();
         for (MarkerItem markerItem : ParkingList) {
             addMarker(markerItem, false);
+>>>>>>> 47e2962d38a165f9d347df6ad597f13cbd472068
         }
-
-    }
-    private Marker addMarker(MarkerItem markerItem, boolean isSelectedMarker) {
-
-
-        LatLng position = new LatLng(markerItem.getLat(), markerItem.getLon());
-        int price = markerItem.getPrice();
-        String formatted = NumberFormat.getCurrencyInstance().format((price));
-
-        tv_marker.setText(formatted);
-
-        if (isSelectedMarker) {
-            tv_marker.setBackgroundResource(R.drawable.ic_marker_phone_blue);
-            tv_marker.setTextColor(Color.WHITE);
-        } else {
-            tv_marker.setBackgroundResource(R.drawable.ic_marker_phone);
-            tv_marker.setTextColor(Color.BLACK);
+        catch (Exception e){
+            System.out.println("리스트 추가 오류");
         }
-
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.title(Integer.toString(price));
-        markerOptions.position(position);
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(homeFragment, marker_root_view)));
-
-
-        return mMap.addMarker(markerOptions);
-
     }
+
+
     private Bitmap createDrawableFromView(Context context, View view) {
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -337,6 +316,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         return bitmap;
     }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
+    }
+    /*
     private Marker addMarker(Marker marker, boolean isSelectedMarker) {
         double lat = marker.getPosition().latitude;
         double lon = marker.getPosition().longitude;
@@ -345,6 +335,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         return addMarker(temp, isSelectedMarker);
 
     }
+     */
+    /*
     private void changeSelectedMarker(Marker marker) {
         // 선택했던 마커 되돌리기
         if (selectedMarker != null) {
@@ -361,6 +353,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     }
 
+     */
+    /*
     @Override
     public void onMapClick(LatLng latLng) {
         changeSelectedMarker(null);
@@ -370,6 +364,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public boolean onMarkerClick(Marker marker) {
         return false;
     }
-
+*/
 
 }
