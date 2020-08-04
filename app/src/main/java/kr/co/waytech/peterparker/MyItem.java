@@ -2,34 +2,45 @@ package kr.co.waytech.peterparker;
 
 import android.graphics.drawable.Drawable;
 
-public class MyItem {
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-    private Drawable icon;
-    private String name;
-    private String contents;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.clustering.ClusterItem;
 
-    public Drawable getIcon() {
-        return icon;
+public class MyItem implements ClusterItem {
+    private final LatLng mPosition;
+    private final String mTitle;
+    private final int mPrice;
+
+    public MyItem(String slat, String slng, String title, String sprice) {
+        double pLat = Double.parseDouble(slat);
+        double pLng = Double.parseDouble(slng);
+        int price = Integer.parseInt(sprice);
+        mPosition = new LatLng(pLat, pLng);
+        mTitle = title;
+        mPrice = price;
     }
 
-    public void setIcon(Drawable icon) {
-        this.icon = icon;
+    @NonNull
+    @Override
+    public LatLng getPosition() {
+        return mPosition;
     }
 
-    public String getName() {
-        return name;
+    @Nullable
+    @Override
+    public String getTitle() {
+        return mTitle;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public int getPrice(){
+        return mPrice;
     }
 
-    public String getContents() {
-        return contents;
+    @Nullable
+    @Override
+    public String getSnippet() {
+        return null;
     }
-
-    public void setContents(String contents) {
-        this.contents = contents;
-    }
-
 }

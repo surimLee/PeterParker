@@ -391,9 +391,9 @@ public class PostClass {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.title(Integer.toString(price));
             markerOptions.position(position);
-            if (pLat < x1 && pLat > x2 && pLng > y1 && pLng < y2) {
+            //if (pLat < x1 && pLat > x2 && pLng > y1 && pLng < y2) {
                ParkingMark = mMap.addMarker(new MarkerOptions().position(position).title(All_Parkinglot[i][0]));
-            }
+            //}
 
         }
     }
