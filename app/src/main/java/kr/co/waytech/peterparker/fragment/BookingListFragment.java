@@ -32,8 +32,7 @@ public class BookingListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//        View view = inflater.inflate(R.layout.fragment_bookinglist, container,false);
-        View view = inflater.inflate(R.layout.booking_list_item, container,false);
+        View view = inflater.inflate(R.layout.fragment_bookinglist, container,false);
 
         return view;
     }
