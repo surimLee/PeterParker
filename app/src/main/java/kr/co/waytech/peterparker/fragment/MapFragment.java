@@ -115,8 +115,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 y1 = (lng - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                 x2 = (lat - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                 y2 = (lng + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                Postc.AddMarker(Postc.getcountnumber(), x1, x2, y1, y2);
-                Postc.RemoveMarker(x1, x2, y1, y2);
+//                Postc.AddMarker(Postc.getcountnumber(), x1, x2, y1, y2);
+//                Postc.RemoveMarker(x1, x2, y1, y2);
             }
         });
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
