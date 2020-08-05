@@ -5,9 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
-    <include android:id="@+id/actionbar" />
+    <include
+        android:id="@+id/actionbar"
+        layout="@layout/custom_actionbar"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recent_recycler"

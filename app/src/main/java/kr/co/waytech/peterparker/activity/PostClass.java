@@ -1,4 +1,4 @@
-package kr.co.waytech.peterparker;
+package kr.co.waytech.peterparker.activity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -6,17 +6,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-import androidx.fragment.app.Fragment;
-
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
-import kr.co.waytech.peterparker.fragment.MapFragment;
+import kr.co.waytech.peterparker.activity.LoginActivity2;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -24,8 +18,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
-import static kr.co.waytech.peterparker.fragment.MapFragment.mMap;
 
 
 public class PostClass {
@@ -49,7 +41,7 @@ public class PostClass {
         }
     };
 
-    protected void send_login(final String SID, final String SPassword) throws IOException {
+    public void send_login(final String SID, final String SPassword) throws IOException {
         new Thread() {
             public void run() {
                 Bundle bun = new Bundle();
@@ -83,7 +75,7 @@ public class PostClass {
         }.start();
     }
 
-    protected void send_token(){
+    public void send_token(){
         new Thread() {
             public void run() {
                 Bundle bun = new Bundle();

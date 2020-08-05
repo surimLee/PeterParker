@@ -10,8 +10,8 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import kr.co.waytech.peterparker.LoginActivity;
-import kr.co.waytech.peterparker.PostClass;
+import kr.co.waytech.peterparker.activity.LoginActivity;
+import kr.co.waytech.peterparker.activity.PostClass;
 import kr.co.waytech.peterparker.R;
 
 public class ProfileFragment extends android.app.Fragment {

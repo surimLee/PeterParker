@@ -1,4 +1,4 @@
-package kr.co.waytech.peterparker;
+package kr.co.waytech.peterparker.activity;
 
 import android.content.Intent;
 import android.os.Build;
@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import kr.co.waytech.peterparker.R;
 
 public class SplashActivity extends AppCompatActivity {
 

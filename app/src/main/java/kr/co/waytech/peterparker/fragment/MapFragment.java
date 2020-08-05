@@ -1,70 +1,45 @@
 package kr.co.waytech.peterparker.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.app.Fragment;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.viewpager.widget.ViewPager;
 
-import kr.co.waytech.peterparker.MainActivity;
 import kr.co.waytech.peterparker.ParkingItem;
-import kr.co.waytech.peterparker.PostClass;
+import kr.co.waytech.peterparker.activity.PostClass;
 import kr.co.waytech.peterparker.R;
 
 import android.util.DisplayMetrics;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import kr.co.waytech.peterparker.MarkerItem;
-
-import static android.content.ContentValues.TAG;
-import static android.content.Context.LOCATION_SERVICE;
-import static kr.co.waytech.peterparker.PostClass.ParkingLat;
-import static kr.co.waytech.peterparker.PostClass.ParkingLng;
-import static kr.co.waytech.peterparker.PostClass.b;
-import static kr.co.waytech.peterparker.PostClass.split_location;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
 
