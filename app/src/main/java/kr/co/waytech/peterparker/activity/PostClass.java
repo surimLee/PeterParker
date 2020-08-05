@@ -10,7 +10,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
-import kr.co.waytech.peterparker.activity.LoginActivity2;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.NumberFormat;
+
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -26,13 +34,16 @@ public class PostClass {
     String status = "none";
     int Thread_Status = 3 ;
     int Login_Status = 3;
+    public static int count;
     public static Integer Count_Parkinglot;
     public static int[] ParkingPrice;
     public static double[] ParkingLat, ParkingLng;
     public static String[] split_location;
+    public static String[][] All_Parkinglot;
     public static int b = 7;
     static File tempSelectFile;
-    String body_parkinglot = null;
+    public static Marker ParkingMark;
+    public static String body_parkinglot = "abc";
     LoginActivity2 LogA = new LoginActivity2();
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
@@ -90,6 +101,23 @@ public class PostClass {
             }
         }.start();
     }
+
+    public void Post_alllocation(){
+        new Thread() {
+            public void run() {
+                Bundle bun = new Bundle();
+                Message msg = handler.obtainMessage();
+                msg.setData(bun);
+                handler.sendMessage(msg);
+                try {
+                    getalllot();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
     public void send_Img(){
         new Thread() {
             public void run() {
@@ -174,6 +202,7 @@ public class PostClass {
         Response response = client.newCall(request).execute();
         System.out.println("Response Body is " + response.body().string());
     }
+
     public synchronized void Improve_Status(){
         if(status.equals("error")) {
             Thread_Status = 0;
@@ -268,19 +297,11 @@ public class PostClass {
         System.out.println("splited Body is " + split_locationcount[0]);
 
         String[] split_onebody = body_parkinglot.split("\\{");
-
         System.out.println(split_onebody[0]);
-
-
-        String[] data = new String[500];
-        split_location = data;
         split_location = body_parkinglot.split("\"");
         String[] count_parkinglot = split_locationcount[0].split(":");
         Count_Parkinglot = new Integer(Integer.parseInt(count_parkinglot[1]));
-        int count = Count_Parkinglot.intValue();
-        int[] Price = new int[Count_Parkinglot+3];
-        double[] Lat = new double[Count_Parkinglot+3];
-        double[] Lng = new double[Count_Parkinglot+3];
+        count = Count_Parkinglot.intValue();
         String[][] dataArray = new String[count][11];
         b = 7;
         for(int countbody = 2; countbody < count + 2; countbody++){
@@ -293,34 +314,98 @@ public class PostClass {
             String[] splitedLng = dataArray[countbody-2][10].split("\\}");
             dataArray[countbody-2][10] = splitedLng[0];
             System.out.println(dataArray[countbody-2][10]);
+            ParkingLat = new double[count];
+            ParkingLat[countbody-2] = Double.parseDouble(dataArray[countbody-2][9]);
+            ParkingLng = new double[count];
+            ParkingLng[countbody-2] = Double.parseDouble(dataArray[countbody-2][10]);
+            ParkingPrice = new int[count];
+            ParkingPrice[countbody-2] = Integer.parseInt(dataArray[countbody-2][4]);
       }
-        /*
-        for(int i = 0; i < count; i++){
-            System.out.println("Data is.. " + split_location[b + 0] + "/" + split_location[b +  4] + "/" + split_location[b +  8] + "/" + split_location[b +  12]
-                    + "/" + split_location[b +  15] + "/" + split_location[b +  18] + "/" + split_location[b +  22]  + "/" + split_location[b +  26]  + "/" + split_location[b +  30]
-                    + "/" + split_location[b +  33]  + "/" + split_location[b +  35]);
-            String replacePrice = split_location[b +  15].replace(",", ":");
-            String[] parking_price = replacePrice.split(":");
-            ParkingPrice = Price;
-            ParkingPrice[i] = Integer.parseInt(parking_price[1]);
-            System.out.println("Price is.. " + (i) + "번째 "+ ParkingPrice[i]);
-
-            String replaceLat = split_location[b +  33].replace(",", ":");
-            String[] parking_Lat = replaceLat.split(":");
-            ParkingLat = Lat;
-            ParkingLat[i] =  Double.parseDouble(parking_Lat[1]);
-            System.out.println("Lat is.. " + ParkingLat[i]);
-
-            String replaceLng = split_location[b +  35].replace("}", ":");
-            String[] parking_Lng = replaceLng.split(":");
-            ParkingLng = Lng;
-            ParkingLng[i] =  Double.parseDouble(parking_Lng[1]);
-            System.out.println("Lng is.. " + ParkingLng[i]);
-
-            b = b + 38;
-        }
-
-         */
         // ID : 7 , ownerID : 11, Name : 15, Address : 19, Price : 22, Image1 : 25, Image2 : 29, Image3 : 33, Image4 : 37, Lat : 40, Lng : 42
     }
+
+    public void getalllot() throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = RequestBody.create(mediaType, "");
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/show")
+                .method("POST", body)
+                .build();
+        Response response = client.newCall(request).execute();
+        String allbody = response.body().string();
+        try {
+            System.out.println("all body : " + allbody);
+            String[] All_onePL = allbody.split("\\{");
+            String[] count_parkinglot = All_onePL[1].split(",");
+            Count_Parkinglot = new Integer(Integer.parseInt(count_parkinglot[0].substring(8)));
+            count = Count_Parkinglot.intValue();
+            System.out.println("count : " + count);
+
+            All_Parkinglot = new String[count][4];
+            for(int i = 0; i < count; i++) {
+                String[] ALL_oneData = All_onePL[i+2].split(",");
+                String[] ALL_oneIDraw = ALL_oneData[0].split(":");
+                String[] ALL_oneID = ALL_oneIDraw[1].split("\"");
+                String[] ALL_oneprice = ALL_oneData[1].split(":");
+                String[] ALL_oneLat = ALL_oneData[2].split(":");
+                String[] ALL_oneLngraw = ALL_oneData[3].split(":");
+                String[] ALL_oneLng = ALL_oneLngraw[1].split("\\}");
+                All_Parkinglot[i][0] = ALL_oneID[1];
+                All_Parkinglot[i][1] = ALL_oneprice[1];
+                All_Parkinglot[i][2] = ALL_oneLat[1];
+                All_Parkinglot[i][3] = ALL_oneLng[0];
+                System.out.println("Array Data is.. " + " " +  All_Parkinglot[i][0] + " " + All_Parkinglot[i][1] + " " + All_Parkinglot[i][2] + " " +All_Parkinglot[i][3]);
+            }
+        }
+
+        catch (Exception e){
+            System.out.println("전체 데이터 수신/스플릿 오류");
+        }
+
+    }
+    public int getcountnumber(){
+        return count;
+    }
+    /*
+    public void AddMarker(int count, double x1, double x2, double y1, double y2){
+        for(int i = 0; i < count; i++) {
+            double pLat = Double.parseDouble(All_Parkinglot[i][2]);
+            double pLng = Double.parseDouble(All_Parkinglot[i][3]);
+            LatLng Parking = new LatLng(pLat, pLng);
+            if (pLat < x1 && pLat > x2 && pLng > y1 && pLng < y2) {
+                mMap.addMarker(new MarkerOptions().position(Parking).title(All_Parkinglot[i][0]));
+            }
+            else
+                mMap.Marker.setVisible(boolean);
+        }
+    }
+
+     */
+//    public void AddMarker(int count, double x1, double x2, double y1, double y2) {
+//        for(int i = 0; i < count; i++) {
+//            double pLat = Double.parseDouble(All_Parkinglot[i][2]);
+//            double pLng = Double.parseDouble(All_Parkinglot[i][3]);
+//            LatLng position = new LatLng(pLat, pLng);
+//            int price = Integer.parseInt(All_Parkinglot[i][1]);
+//            String formatted = NumberFormat.getCurrencyInstance().format((price));
+//            MarkerOptions markerOptions = new MarkerOptions();
+//            markerOptions.title(Integer.toString(price));
+//            markerOptions.position(position);
+//            //if (pLat < x1 && pLat > x2 && pLng > y1 && pLng < y2) {
+//               ParkingMark = mMap.addMarker(new MarkerOptions().position(position).title(All_Parkinglot[i][0]));
+//            //}
+//
+//        }
+//    }
+//    public void RemoveMarker(double x1, double x2, double y1, double y2){
+//        for(int i = 0; i < count; i++) {
+//        double pLat = Double.parseDouble(All_Parkinglot[i][2]);
+//        double pLng = Double.parseDouble(All_Parkinglot[i][3]);
+//        if (pLat > x1 || pLat < x2 || pLng < y1 || pLng > y2) {
+//            ParkingMark.remove();
+//        }
+//    }
+//}
 }

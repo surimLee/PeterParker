@@ -16,12 +16,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import kr.co.waytech.peterparker.R;
 
 public class SplashActivity extends AppCompatActivity {
-
+    final PostClass Postc = new PostClass();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
+        Postc.Post_alllocation();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow(); // in Activity's onCreate() for instance
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
