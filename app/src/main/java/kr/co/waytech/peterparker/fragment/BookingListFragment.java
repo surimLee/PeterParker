@@ -11,13 +11,17 @@ import android.widget.Toolbar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import kr.co.waytech.peterparker.MainActivity;
 import kr.co.waytech.peterparker.R;
+import kr.co.waytech.peterparker.adapter.RecentBookingAdapter;
+import kr.co.waytech.peterparker.model.RecentBooking;
 
 public class BookingListFragment extends Fragment {
 
-//    Toolbar toolbar;
+
 
     public BookingListFragment()
     {
@@ -27,13 +31,16 @@ public class BookingListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // add dummy data
+
     }
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 //        View view = inflater.inflate(R.layout.fragment_bookinglist, container,false);
-        View view = inflater.inflate(R.layout.booking_list_item, container,false);
+        View view = inflater.inflate(R.layout.fragment_bookinglist, container,false);
 
         return view;
     }

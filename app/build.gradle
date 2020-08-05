@@ -40,4 +40,5 @@ dependencies {
     implementation 'jp.wasabeef:blurry:2.1.1'
     implementation 'com.github.navasmdc:MaterialDesign:1.5@aar'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
+    implementation 'com.android.support:recyclerview-v7:30.1.+'
 }
