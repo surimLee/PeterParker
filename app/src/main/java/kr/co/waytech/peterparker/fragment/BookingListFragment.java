@@ -38,10 +38,10 @@ public class BookingListFragment extends Fragment {
         bookingList = new ArrayList<>();
         bookingList.add(new BookingList("산기대 종합관 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "3,000원", "2020년 07월 20일(월) 12:00\n~2020년 07월 20일(월) 14:00", R.drawable.parkinglot4));
         bookingList.add(new BookingList("산기대 E동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "2,000원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot5));
-        bookingList.add(new BookingList("산기대 A동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "2,000원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot5));
-        bookingList.add(new BookingList("산기대 B동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "2,000원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot5));
-        bookingList.add(new BookingList("산기대 C동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "2,000원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot5));
-        bookingList.add(new BookingList("산기대 D동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "2,000원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot5));
+        bookingList.add(new BookingList("산기대 A동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "4,000원", "2020년 07월 15일(금) 14:00\n~2020년 07월 15일(금) 15:00", R.drawable.parkinglot1));
+        bookingList.add(new BookingList("산기대 B동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "1,000원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot4));
+        bookingList.add(new BookingList("산기대 C동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "1,400원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot2));
+        bookingList.add(new BookingList("산기대 D동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "2,500원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot5));
         bookingList.add(new BookingList("시흥비즈니스센터","사용완료","경기도 시흥시 정왕동 2121-1", "2,000원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot3));
 
     }
