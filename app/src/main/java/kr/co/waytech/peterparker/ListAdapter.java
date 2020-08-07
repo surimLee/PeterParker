@@ -2,7 +2,11 @@ package kr.co.waytech.peterparker;
 
 import android.content.ClipData;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +22,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class ListAdapter extends BaseAdapter {
@@ -64,13 +72,10 @@ public class ListAdapter extends BaseAdapter {
 
             TextView textView_Distance = (TextView) convertView.findViewById(R.id.text_distance);
             ImageView imageView = (ImageView) convertView.findViewById(R.id.list_image);
-
             textView_address.setText(listViewItem.getAddress());
             textView_price.setText(listViewItem.getContent_Price());
             textView_Distance.setText(listViewItem.getDistance());
-
-
-
+            new DownloadImageTask((ImageView)convertView.findViewById(R.id.list_image)).execute("http://blazingcode.asuscomm.com/storage/profile_image/default.png");
 
         return convertView;
     }
@@ -144,3 +149,4 @@ public class ListAdapter extends BaseAdapter {
  */
 
 }
+
