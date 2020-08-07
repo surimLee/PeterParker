@@ -9,7 +9,11 @@
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.CAMERA"/>
-
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
 
@@ -26,27 +30,27 @@
             android:value="AIzaSyBuUaUGWSjkYACiYNTcxNZTHXgXJ3_4l6o"/>
         <uses-library android:name="com.google.android.maps" />
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
-        <activity android:name=".MainActivity"
+        <activity android:name=".activity.MainActivity"
             android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".SignupActivity2"/>
-        <activity android:name=".LoginActivity2"/>
-        <activity android:name=".SignupActivity"
+        <activity android:name=".activity.SignupActivity2"/>
+        <activity android:name=".activity.LoginActivity2"/>
+        <activity android:name=".activity.SignupActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
-        <activity android:name=".SplashActivity">
+        <activity android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity"
+        <activity android:name=".activity.LoginActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
-        <activity android:name=".FineIDActivity"
+        <activity android:name=".activity.FineIDActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
-        <activity android:name=".FinePWActivity"
+        <activity android:name=".activity.FinePWActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
     </application>

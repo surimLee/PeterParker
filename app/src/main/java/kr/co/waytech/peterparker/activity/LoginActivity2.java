@@ -1,4 +1,4 @@
-package kr.co.waytech.peterparker;
+package kr.co.waytech.peterparker.activity;
 
         import android.app.Activity;
         import android.content.Intent;
@@ -8,6 +8,8 @@ package kr.co.waytech.peterparker;
         import android.widget.EditText;
         import java.io.IOException;
         import androidx.appcompat.app.AppCompatActivity;
+
+        import kr.co.waytech.peterparker.R;
 
 public class LoginActivity2 extends AppCompatActivity {
     Button LoginBtn, SignupBtn, TokenBtn;

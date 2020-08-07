@@ -1,4 +1,4 @@
-package kr.co.waytech.peterparker;
+package kr.co.waytech.peterparker.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -16,6 +16,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import kr.co.waytech.peterparker.R;
 
 public class SplashActivity extends AppCompatActivity {
     final PostClass Postc = new PostClass();

@@ -18,6 +18,10 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.viewpager.widget.ViewPager;
+
+import kr.co.waytech.peterparker.ParkingItem;
+import kr.co.waytech.peterparker.activity.PostClass;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +33,7 @@ import kr.co.waytech.peterparker.MainActivity;
 import kr.co.waytech.peterparker.MyItem;
 import kr.co.waytech.peterparker.OwnIconRendered;
 import kr.co.waytech.peterparker.PostClass;
+import kr.co.waytech.peterparker.activity.PostClass;
 import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.RecyclerAdapter;
 import kr.co.waytech.peterparker.ListAdapter;
@@ -54,9 +59,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.maps.android.clustering.Cluster;
@@ -65,22 +73,22 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static kr.co.waytech.peterparker.PostClass.All_Parkinglot;
 
+import static kr.co.waytech.peterparker.activity.PostClass.All_Parkinglot;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
 
     private static final String TAG = "googlemap_example";
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2002;
-    private static final int UPDATE_INTERVAL_MS = 1000;  // 1ì´ˆ
-    private static final int FASTEST_UPDATE_INTERVAL_MS = 500; // 0.5ì´ˆ
+    private static final int UPDATE_INTERVAL_MS = 1000;  // 1ì´?
+    private static final int FASTEST_UPDATE_INTERVAL_MS = 500; // 0.5ì´?
     private static final LatLng ABC = null;
     public static Float ZoomLevel;
     public static int Connect_Flag = 0;
@@ -171,19 +179,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 AddressList = null;
 
                 try {
-                    AddressList = geocoder.getFromLocationName(str, 10); // ì–»ì–´ì˜¬ ê°’ì˜ ê°œìˆ˜
+                    AddressList = geocoder.getFromLocationName(str, 10); // ?–»?–´?˜¬ ê°’ì˜ ê°œìˆ˜
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 if (AddressList != null) {
                     if (AddressList.size() == 0) {
-                        System.out.println("ì£¼ì†Œ ì˜¤ë¥˜");
+                        System.out.println("ì£¼ì†Œ ?˜¤ë¥?");
                     } else {
                         System.out.println(AddressList.get(0).toString());
                         String[] splitStr = AddressList.get(0).toString().split(",");
                         String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1, splitStr[0].length() - 2); // ì£¼ì†Œ
                         System.out.println(address);
-                        String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // ìœ„ë„
+                        String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // ?œ„?„
                         String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // ê²½ë„
                         System.out.println(latitude);
                         System.out.println(longitude);
@@ -193,6 +201,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     }
                 }
                 imm.hideSoftInputFromWindow(search_edt.getWindowToken(), 0);
+                //search_result = search_edt.getText().toString();
+
+                ZoomLevel = mMap.getCameraPosition().zoom;
+                lat = mMap.getCameraPosition().target.latitude;
+                lng = mMap.getCameraPosition().target.longitude;
+                x1 = (lat + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
+                y1 = (lng - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
+                x2 = (lat - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
+                y2 = (lng + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
+//                Postc.AddMarker(Postc.getcountnumber(), x1, x2, y1, y2);
+//                Postc.RemoveMarker(x1, x2, y1, y2);
             }
         });
 
@@ -201,9 +220,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         tab1_layout = (LinearLayout) view.findViewById(R.id.tab1_layout);
         tab2_layout = (LinearLayout) view.findViewById(R.id.tab2_layout);
         frameLayout = (FrameLayout) view.findViewById(R.id.frame_view);
-        tabLayout.addTab(tabLayout.newTab().setText("í˜„ì¬ Pick"));
-        tabLayout.addTab(tabLayout.newTab().setText("ê±°ë¦¬ìˆœ"));
-        tabLayout.addTab(tabLayout.newTab().setText("ê°€ê²©ìˆœ"));
+        tabLayout.addTab(tabLayout.newTab().setText("?˜„?¬ Pick"));
+        tabLayout.addTab(tabLayout.newTab().setText("ê±°ë¦¬?ˆœ"));
+        tabLayout.addTab(tabLayout.newTab().setText("ê°?ê²©ìˆœ"));
         slidingUpPanelLayout = (SlidingUpPanelLayout) view.findViewById(R.id.sliding_main);
         slidingUpPanelLayout.setFadeOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,34 +235,34 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             public void onTabSelected(TabLayout.Tab tab) {
                 int pos = tab.getPosition();
                 if (pos == 0) {
-                    System.out.println("í•€ë§ˆì»¤---------------------------------------------------------");
+                    System.out.println("???ë§ˆì»¤---------------------------------------------------------");
                     ZoomLevel = mMap.getCameraPosition().zoom;
                     lat = mMap.getCameraPosition().target.latitude;
                     lng = mMap.getCameraPosition().target.longitude;
-                    // ì¤Œë ˆë²¨ì´ 11, 13, 15ì¼ë•Œ í†µì‹ 
-                    System.out.println("í†µì‹ ---------------------------------------------------------");
+                    // ì¤Œë ˆë²¨ì´ 11, 13, 15?¼?•Œ ?†µ?‹ 
+                    System.out.println("?†µ?‹ ---------------------------------------------------------");
                     x1 = (lat + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     y1 = (lng - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     x2 = (lat - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     y2 = (lng + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     Postc.send_Location(x1, y1, x2, y2);
-                    System.out.println(ZoomLevel + " ìœ„ì¹˜ :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
+                    System.out.println(ZoomLevel + " ?œ„ì¹? :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
                     tab1_layout.setVisibility(View.VISIBLE);
                     tab2_layout.setVisibility(View.GONE);
                 } else if (pos == 1) {
 
-                    System.out.println("ê±°ë¦¬ìˆœ---------------------------------------------------------");
+                    System.out.println("ê±°ë¦¬?ˆœ---------------------------------------------------------");
                     ZoomLevel = mMap.getCameraPosition().zoom;
                     lat = mlatitude;
                     lng = mlongitude;
-                    // ì¤Œë ˆë²¨ì´ 11, 13, 15ì¼ë•Œ í†µì‹ 
-                    System.out.println("í†µì‹ ---------------------------------------------------------");
+                    // ì¤Œë ˆë²¨ì´ 11, 13, 15?¼?•Œ ?†µ?‹ 
+                    System.out.println("?†µ?‹ ---------------------------------------------------------");
                     x1 = (lat + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     y1 = (lng - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     x2 = (lat - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     y2 = (lng + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     Postc.send_Location(x1, y1, x2, y2);
-                    System.out.println(ZoomLevel + " ìœ„ì¹˜ :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
+                    System.out.println(ZoomLevel + " ?œ„ì¹? :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
 
 
                     tab1_layout.setVisibility(View.GONE);
@@ -252,18 +271,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     getData_distance();
                 }
                 else if (pos == 2){
-                    System.out.println("ê°€ê²©ìˆœ---------------------------------------------------------");
+                    System.out.println("ê°?ê²©ìˆœ---------------------------------------------------------");
                     ZoomLevel = mMap.getCameraPosition().zoom;
                     lat = mlatitude;
                     lng = mlongitude;
-                    // ì¤Œë ˆë²¨ì´ 11, 13, 15ì¼ë•Œ í†µì‹ 
-                    System.out.println("í†µì‹ ---------------------------------------------------------");
+                    // ì¤Œë ˆë²¨ì´ 11, 13, 15?¼?•Œ ?†µ?‹ 
+                    System.out.println("?†µ?‹ ---------------------------------------------------------");
                     x1 = (lat + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     y1 = (lng - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     x2 = (lat - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     y2 = (lng + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     Postc.send_Location(x1, y1, x2, y2);
-                    System.out.println(ZoomLevel + " ìœ„ì¹˜ :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
+                    System.out.println(ZoomLevel + " ?œ„ì¹? :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
                     tab1_layout.setVisibility(View.GONE);
                     tab2_layout.setVisibility(View.GONE);
                     tab2_layout.setVisibility(View.VISIBLE);
@@ -284,7 +303,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         return view;
     }
 
-    /*  ì£¼ì†Œë³€í™˜ ì½”ë“œ
+    /*  ì£¼ì†Œë³??™˜ ì½”ë“œ
         for(int b = 0; b < Postc.count; b++) {
             List<Address> Adlist = null;
             try {
@@ -292,9 +311,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 double d1 = Double.parseDouble(All_Parkinglot[b][2]);
                 double d2 = Double.parseDouble(All_Parkinglot[b][3]);
                 Adlist = geocoder.getFromLocation(
-                        d1, // ìœ„ë„
+                        d1, // ?œ„?„
                         d2, // ê²½ë„
-                        5); // ì–»ì–´ì˜¬ ê°’ì˜ ê°œìˆ˜
+                        5); // ?–»?–´?˜¬ ê°’ì˜ ê°œìˆ˜
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -313,12 +332,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
          */
     private void getData_pick(String Address, int Price, double distance) {
         List<String> listAddress = Arrays.asList(Address);
-        List<String> listContent_Price = Arrays.asList("ì£¼ì°¨ìš”ê¸ˆ : " + "ì‹œê°„ë‹¹ " +Price + "ì›");
-        List<String> listContent_Time = Arrays.asList("ìš´ì˜ì‹œê°„ :00:00 ~ 12:00");
+        List<String> listContent_Price = Arrays.asList("ì£¼ì°¨?š”ê¸? : " + "?‹œê°„ë‹¹ " +Price + "?›");
+        List<String> listContent_Time = Arrays.asList("?š´?˜?‹œê°? :00:00 ~ 12:00");
         List<String> listContent_Distance = Arrays.asList((int)distance + "m");
         List<Integer> listResId = Arrays.asList(R.drawable.parkinglot1);
         for (int i = 0; i < listAddress.size(); i++) {
-            // ê° Listì˜ ê°’ë“¤ì„ data ê°ì²´ì— set í•´ì¤ë‹ˆë‹¤.
+            // ê°? List?˜ ê°’ë“¤?„ data ê°ì²´?— set ?•´ì¤ë‹ˆ?‹¤.
             Data data = new Data();
             data.setAddress(listAddress.get(i));
             data.setContent_Price(listContent_Price.get(i));
@@ -326,11 +345,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             data.setResId(listResId.get(i));
             data.setDistance(listContent_Distance.get(i));
 
-            // ê° ê°’ì´ ë“¤ì–´ê°„ dataë¥¼ adapterì— ì¶”ê°€í•©ë‹ˆë‹¤.
+            // ê°? ê°’ì´ ?“¤?–´ê°? dataë¥? adapter?— ì¶”ê???•©?‹ˆ?‹¤.
             adapter.addItem(data);
         }
 
-        // adapterì˜ ê°’ì´ ë³€ê²½ë˜ì—ˆë‹¤ëŠ” ê²ƒì„ ì•Œë ¤ì¤ë‹ˆë‹¤.
+        // adapter?˜ ê°’ì´ ë³?ê²½ë˜?—ˆ?‹¤?Š” ê²ƒì„ ?•Œ? ¤ì¤ë‹ˆ?‹¤.
         adapter.notifyDataSetChanged();
     }
 
@@ -378,9 +397,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         for(int i = 0; i < Selected_Parking.length; i++) {
             if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) < 6000) {
-                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1] + " ì›", (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m");
+                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1] + " ?›", (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m");
 
-               System.out.println(Selected_Parking[i][0] + ", " + Selected_Parking[i][1] + " ì›"+ ", " + Selected_Parking[i][2]+ ", " +Selected_Parking[i][3]);
+               System.out.println(Selected_Parking[i][0] + ", " + Selected_Parking[i][1] + " ?›"+ ", " + Selected_Parking[i][2]+ ", " +Selected_Parking[i][3]);
             }
         }
     }
@@ -428,9 +447,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         for(int i = 0; i < Selected_Parking.length; i++) {
             if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) < 6000) {
-                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1] + " ì›", (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m");
+                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1] + " ?›", (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m");
 
-                System.out.println(Selected_Parking[i][0] + ", " + Selected_Parking[i][1] + " ì›"+ ", " + Selected_Parking[i][2]+ ", " +Selected_Parking[i][3]);
+                System.out.println(Selected_Parking[i][0] + ", " + Selected_Parking[i][1] + " ?›"+ ", " + Selected_Parking[i][2]+ ", " +Selected_Parking[i][3]);
             }
         }
     }
@@ -493,7 +512,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //ì•¡í‹°ë¹„í‹°ê°€ ì²˜ìŒ ìƒì„±ë  ë•Œ ì‹¤í–‰ë˜ëŠ” í•¨ìˆ˜
+        //?•¡?‹°ë¹„í‹°ê°? ì²˜ìŒ ?ƒ?„±?  ?•Œ ?‹¤?–‰?˜?Š” ?•¨?ˆ˜
 
         if (mapView != null) {
             mapView.onCreate(savedInstanceState);
@@ -504,9 +523,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         List<Address> Adlist = null;
         try {
             Adlist = geocoder.getFromLocation(
-                    lat, // ìœ„ë„
+                    lat, // ?œ„?„
                     lng, // ê²½ë„
-                    1); // ì–»ì–´ì˜¬ ê°’ì˜ ê°œìˆ˜
+                    1); // ?–»?–´?˜¬ ê°’ì˜ ê°œìˆ˜
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -609,7 +628,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         if ((ZoomLevel >= 10.8000 && ZoomLevel <= 11.2000) || (ZoomLevel >= 12.8000 && ZoomLevel <= 13.2000) || (ZoomLevel >= 14.8000 && ZoomLevel <= 15.2000)) {
             Connect_Flag++;
             return true;
-            // í†µì‹  ì‹œì‘
+            // ?†µ?‹  ?‹œ?‘
 
         } else {
             Connect_Flag = 0;

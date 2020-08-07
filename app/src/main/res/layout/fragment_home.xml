@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
-    tools:context=".MainActivity"
+    tools:context=".activity.MainActivity"
     app:umanoPanelHeight="45dp"
     app:umanoShadowHeight="0dp"
     app:umanoDragView="@id/dragView"

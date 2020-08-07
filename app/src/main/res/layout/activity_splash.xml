@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:background="@color/colorTintOrange"
     android:layout_height="match_parent"
-    tools:context=".SplashActivity">
+    tools:context=".activity.SplashActivity">
 
 
     <LinearLayout
@@ -20,12 +20,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@id/splash_title"
-            android:fontFamily="@font/notosans_regular"
+            android:fontFamily="@font/nanumgothic"
             android:text="내 손안의 주차장"
             android:textColor="@color/White"
             android:layout_marginLeft="2dp"
-            android:layout_marginBottom="-10dp"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
         <LinearLayout
             android:id="@+id/splash_title"
@@ -41,19 +40,17 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView2"
                 android:layout_centerHorizontal="true"
-                android:layout_marginLeft="1dp"
-                android:fontFamily="@font/notosans_regular"
+                android:fontFamily="@font/nanumgothicbold"
                 android:text="PICKER PARKER"
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/White"
-                android:textSize="28sp" />
+                android:textSize="30sp" />
 
             <ImageView
                 android:id="@+id/imageView3"
                 android:layout_width="60dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginTop="1dp"
                 app:srcCompat="@drawable/whitecar" />
 
         </LinearLayout>

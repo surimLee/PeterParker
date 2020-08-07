@@ -1,4 +1,4 @@
-package kr.co.waytech.peterparker;
+package kr.co.waytech.peterparker.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.regex.Pattern;
+
+import kr.co.waytech.peterparker.R;
 
 public class SignupActivity2 extends AppCompatActivity {
     protected static int Data_Type_Flag = 1;

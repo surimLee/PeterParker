@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".SignupActivity2">
+    tools:context=".activity.SignupActivity2">
     <de.hdodenhof.circleimageview.CircleImageView
         android:src="@drawable/login_icon"
         android:id="@+id/signupActiviy_imageview_profile"

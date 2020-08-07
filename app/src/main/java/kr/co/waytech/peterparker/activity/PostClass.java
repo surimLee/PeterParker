@@ -1,10 +1,14 @@
-package kr.co.waytech.peterparker;
+package kr.co.waytech.peterparker.activity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -22,8 +26,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
-import static kr.co.waytech.peterparker.fragment.MapFragment.mMap;
 
 
 public class PostClass {
@@ -50,7 +52,7 @@ public class PostClass {
         }
     };
 
-    protected void send_login(final String SID, final String SPassword) throws IOException {
+    public void send_login(final String SID, final String SPassword) throws IOException {
         new Thread() {
             public void run() {
                 Bundle bun = new Bundle();
@@ -84,7 +86,7 @@ public class PostClass {
         }.start();
     }
 
-    protected void send_token(){
+    public void send_token(){
         new Thread() {
             public void run() {
                 Bundle bun = new Bundle();
@@ -361,7 +363,7 @@ public class PostClass {
         }
 
         catch (Exception e){
-            System.out.println("Ï†ÑÏ≤¥ Îç∞Ïù¥ÌÑ∞ ÏàòÏã†/Ïä§ÌîåÎ¶ø Ïò§Î•ò");
+            System.out.println("?†ÑÏ≤? ?ç∞?ù¥?Ñ∞ ?àò?ã†/?ä§?îåÎ¶? ?ò§Î•?");
         }
 
     }
@@ -383,34 +385,4 @@ public class PostClass {
     }
 
      */
-    /*
-    public void AddMarker(int count, double x1, double x2, double y1, double y2) {
-        for(int i = 0; i < count; i++) {
-            double pLat = Double.parseDouble(All_Parkinglot[i][2]);
-            double pLng = Double.parseDouble(All_Parkinglot[i][3]);
-            LatLng position = new LatLng(pLat, pLng);
-            int price = Integer.parseInt(All_Parkinglot[i][1]);
-            String formatted = NumberFormat.getCurrencyInstance().format((price));
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.title(Integer.toString(price));
-            markerOptions.position(position);
-            //if (pLat < x1 && pLat > x2 && pLng > y1 && pLng < y2) {
-               ParkingMark = mMap.addMarker(new MarkerOptions().position(position).title(All_Parkinglot[i][0]));
-            //}
-
-        }
-    }
-    public void RemoveMarker(double x1, double x2, double y1, double y2){
-        for(int i = 0; i < count; i++) {
-        double pLat = Double.parseDouble(All_Parkinglot[i][2]);
-        double pLng = Double.parseDouble(All_Parkinglot[i][3]);
-        if (pLat > x1 || pLat < x2 || pLng < y1 || pLng > y2) {
-            ParkingMark.remove();
-        }
-    }
-
-
-}
-
-     */
-}
+     }

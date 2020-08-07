@@ -5,7 +5,7 @@ android {
     buildToolsVersion "30.0.0"
     defaultConfig {
         applicationId "kr.co.waytech.peterparker"
-        minSdkVersion 26
+        minSdkVersion 16
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -42,4 +42,7 @@ dependencies {
     implementation 'jp.wasabeef:blurry:2.1.1'
     implementation 'com.github.navasmdc:MaterialDesign:1.5@aar'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
+    implementation 'com.android.support:recyclerview-v7:30.1.+'
+    implementation 'com.android.support:localbroadcastmanager:30.0.0'
+    implementation 'org.altbeacon:android-beacon-library:2+' // beacon library add
 }

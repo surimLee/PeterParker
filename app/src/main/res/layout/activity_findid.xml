@@ -8,7 +8,7 @@
     android:gravity="top|center"
     android:paddingTop="50dp"
     android:background="@color/White"
-    tools:context=".FineIDActivity">
+    tools:context=".activity.FineIDActivity">
 
 
     <EditText
