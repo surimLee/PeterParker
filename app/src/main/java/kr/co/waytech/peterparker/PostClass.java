@@ -309,6 +309,7 @@ public class PostClass {
                 dataArray[countbody-2][amount] = splitedData[1];
                 System.out.println("dataArray : [" + (countbody - 2) + "]" + "[" + (amount) + "] = " + dataArray[countbody-2][amount]);
             }
+            System.out.println(split_onedata[5].split(":")[1] + ":" + split_onedata[5].split(":")[2].replace("\\", ""));
             String[] splitedLng = dataArray[countbody-2][10].split("\\}");
             dataArray[countbody-2][10] = splitedLng[0];
             System.out.println(dataArray[countbody-2][10]);
@@ -356,6 +357,7 @@ public class PostClass {
                 All_Parkinglot[i][3] = ALL_oneLng[0];
                 System.out.println("Array Data is.. " + " " +  All_Parkinglot[i][0] + " " + All_Parkinglot[i][1] + " " + All_Parkinglot[i][2] + " " +All_Parkinglot[i][3]);
             }
+
         }
 
         catch (Exception e){
@@ -381,6 +383,7 @@ public class PostClass {
     }
 
      */
+    /*
     public void AddMarker(int count, double x1, double x2, double y1, double y2) {
         for(int i = 0; i < count; i++) {
             double pLat = Double.parseDouble(All_Parkinglot[i][2]);
@@ -405,5 +408,9 @@ public class PostClass {
             ParkingMark.remove();
         }
     }
+
+
 }
+
+     */
 }
