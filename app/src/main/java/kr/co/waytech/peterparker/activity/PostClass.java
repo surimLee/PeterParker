@@ -363,7 +363,7 @@ public class PostClass {
         }
 
         catch (Exception e){
-            System.out.println("? „ì²? ?°?´?„° ?ˆ˜?‹ /?Š¤?”Œë¦? ?˜¤ë¥?");
+            System.out.println("ì „ì²´ ë°ì´í„° ìˆ˜ì‹ /ìŠ¤í”Œë¦¿ ì˜¤ë¥˜");
         }
 
     }
