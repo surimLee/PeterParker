@@ -58,7 +58,7 @@ public class SplashActivity extends AppCompatActivity {
                 .setStartDelay(1600)
                 .translationX(-5f)
                 .setDuration(600)
-                .setInterpolator(AnimationUtils.loadInterpolator(this,android.R.anim.overshoot_interpolator));
+                .setInterpolator(AnimationUtils.loadInterpolator(this,android.R.anim.accelerate_decelerate_interpolator));
 
         new Handler().postDelayed(new Runnable() {
             @Override

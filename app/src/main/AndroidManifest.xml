@@ -51,5 +51,8 @@
         <activity android:name=".activity.FinePWActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
+        <activity android:name=".activity.AddParkinglotActivity"
+            android:theme="@style/ActionBarTheme">
+        </activity>
     </application>
 </manifest>
