@@ -311,6 +311,7 @@ public class PostClass {
                 dataArray[countbody-2][amount] = splitedData[1];
                 System.out.println("dataArray : [" + (countbody - 2) + "]" + "[" + (amount) + "] = " + dataArray[countbody-2][amount]);
             }
+            System.out.println(split_onedata[5].split(":")[1] + ":" + split_onedata[5].split(":")[2].replace("\\", ""));
             String[] splitedLng = dataArray[countbody-2][10].split("\\}");
             dataArray[countbody-2][10] = splitedLng[0];
             System.out.println(dataArray[countbody-2][10]);
@@ -358,6 +359,7 @@ public class PostClass {
                 All_Parkinglot[i][3] = ALL_oneLng[0];
                 System.out.println("Array Data is.. " + " " +  All_Parkinglot[i][0] + " " + All_Parkinglot[i][1] + " " + All_Parkinglot[i][2] + " " +All_Parkinglot[i][3]);
             }
+
         }
 
         catch (Exception e){
@@ -383,29 +385,4 @@ public class PostClass {
     }
 
      */
-//    public void AddMarker(int count, double x1, double x2, double y1, double y2) {
-//        for(int i = 0; i < count; i++) {
-//            double pLat = Double.parseDouble(All_Parkinglot[i][2]);
-//            double pLng = Double.parseDouble(All_Parkinglot[i][3]);
-//            LatLng position = new LatLng(pLat, pLng);
-//            int price = Integer.parseInt(All_Parkinglot[i][1]);
-//            String formatted = NumberFormat.getCurrencyInstance().format((price));
-//            MarkerOptions markerOptions = new MarkerOptions();
-//            markerOptions.title(Integer.toString(price));
-//            markerOptions.position(position);
-//            //if (pLat < x1 && pLat > x2 && pLng > y1 && pLng < y2) {
-//               ParkingMark = mMap.addMarker(new MarkerOptions().position(position).title(All_Parkinglot[i][0]));
-//            //}
-//
-//        }
-//    }
-//    public void RemoveMarker(double x1, double x2, double y1, double y2){
-//        for(int i = 0; i < count; i++) {
-//        double pLat = Double.parseDouble(All_Parkinglot[i][2]);
-//        double pLng = Double.parseDouble(All_Parkinglot[i][3]);
-//        if (pLat > x1 || pLat < x2 || pLng < y1 || pLng > y2) {
-//            ParkingMark.remove();
-//        }
-//    }
-//}
-}
+     }

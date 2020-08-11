@@ -1,84 +1,141 @@
 package kr.co.waytech.peterparker.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.app.Fragment;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import kr.co.waytech.peterparker.ParkingItem;
 import kr.co.waytech.peterparker.activity.PostClass;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import kr.co.waytech.peterparker.Data;
+import kr.co.waytech.peterparker.ListData;
+import kr.co.waytech.peterparker.activity.MainActivity;
 import kr.co.waytech.peterparker.MyItem;
+import kr.co.waytech.peterparker.OwnIconRendered;
+import kr.co.waytech.peterparker.activity.PostClass;
 import kr.co.waytech.peterparker.activity.PostClass;
 import kr.co.waytech.peterparker.R;
+import kr.co.waytech.peterparker.RecyclerAdapter;
+import kr.co.waytech.peterparker.ListAdapter;
 
 import android.util.DisplayMetrics;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-
+import java.io.IOException;
 import java.text.NumberFormat;
-
 import java.util.ArrayList;
-
-import kr.co.waytech.peterparker.MarkerItem;
-
-
+import java.util.Arrays;
+import java.util.List;
+import static android.content.Context.INPUT_METHOD_SERVICE;
 import static kr.co.waytech.peterparker.activity.PostClass.All_Parkinglot;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
 
+    private static final String TAG = "googlemap_example";
+    private static final int GPS_ENABLE_REQUEST_CODE = 2001;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2002;
+    private static final int UPDATE_INTERVAL_MS = 1000;  // 1�?
+    private static final int FASTEST_UPDATE_INTERVAL_MS = 500; // 0.5�?
     private static final LatLng ABC = null;
     public static Float ZoomLevel;
     public static int Connect_Flag = 0;
+    public static int count_ranged;
+    public static String[][] Selected_Parking;
     public static final LatLng target = null;
+    public static List<String> listAddress, listContent_Price, listContent_Time;
+    public static List<Integer> listResId;
     Marker selectedMarker;
     View marker_root_view;
     TextView tv_marker;
+
+    public static double mlatitude, mlongitude;
+    public static String ParkingID;
+    public static LinearLayout tab1_layout;
+    public static LinearLayout tab2_layout;
+    public static TextView tab1_text;
+    private ArrayList<ListData> array_parking_lot;
+    private ListView mListView;
     ImageButton search_btn;
     Button filter_btn;
     EditText search_edt;
+    public static MyItem ParkingItem;
     public static double lat, lng;
+    public static int Plus_array;
     public static double x1, y1, x2, y2;
     final PostClass Postc = new PostClass();
+    public static SlidingUpPanelLayout slidingUpPanelLayout;
     String search_result;
     TabLayout tabLayout;
     ViewPager viewPager;
+    private GoogleApiClient mGoogleApiClient;
+    public static List<Address> AddressList;
     public static GoogleMap mMap;
-    private Context homeFragment;
+    private Context mapFragment;
     private MapView mapView = null;
     FrameLayout frameLayout;
     private ClusterManager<MyItem> clusterManager;
-    private ListView mListView;
+    public static Geocoder geocoder;
     TabItem tab1, tab2, tab3;
-    public static ArrayList<MarkerItem> ParkingList;
+    private RecyclerAdapter adapter;
+    private ListAdapter listadapter;
+    private AppCompatActivity mActivity;
+
+
+    LocationRequest locationRequest = new LocationRequest()
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+            .setInterval(UPDATE_INTERVAL_MS)
+            .setFastestInterval(FASTEST_UPDATE_INTERVAL_MS);
 
     public MapFragment() {
 
@@ -88,24 +145,59 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        homeFragment = getActivity();
+        mapFragment = getActivity();
 
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        final View view = inflater.inflate(R.layout.fragment_home, container, false);
         setHasOptionsMenu(true);
-
+        final InputMethodManager imm = (InputMethodManager) mapFragment.getSystemService(INPUT_METHOD_SERVICE);
         mapView = (MapView) view.findViewById(R.id.map);
         mapView.getMapAsync(this);
-
         search_edt = (EditText) view.findViewById(R.id.search_edt);
         search_btn = (ImageButton) view.findViewById(R.id.search_btn);
         filter_btn = (Button) view.findViewById(R.id.filter_btn);
+        tab1_text = (TextView) view.findViewById(R.id.tab1_text);
+        geocoder = new Geocoder(mapFragment);
+
+
+        //String provider = mainActivity.location.getProvider();
+        //mlatitude = mainActivity.location.getLatitude();
+        //mlongitude = mainActivity.location.getLongitude();
+        mlatitude = 37;
+        mlongitude = 128;
+
         search_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                String str = search_edt.getText().toString();
+                AddressList = null;
+
+                try {
+                    AddressList = geocoder.getFromLocationName(str, 10); // 얻어올 값의 개수
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (AddressList != null) {
+                    if (AddressList.size() == 0) {
+                        System.out.println("주소 오류");
+                    } else {
+                        System.out.println(AddressList.get(0).toString());
+                        String[] splitStr = AddressList.get(0).toString().split(",");
+                        String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1, splitStr[0].length() - 2); // 주소
+                        System.out.println(address);
+                        String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
+                        String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
+                        System.out.println(latitude);
+                        System.out.println(longitude);
+                        LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                        Address addr = AddressList.get(0);
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 16));
+                    }
+                }
+                imm.hideSoftInputFromWindow(search_edt.getWindowToken(), 0);
                 //search_result = search_edt.getText().toString();
 
                 ZoomLevel = mMap.getCameraPosition().zoom;
@@ -119,20 +211,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 //                Postc.RemoveMarker(x1, x2, y1, y2);
             }
         });
+
+
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
+        tab1_layout = (LinearLayout) view.findViewById(R.id.tab1_layout);
+        tab2_layout = (LinearLayout) view.findViewById(R.id.tab2_layout);
         frameLayout = (FrameLayout) view.findViewById(R.id.frame_view);
-        //mListView = (ListView)view.findViewById(R.id.listView);
         tabLayout.addTab(tabLayout.newTab().setText("현재 Pick"));
         tabLayout.addTab(tabLayout.newTab().setText("거리순"));
         tabLayout.addTab(tabLayout.newTab().setText("가격순"));
+        slidingUpPanelLayout = (SlidingUpPanelLayout) view.findViewById(R.id.sliding_main);
+        slidingUpPanelLayout.setFadeOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+        });
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int pos = tab.getPosition();
                 if (pos == 0) {
-                    // dataSetting();
-                } else if (pos == 1) {
-                    System.out.println("거리순---------------------------------------------------------");
+                    System.out.println("핀마커---------------------------------------------------------");
                     ZoomLevel = mMap.getCameraPosition().zoom;
                     lat = mMap.getCameraPosition().target.latitude;
                     lng = mMap.getCameraPosition().target.longitude;
@@ -144,6 +244,46 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     y2 = (lng + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     Postc.send_Location(x1, y1, x2, y2);
                     System.out.println(ZoomLevel + " 위치 :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
+                    tab1_layout.setVisibility(View.VISIBLE);
+                    tab2_layout.setVisibility(View.GONE);
+                } else if (pos == 1) {
+
+                    System.out.println("거리순---------------------------------------------------------");
+                    ZoomLevel = mMap.getCameraPosition().zoom;
+                    lat = mlatitude;
+                    lng = mlongitude;
+                    // 줌레벨이 11, 13, 15?��?�� ?��?��
+                    System.out.println("통신---------------------------------------------------------");
+                    x1 = (lat + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
+                    y1 = (lng - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
+                    x2 = (lat - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
+                    y2 = (lng + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
+                    Postc.send_Location(x1, y1, x2, y2);
+                    System.out.println(ZoomLevel + " 위치 :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
+
+
+                    tab1_layout.setVisibility(View.GONE);
+                    tab2_layout.setVisibility(View.GONE);
+                    tab2_layout.setVisibility(View.VISIBLE);
+                    getData_distance();
+                }
+                else if (pos == 2){
+                    System.out.println("가격순---------------------------------------------------------");
+                    ZoomLevel = mMap.getCameraPosition().zoom;
+                    lat = mlatitude;
+                    lng = mlongitude;
+                    // 줌레벨이 11, 13, 15?��?�� ?��?��
+                    System.out.println("통신---------------------------------------------------------");
+                    x1 = (lat + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
+                    y1 = (lng - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
+                    x2 = (lat - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
+                    y2 = (lng + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
+                    Postc.send_Location(x1, y1, x2, y2);
+                    System.out.println(ZoomLevel + " 위치 :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
+                    tab1_layout.setVisibility(View.GONE);
+                    tab2_layout.setVisibility(View.GONE);
+                    tab2_layout.setVisibility(View.VISIBLE);
+                    getData_Price();
                 }
             }
 
@@ -159,6 +299,163 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         });
         return view;
     }
+
+    /*  주소변환 코드
+        for(int b = 0; b < Postc.count; b++) {
+            List<Address> Adlist = null;
+            try {
+
+                double d1 = Double.parseDouble(All_Parkinglot[b][2]);
+                double d2 = Double.parseDouble(All_Parkinglot[b][3]);
+                Adlist = geocoder.getFromLocation(
+                        d1,
+                        d2,
+                        5);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (Adlist != null) {
+                if (Adlist.size()==0) {
+
+                } else {
+                    String[] splitStr = Adlist.get(0).toString().split(",");
+                    String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1, splitStr[0].length() - 2); // 주소
+                    System.out.println("주소 : "+ address);
+                }
+            }
+                    }
+
+
+         */
+    private void getData_pick(String Address, int Price, double distance) {
+        List<String> listAddress = Arrays.asList(Address);
+        List<String> listContent_Price = Arrays.asList("주차요금 : " + "시간당 " +Price + "원");
+        List<String> listContent_Time = Arrays.asList("운영시간 :00:00 ~ 12:00");
+        List<String> listContent_Distance = Arrays.asList((int)distance + "m");
+        List<Integer> listResId = Arrays.asList(R.drawable.parkinglot1);
+        for (int i = 0; i < listAddress.size(); i++) {
+            Data data = new Data();
+            data.setAddress(listAddress.get(i));
+            data.setContent_Price(listContent_Price.get(i));
+            data.setContent_time(listContent_Time.get(i));
+            data.setResId(listResId.get(i));
+            data.setDistance(listContent_Distance.get(i));
+            adapter.addItem(data);
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    private void getData_distance() {
+        mListView = (ListView) getView().findViewById(R.id.list_parkinglot);
+        listadapter = new ListAdapter();
+        mListView.setAdapter(listadapter);
+        count_ranged = 0;
+        Plus_array = 0;
+        for(int i = 0; i < All_Parkinglot.length; i++) {
+            if ((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]))) < 6000) {
+                count_ranged++;
+            }
+        }
+        Selected_Parking = new String[count_ranged][4];
+        for(int i = 0; i < All_Parkinglot.length; i++) {
+            if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]))) < 6000) {
+                count_ranged++;
+                Selected_Parking[Plus_array][0] = getAddress(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]));
+                Selected_Parking[Plus_array][1] = All_Parkinglot[i][1];
+                Selected_Parking[Plus_array][2] = All_Parkinglot[i][2];
+                Selected_Parking[Plus_array][3] = All_Parkinglot[i][3];
+                Plus_array++;
+            }
+        }
+        for (int i = 0; i < Selected_Parking.length; i++) {
+            for (int j = i + 1; j < Selected_Parking.length; j++) {
+                if ((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3])))
+                        > (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[j][2]), Double.parseDouble(Selected_Parking[j][3])))) {
+                    String tempdis = Selected_Parking[i][0];
+                    String tempprice = Selected_Parking[i][1];
+                    String templat = Selected_Parking[i][2];
+                    String templng = Selected_Parking[i][3];
+                    Selected_Parking[i][0] = Selected_Parking[j][0];
+                    Selected_Parking[i][1] = Selected_Parking[j][1];
+                    Selected_Parking[i][2] = Selected_Parking[j][2];
+                    Selected_Parking[i][3] = Selected_Parking[j][3];
+                    Selected_Parking[j][0] = tempdis;
+                    Selected_Parking[j][1] = tempprice;
+                    Selected_Parking[j][2] = templat;
+                    Selected_Parking[j][3] = templng;
+                }
+            }
+        }
+
+        for(int i = 0; i < Selected_Parking.length; i++) {
+            if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) < 6000) {
+                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1] + " 원", (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m");
+
+               System.out.println(Selected_Parking[i][0] + ", " + Selected_Parking[i][1] + " 원"+ ", " + Selected_Parking[i][2]+ ", " +Selected_Parking[i][3]);
+            }
+        }
+    }
+
+    private void getData_Price() {
+        mListView = (ListView) getView().findViewById(R.id.list_parkinglot);
+        listadapter = new ListAdapter();
+        mListView.setAdapter(listadapter);
+        count_ranged = 0;
+        Plus_array = 0;
+        for(int i = 0; i < All_Parkinglot.length; i++) {
+            if ((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]))) < 6000) {
+                count_ranged++;
+            }
+        }
+        Selected_Parking = new String[count_ranged][4];
+        for(int i = 0; i < All_Parkinglot.length; i++) {
+            if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]))) < 6000) {
+                count_ranged++;
+                Selected_Parking[Plus_array][0] = getAddress(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]));
+                Selected_Parking[Plus_array][1] = All_Parkinglot[i][1];
+                Selected_Parking[Plus_array][2] = All_Parkinglot[i][2];
+                Selected_Parking[Plus_array][3] = All_Parkinglot[i][3];
+                Plus_array++;
+            }
+        }
+        for (int i = 0; i < Selected_Parking.length; i++) {
+            for (int j = i + 1; j < Selected_Parking.length; j++) {
+                if (Integer.parseInt(Selected_Parking[i][1]) > Integer.parseInt(Selected_Parking[j][1])) {
+                    String tempdis = Selected_Parking[i][0];
+                    String tempprice = Selected_Parking[i][1];
+                    String templat = Selected_Parking[i][2];
+                    String templng = Selected_Parking[i][3];
+                    Selected_Parking[i][0] = Selected_Parking[j][0];
+                    Selected_Parking[i][1] = Selected_Parking[j][1];
+                    Selected_Parking[i][2] = Selected_Parking[j][2];
+                    Selected_Parking[i][3] = Selected_Parking[j][3];
+                    Selected_Parking[j][0] = tempdis;
+                    Selected_Parking[j][1] = tempprice;
+                    Selected_Parking[j][2] = templat;
+                    Selected_Parking[j][3] = templng;
+                }
+            }
+        }
+
+        for(int i = 0; i < Selected_Parking.length; i++) {
+            if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) < 6000) {
+                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1] + " 원", (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m");
+
+                System.out.println(Selected_Parking[i][0] + ", " + Selected_Parking[i][1] + " 원"+ ", " + Selected_Parking[i][2]+ ", " +Selected_Parking[i][3]);
+            }
+        }
+    }
+
+    private void init() {
+        RecyclerView recyclerView = getView().findViewById(R.id.recyclerview_main_list);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mapFragment);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        adapter = new RecyclerAdapter();
+        recyclerView.setAdapter(adapter);
+    }
+
 
     @Override
     public void onStart() {
@@ -181,6 +478,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     @Override
     public void onResume() {
         super.onResume();
+
         mapView.onResume();
     }
 
@@ -206,47 +504,97 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //액티비티가 처음 생성될 때 실행되는 함수
-
         if (mapView != null) {
             mapView.onCreate(savedInstanceState);
         }
     }
 
-
+    public String getAddress(double lat, double lng){
+        List<Address> Adlist = null;
+        try {
+            Adlist = geocoder.getFromLocation(
+                    lat,
+                    lng,
+                    1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (Adlist != null) {
+            if (Adlist.size()==0) {
+                return null;
+            } else {
+                String[] splitStr = Adlist.get(0).toString().split(",");
+                String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1, splitStr[0].length() - 2); // 주소
+                return address;
+            }
+        }
+        return null;
+    }
     @Override
-    public void onMapReady(final GoogleMap googleMap) {
+    public void onMapReady(GoogleMap googleMap) {
         LatLng ABC = new LatLng(37.340917, 126.7336682);
-        double ABC_LAT = 37.339917;
-        double ABC_LNG = 126.7336682;
         mMap = googleMap;
-        mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(this);
-        setCustomMarkerView();
         mMap.setMinZoomPreference((float) 7.5);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ABC, 14.0f));
-        clusterManager = new ClusterManager<>(homeFragment, mMap);
+        clusterManager = new ClusterManager<>(mapFragment, mMap);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
                 LatLng latLng = new LatLng(37.340917, 126.7336682);
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-                getMarkerItems();
+
             }
         });
+        clusterManager.setRenderer(new OwnIconRendered(mapFragment.getApplicationContext(), mMap, clusterManager));
+        clusterManager.setAnimation(true);
         mMap.setOnCameraIdleListener(clusterManager);
-        mMap.setOnMarkerClickListener(clusterManager);
         for (int i = 0; i < Postc.count; i++) {
             MyItem ParkingItem = new MyItem(All_Parkinglot[i][2], All_Parkinglot[i][3], All_Parkinglot[i][0], All_Parkinglot[i][1]);
             clusterManager.addItem(ParkingItem);
         }
-/*
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+        clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MyItem>() {
+            @Override
+            public boolean onClusterItemClick(MyItem item) {
+                LatLng latLng = new LatLng(item.getPosition().latitude, item.getPosition().longitude);
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                tab1_layout.setVisibility(View.VISIBLE);
+                tab1_text.setVisibility(View.GONE);
+                ParkingID = MyItem.returnID();
+                final String ssid = item.getTitle();
+                System.out.println(ssid);
+                System.out.println("주소 : "+ getAddress(item.getPosition().latitude, item.getPosition().longitude));
+                init();
+                getData_pick(getAddress(item.getPosition().latitude, item.getPosition().longitude),
+                        item.getPrice(), getDistance(mlatitude, mlongitude, item.getPosition()));
+                return false;
+            }
+        });
+         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+            }
+        });
 
-
-        });// 마커 클릭 시 Alert Dialog가 나오도록 설정 } // 구글맵 사용
- */
+        clusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<MyItem>() {
+            @Override
+            public boolean onClusterClick(Cluster<MyItem> cluster) {
+                LatLngBounds.Builder builder_c = LatLngBounds.builder();
+                for (ClusterItem item : cluster.getItems()) {
+                    builder_c.include(item.getPosition());
+                }
+                LatLngBounds bounds_c = builder_c.build();
+                float zoom = mMap.getCameraPosition().zoom - 0.5f;
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(zoom));
+                LatLng latLng = new LatLng(cluster.getPosition().latitude, cluster.getPosition().longitude);
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                //mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                return false;
+            }
+        });
 
         /*
         ClusterManager<ClusterItem> clusterManager = new ClusterManager<>(homeFragment, mMap);
@@ -264,23 +612,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
             }
         });
-
-        /*
-        mMap.setOnMarkerClickListener(clusterManager);
-        clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<ClusterItem>() {
-            @Override
-            public boolean onClusterItemClick(ClusterItem item) {
-                return false;
-            }
-        });
-         */
     }
 
     public boolean setConnectBool() {
         if ((ZoomLevel >= 10.8000 && ZoomLevel <= 11.2000) || (ZoomLevel >= 12.8000 && ZoomLevel <= 13.2000) || (ZoomLevel >= 14.8000 && ZoomLevel <= 15.2000)) {
             Connect_Flag++;
             return true;
-            // 통신 시작
+            // ?��?�� ?��?��
 
         } else {
             Connect_Flag = 0;
@@ -288,95 +626,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
     }
 
-    private void setCustomMarkerView() {
-        marker_root_view = LayoutInflater.from(homeFragment).inflate(R.layout.marker_layout, null);
-        tv_marker = (TextView) marker_root_view.findViewById(R.id.tv_marker);
-    }
-
-    public void getMarkerItems() {
-        try {
-            ArrayList<MarkerItem> ParkingList = new ArrayList();
-            for (int i = 0; i < Postc.count; i++) {
-                ParkingList.add(new MarkerItem(Postc.ParkingLat[i], Postc.ParkingLng[i], Postc.ParkingPrice[i]));
-                System.out.println("핑" + Postc.ParkingLat[i] + ", " + Postc.ParkingLng[i]);
-            }
-            for (MarkerItem markerItem : ParkingList) {
-                //addMarker(markerItem, false);
-            }
-            // ArrayList<MarkerItem> ParkingList = new ArrayList();
-
-            for (MarkerItem markerItem : ParkingList) {
-                // addMarker(markerItem, false);
-            }
-        } catch (Exception e) {
-            System.out.println("리스트 추가 오류");
-        }
-    }
-
-
-    private Bitmap createDrawableFromView(Context context, View view) {
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        view.measure(displayMetrics.widthPixels, displayMetrics.heightPixels);
-        view.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels);
-        view.buildDrawingCache();
-        Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(bitmap);
-        view.draw(canvas);
-
-        return bitmap;
-    }
 
     @Override
     public void onMapClick(LatLng latLng) {
 
+        tab1_text.setVisibility(View.VISIBLE);
+    }
+    public double getDistance(double mlat, double mlng , LatLng LatLng2) {
+        double distance = 0;
+        Location locationA = new Location("User");
+        locationA.setLatitude(mlat);
+        locationA.setLongitude(mlng);
+        Location locationB = new Location("Parkinglot");
+        locationB.setLatitude(LatLng2.latitude);
+        locationB.setLongitude(LatLng2.longitude);
+        distance = locationA.distanceTo(locationB);
+
+        return distance;
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
         return false;
     }
-    /*
-    private Marker addMarker(Marker marker, boolean isSelectedMarker) {
-        double lat = marker.getPosition().latitude;
-        double lon = marker.getPosition().longitude;
-        int price = Integer.parseInt(marker.getTitle());
-        MarkerItem temp = new MarkerItem(lat, lon, price);
-        return addMarker(temp, isSelectedMarker);
-
+    public LatLng latlngConv(double a, double b){
+        LatLng newLatlng = new LatLng(a, b);
+        return newLatlng;
     }
-     */
-    /*
-    private void changeSelectedMarker(Marker marker) {
-        // 선택했던 마커 되돌리기
-        if (selectedMarker != null) {
-            addMarker(selectedMarker, false);
-            selectedMarker.remove();
-        }
-
-        // 선택한 마커 표시
-        if (marker != null) {
-            selectedMarker = addMarker(marker, true);
-            marker.remove();
-        }
-
-
-    }
-
-     */
-    /*
-    @Override
-    public void onMapClick(LatLng latLng) {
-        changeSelectedMarker(null);
-    }
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        return false;
-    }
-*/
 
 }
