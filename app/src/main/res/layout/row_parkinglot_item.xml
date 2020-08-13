@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="176dp"
         android:layout_gravity="center"
-        android:layout_marginHorizontal="10dp"
+        android:layout_marginHorizontal="8dp"
         android:layout_marginTop="8dp"
         app:cardCornerRadius="7dp"
         app:cardElevation="0dp">
@@ -22,10 +22,10 @@
             app:cardCornerRadius="7dp"
             app:cardElevation="0dp"
             android:layout_marginVertical="8dp"
-            android:layout_marginLeft="8dp">
+            android:layout_marginLeft="10dp">
 
             <ImageView
-                android:id="@+id/parkinglotImage"
+                android:id="@+id/Parking_parkinglotImage"
                 android:layout_width="140dp"
                 android:layout_height="120dp"
                 android:adjustViewBounds="true"
@@ -46,23 +46,14 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/parkinglotName"
-                    android:layout_width="170dp"
+                    android:id="@+id/Parking_parkinglotName"
+                    android:layout_width="230dp"
                     android:layout_height="wrap_content"
                     android:text="주차장 이름"
                     android:fontFamily="@font/notosans_regular"
                     android:textColor="#000000"
-                    android:textSize="16sp" />
+                    android:textSize="15sp" />
 
-                <TextView
-                    android:id="@+id/status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="사용예정"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="@android:color/holo_red_dark"
-                    android:fontFamily="@font/notosans_regular"
-                    android:textSize="13sp" />
             </LinearLayout>
 
             <View
@@ -88,13 +79,13 @@
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/parkinglotAddress"
+                    android:id="@+id/Parking_parkinglotAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="5dp"
                     android:textFontWeight="100"
-                    android:text="경기도 시흥시 정왕동 2121-1 "
+                    android:text="경기도 시흥시 정왕동 2121-1 \n 한국산업기술대학교 종합관 "
                     android:fontFamily="@font/notosans_regular"
                     android:textColor="#000000"
                     android:textSize="12sp" />
@@ -109,18 +100,18 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="결제 금액"
+                    android:text="가격"
                     android:fontFamily="@font/notosans_regular"
                     android:textColor="#000000"
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/parkinglotPrice"
+                    android:id="@+id/Parking_parkinglotPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="5dp"
-                    android:text="3,000원"
+                    android:text="시간 당 1,000원"
                     android:textFontWeight="100"
                     android:fontFamily="@font/notosans_regular"
                     android:textColor="#000000"
@@ -131,28 +122,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="결제 일자"
-                    android:fontFamily="@font/notosans_regular"
-                    android:textColor="#000000"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/parkinglotSchedule"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="5dp"
-                    android:text="2020년 07월 22일(수) 12:00\n~ 2020년 07월 22일(월) 14:00"
-                    android:fontFamily="@font/notosans_regular"
-                    android:textColor="#000000"
-                    android:textSize="12sp" />
-
-            </LinearLayout>
+                android:layout_marginTop="3dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -162,25 +132,27 @@
             android:layout_gravity="center_horizontal">
 
             <Button
-                android:id="@+id/btn_check_in"
+                android:id="@+id/btn_setting_sharetime"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="183dp"
                 android:layout_height="32dp"
                 android:background="@drawable/btn_orange"
+                android:paddingTop="-5dp"
                 android:fontFamily="@font/notosans_regular"
-                android:text="입차"
+                android:text="공유 시간 설정"
                 android:textColor="@android:color/white"
                 android:textSize="13sp" />
 
             <Button
+                android:id="@+id/btn_edit_info"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="183dp"
                 android:layout_height="32dp"
                 android:layout_marginLeft="10dp"
-
+                android:paddingTop="-5dp"
                 android:background="@drawable/btn_orange_stroke"
                 android:fontFamily="@font/notosans_regular"
-                android:text="예약 취소"
+                android:text="정보 수정"
                 android:textColor="@color/colorTintOrange"
                 android:textSize="13sp" />
 

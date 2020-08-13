@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null) {
             // Device doesn't support Bluetooth
+            Toast.makeText(this, "앱의 정상적인 작동을 위해서는 블루투스 권한이 필수적입니다.", Toast.LENGTH_SHORT).show();
         }
 
         if (!bluetoothAdapter.isEnabled()) {
