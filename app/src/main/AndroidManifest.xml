@@ -47,6 +47,8 @@
         <activity android:name=".activity.LoginActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
+        <activity android:name=".activity.BookingActivity"/>
+        <activity android:name=".activity.CalendarActivity"/>
         <activity android:name=".activity.FineIDActivity"
             android:theme="@style/ActionBarTheme">
         </activity>

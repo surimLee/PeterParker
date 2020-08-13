@@ -38,7 +38,7 @@ public class PostClass {
     public static Integer Count_Parkinglot;
     public static int[] ParkingPrice;
     public static double[] ParkingLat, ParkingLng;
-    public static String[] split_location;
+    public static String[] split_location, Parking_phone;
     public static String[][] All_Parkinglot;
     public static int b = 7;
     static File tempSelectFile;
@@ -133,7 +133,7 @@ public class PostClass {
             }
         }.start();
     }
-    public void send_Location(final double x1, final double y1, final double x2, final double y2){
+    public void send_Location(final String id){
         new Thread() {
             public void run() {
                 Bundle bun = new Bundle();
@@ -141,7 +141,7 @@ public class PostClass {
                 msg.setData(bun);
                 handler.sendMessage(msg);
                 try {
-                    Get_Location(x1, y1, x2, y2);
+                    Get_Location(id);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -283,11 +283,11 @@ public class PostClass {
         System.out.println("Response Body is " + response.body().string());
 
     }
-    public void Get_Location(double x1, double y1, double x2, double y2) throws IOException {
+    public void Get_Location(String id) throws IOException {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/parking-lot/"+ x1 +"-"+ y1 +"-"+ x2 + "-" + y2)
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/"+ id)
                 .method("GET", null)
                 .build();
         Response response = client.newCall(request).execute();
@@ -302,7 +302,7 @@ public class PostClass {
         String[] count_parkinglot = split_locationcount[0].split(":");
         Count_Parkinglot = new Integer(Integer.parseInt(count_parkinglot[1]));
         count = Count_Parkinglot.intValue();
-        String[][] dataArray = new String[count][11];
+        String[][] dataArray = new String[count][12];
         b = 7;
         for(int countbody = 2; countbody < count + 2; countbody++){
             String[] split_onedata = split_onebody[countbody].split(","); // split_onedata[0] = "parking_lot_id":"0"
@@ -321,6 +321,8 @@ public class PostClass {
             ParkingLng[countbody-2] = Double.parseDouble(dataArray[countbody-2][10]);
             ParkingPrice = new int[count];
             ParkingPrice[countbody-2] = Integer.parseInt(dataArray[countbody-2][4]);
+            Parking_phone = new String[count];
+            Parking_phone[countbody-2] = dataArray[countbody-2][11];
       }
         // ID : 7 , ownerID : 11, Name : 15, Address : 19, Price : 22, Image1 : 25, Image2 : 29, Image3 : 33, Image4 : 37, Lat : 40, Lng : 42
     }
