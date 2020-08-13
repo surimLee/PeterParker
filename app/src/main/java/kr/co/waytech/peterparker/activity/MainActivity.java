@@ -4,46 +4,44 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
 import android.widget.Toolbar;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import kr.co.waytech.peterparker.R;
-import kr.co.waytech.peterparker.adapter.BookingListAdapter;
 import kr.co.waytech.peterparker.fragment.BookingListFragment;
 import kr.co.waytech.peterparker.fragment.MapFragment;
 import kr.co.waytech.peterparker.fragment.ParkingFragment;
 import kr.co.waytech.peterparker.fragment.ProfileFragment;
-import kr.co.waytech.peterparker.model.BookingList;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_LOCATION = 1;
     private static final int REQUEST_ENABLE_BT = 2;
+    public static double mlat, mlon;
+    private static Context context;
+    public static Location location;
 
     private androidx.appcompat.widget.Toolbar toolbar;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        MainActivity.context = getApplicationContext();
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
@@ -72,12 +70,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         boolean permissionAccessCoarseLocationApproved =
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED;
-
         if (permissionAccessCoarseLocationApproved) {
             boolean backgroundLocationPermissionApproved =
-                    ActivityCompat.checkSelfPermission(this,
+                    ActivityCompat.checkSelfPermission(MainActivity.getAppContext(),
                             Manifest.permission.ACCESS_BACKGROUND_LOCATION)
                             == PackageManager.PERMISSION_GRANTED;
 
@@ -85,24 +82,41 @@ public class MainActivity extends AppCompatActivity {
                 // App can access location both in the foreground and in the background.
                 // Start your service that doesn't have a foreground service type
                 // defined.
-
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION},
+                        REQUEST_LOCATION);
+                LocationManager locationManager = (LocationManager) MainActivity.getAppContext().getSystemService(Context.LOCATION_SERVICE);
+                Criteria criteria = new Criteria();
+                location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+                mlat = location.getLatitude();
+                mlon = location.getLongitude();
             } else {
                 // App can only access location in the foreground. Display a dialog
                 // warning the user that your app must have all-the-time access to
                 // location in order to function properly. Then, request background
                 // location.
-                ActivityCompat.requestPermissions(this, new String[] {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{
                                 Manifest.permission.ACCESS_BACKGROUND_LOCATION},
                         REQUEST_LOCATION);
+                LocationManager locationManager = (LocationManager) MainActivity.getAppContext().getSystemService(Context.LOCATION_SERVICE);
+                Criteria criteria = new Criteria();
+                location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+                ActivityCompat.requestPermissions(MainActivity.this, new String[] {
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION},
+                        REQUEST_LOCATION);
+                mlat = location.getLatitude();
+                mlon = location.getLongitude();
             }
         } else {
             // App doesn't have access to the device's location at all. Make full request
             // for permission.
-            ActivityCompat.requestPermissions(this, new String[] {
-                            Manifest.permission.ACCESS_COARSE_LOCATION,
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] {
+                            Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_BACKGROUND_LOCATION
                     },
                     REQUEST_LOCATION);
+            mlat = 37.554575;
+            mlon = 126.971261;
         }
 
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -142,6 +156,10 @@ public class MainActivity extends AppCompatActivity {
         // permissions this app might request.
     }
 
+
+    public static Context getAppContext() {
+        return MainActivity.context;
+    }
 }
 
 

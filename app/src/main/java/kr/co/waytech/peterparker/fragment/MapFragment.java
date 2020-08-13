@@ -8,8 +8,11 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.app.Fragment;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,6 +52,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -78,26 +82,41 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import static android.content.Context.INPUT_METHOD_SERVICE;
+import static kr.co.waytech.peterparker.activity.MainActivity.location;
+import static kr.co.waytech.peterparker.activity.MainActivity.mlat;
+import static kr.co.waytech.peterparker.activity.MainActivity.mlon;
 import static kr.co.waytech.peterparker.activity.PostClass.All_Parkinglot;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
 
-    private static final String TAG = "googlemap_example";
-    private static final int GPS_ENABLE_REQUEST_CODE = 2001;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2002;
-    private static final int UPDATE_INTERVAL_MS = 1000;  // 1�?
-    private static final int FASTEST_UPDATE_INTERVAL_MS = 500; // 0.5�?
     private static final LatLng ABC = null;
     public static Float ZoomLevel;
     public static int Connect_Flag = 0;
     public static int count_ranged;
     public static String[][] Selected_Parking;
+    public static MainActivity mainActivity;
     public static final LatLng target = null;
     public static List<String> listAddress, listContent_Price, listContent_Time;
     public static List<Integer> listResId;
     Marker selectedMarker;
     View marker_root_view;
     TextView tv_marker;
+    private GoogleApiClient mGoogleApiClient = null;
+    private Marker currentMarker = null;
+
+    private static final int GPS_ENABLE_REQUEST_CODE = 2001;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2002;
+    private static final int UPDATE_INTERVAL_MS = 1000;  // 1초
+    private static final int FASTEST_UPDATE_INTERVAL_MS = 500; // 0.5초
+    private static final int REQUEST_LOCATION = 1;
+
+    private AppCompatActivity mActivity;
+    boolean askPermissionOnceAgain = false;
+    boolean mRequestingLocationUpdates = false;
+    Location mCurrentLocatiion;
+    boolean mMoveMapByUser = true;
+    boolean mMoveMapByAPI = true;
+    LatLng currentPosition;
 
     public static double mlatitude, mlongitude;
     public static String ParkingID;
@@ -118,8 +137,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     String search_result;
     TabLayout tabLayout;
     ViewPager viewPager;
-    private GoogleApiClient mGoogleApiClient;
     public static List<Address> AddressList;
+    public static InputMethodManager imm = null;
     public static GoogleMap mMap;
     private Context mapFragment;
     private MapView mapView = null;
@@ -129,7 +148,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     TabItem tab1, tab2, tab3;
     private RecyclerAdapter adapter;
     private ListAdapter listadapter;
-    private AppCompatActivity mActivity;
 
 
     LocationRequest locationRequest = new LocationRequest()
@@ -154,7 +172,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home, container, false);
         setHasOptionsMenu(true);
-        final InputMethodManager imm = (InputMethodManager) mapFragment.getSystemService(INPUT_METHOD_SERVICE);
+        imm = (InputMethodManager) mapFragment.getSystemService(INPUT_METHOD_SERVICE);
         mapView = (MapView) view.findViewById(R.id.map);
         mapView.getMapAsync(this);
         search_edt = (EditText) view.findViewById(R.id.search_edt);
@@ -162,19 +180,40 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         filter_btn = (Button) view.findViewById(R.id.filter_btn);
         tab1_text = (TextView) view.findViewById(R.id.tab1_text);
         geocoder = new Geocoder(mapFragment);
+        /*
+        mainActivity.GetMyLocation();
+        mlatitude = MainActivity.mlat;
+        mlongitude = MainActivity.mlon;
+
+         */
+       // System.out.println("내 위치 :" + mlatitude + ", " + mlongitude);
 
 
         //String provider = mainActivity.location.getProvider();
         //mlatitude = mainActivity.location.getLatitude();
         //mlongitude = mainActivity.location.getLongitude();
-        mlatitude = 37;
-        mlongitude = 128;
+        //mlatitude = 37;
+        //mlongitude = 128;
+        search_edt.setOnClickListener(new View.OnClickListener(){
+
+
+            @Override
+            public void onClick(View view) {
+                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                tab1_layout.setVisibility(View.INVISIBLE);
+                tab2_layout.setVisibility(View.INVISIBLE);
+            }
+        });
 
         search_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String str = search_edt.getText().toString();
                 AddressList = null;
-
+                TabLayout.Tab tab3 = tabLayout.getTabAt(3);
+                if(tab3 != null) {
+                    tabLayout.removeTabAt(3);
+                }
+                tabLayout.addTab(tabLayout.newTab().setText("검색 위치"));
                 try {
                     AddressList = geocoder.getFromLocationName(str, 10); // 얻어올 값의 개수
                 } catch (IOException e) {
@@ -195,11 +234,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                         LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
                         Address addr = AddressList.get(0);
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 16));
+
                     }
                 }
                 imm.hideSoftInputFromWindow(search_edt.getWindowToken(), 0);
                 //search_result = search_edt.getText().toString();
-
+                TabLayout.Tab tab = tabLayout.getTabAt(3);
+                tab.select();
+                tab1_layout.setVisibility(View.GONE);
+                tab2_layout.setVisibility(View.GONE);
+                tab2_layout.setVisibility(View.VISIBLE);
                 ZoomLevel = mMap.getCameraPosition().zoom;
                 lat = mMap.getCameraPosition().target.latitude;
                 lng = mMap.getCameraPosition().target.longitude;
@@ -207,8 +251,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 y1 = (lng - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                 x2 = (lat - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                 y2 = (lng + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-//                Postc.AddMarker(Postc.getcountnumber(), x1, x2, y1, y2);
-//                Postc.RemoveMarker(x1, x2, y1, y2);
+                getData_onCameradistance(lat, lng);
+                slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
             }
         });
 
@@ -232,54 +276,87 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             public void onTabSelected(TabLayout.Tab tab) {
                 int pos = tab.getPosition();
                 if (pos == 0) {
+                    //mainActivity.GetMyLocation();
+                    TabLayout.Tab tab3 = tabLayout.getTabAt(3);
+                    if(tab3 != null) {
+                        tabLayout.removeTabAt(3);
+                    }
+
+                    imm.hideSoftInputFromWindow(search_edt.getWindowToken(), 0);
+                    mlatitude = MainActivity.mlat;
+                    mlongitude = MainActivity.mlon;
                     System.out.println("핀마커---------------------------------------------------------");
                     ZoomLevel = mMap.getCameraPosition().zoom;
                     lat = mMap.getCameraPosition().target.latitude;
                     lng = mMap.getCameraPosition().target.longitude;
+                    /*
                     // 줌레벨이 11, 13, 15일때 통신
                     System.out.println("통신---------------------------------------------------------");
                     x1 = (lat + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     y1 = (lng - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     x2 = (lat - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     y2 = (lng + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    Postc.send_Location(x1, y1, x2, y2);
+                    Postc.send_Location(x1, y1);
                     System.out.println(ZoomLevel + " 위치 :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
+
+                     */
                     tab1_layout.setVisibility(View.VISIBLE);
                     tab2_layout.setVisibility(View.GONE);
                 } else if (pos == 1) {
+                    TabLayout.Tab tab3 = tabLayout.getTabAt(3);
+                    if(tab3 != null) {
+                        tabLayout.removeTabAt(3);
+                    }
 
+                    imm.hideSoftInputFromWindow(search_edt.getWindowToken(), 0);
+                   // mainActivity.GetMyLocation();
+                    mlatitude = MainActivity.mlat;
+                    mlongitude = MainActivity.mlon;
+                    System.out.println("내 위치 :" + mlatitude + ", " + mlongitude);
                     System.out.println("거리순---------------------------------------------------------");
                     ZoomLevel = mMap.getCameraPosition().zoom;
                     lat = mlatitude;
                     lng = mlongitude;
-                    // 줌레벨이 11, 13, 15?��?�� ?��?��
+                    /*
                     System.out.println("통신---------------------------------------------------------");
                     x1 = (lat + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     y1 = (lng - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     x2 = (lat - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     y2 = (lng + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    Postc.send_Location(x1, y1, x2, y2);
+                    Postc.send_Location(x1, y1);
                     System.out.println(ZoomLevel + " 위치 :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
-
-
+                     */
                     tab1_layout.setVisibility(View.GONE);
                     tab2_layout.setVisibility(View.GONE);
                     tab2_layout.setVisibility(View.VISIBLE);
                     getData_distance();
                 }
                 else if (pos == 2){
+                    TabLayout.Tab tab3 = tabLayout.getTabAt(3);
+                    if(tab3 != null) {
+                        tabLayout.removeTabAt(3);
+                    }
+
+                    imm.hideSoftInputFromWindow(search_edt.getWindowToken(), 0);
+                    //mainActivity.GetMyLocation();
+                    mlatitude = MainActivity.mlat;
+                    mlongitude = MainActivity.mlon;
+                    System.out.println("내 위치 :" + mlatitude + ", " + mlongitude);
                     System.out.println("가격순---------------------------------------------------------");
                     ZoomLevel = mMap.getCameraPosition().zoom;
                     lat = mlatitude;
                     lng = mlongitude;
+                    /*
                     // 줌레벨이 11, 13, 15?��?�� ?��?��
                     System.out.println("통신---------------------------------------------------------");
                     x1 = (lat + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     y1 = (lng - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     x2 = (lat - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
                     y2 = (lng + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    Postc.send_Location(x1, y1, x2, y2);
+                    Postc.send_Location(x1, y1);
                     System.out.println(ZoomLevel + " 위치 :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
+
+                     */
                     tab1_layout.setVisibility(View.GONE);
                     tab2_layout.setVisibility(View.GONE);
                     tab2_layout.setVisibility(View.VISIBLE);
@@ -343,6 +420,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             adapter.addItem(data);
         }
         adapter.notifyDataSetChanged();
+
     }
 
     private void getData_distance() {
@@ -352,18 +430,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         count_ranged = 0;
         Plus_array = 0;
         for(int i = 0; i < All_Parkinglot.length; i++) {
-            if ((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]))) < 6000) {
+            if ((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]))) < 4000) {
                 count_ranged++;
             }
         }
-        Selected_Parking = new String[count_ranged][4];
+        Selected_Parking = new String[count_ranged][5];
         for(int i = 0; i < All_Parkinglot.length; i++) {
-            if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]))) < 6000) {
+            if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]))) < 4000) {
                 count_ranged++;
                 Selected_Parking[Plus_array][0] = getAddress(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]));
                 Selected_Parking[Plus_array][1] = All_Parkinglot[i][1];
                 Selected_Parking[Plus_array][2] = All_Parkinglot[i][2];
                 Selected_Parking[Plus_array][3] = All_Parkinglot[i][3];
+                Selected_Parking[Plus_array][4] = All_Parkinglot[i][0];
                 Plus_array++;
             }
         }
@@ -375,26 +454,85 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     String tempprice = Selected_Parking[i][1];
                     String templat = Selected_Parking[i][2];
                     String templng = Selected_Parking[i][3];
+                    String tempid = Selected_Parking[i][4];
                     Selected_Parking[i][0] = Selected_Parking[j][0];
                     Selected_Parking[i][1] = Selected_Parking[j][1];
                     Selected_Parking[i][2] = Selected_Parking[j][2];
                     Selected_Parking[i][3] = Selected_Parking[j][3];
+                    Selected_Parking[i][4] = Selected_Parking[j][4];
                     Selected_Parking[j][0] = tempdis;
                     Selected_Parking[j][1] = tempprice;
                     Selected_Parking[j][2] = templat;
                     Selected_Parking[j][3] = templng;
+                    Selected_Parking[j][4] = tempid;
                 }
             }
         }
 
         for(int i = 0; i < Selected_Parking.length; i++) {
-            if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) < 6000) {
-                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1] + " 원", (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m");
+            if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) < 4000) {
+                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1] + " 원", (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m", Selected_Parking[i][4]);
 
                System.out.println(Selected_Parking[i][0] + ", " + Selected_Parking[i][1] + " 원"+ ", " + Selected_Parking[i][2]+ ", " +Selected_Parking[i][3]);
             }
         }
     }
+
+    private void getData_onCameradistance(double clat, double clon) {
+        mListView = (ListView) getView().findViewById(R.id.list_parkinglot);
+        listadapter = new ListAdapter();
+        mListView.setAdapter(listadapter);
+        count_ranged = 0;
+        Plus_array = 0;
+        for(int i = 0; i < All_Parkinglot.length; i++) {
+            if ((int) getDistance(clat, clon, latlngConv(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]))) < 4000) {
+                count_ranged++;
+            }
+        }
+        Selected_Parking = new String[count_ranged][5];
+        for(int i = 0; i < All_Parkinglot.length; i++) {
+            if((int) getDistance(clat, clon, latlngConv(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]))) < 4000) {
+                count_ranged++;
+                Selected_Parking[Plus_array][0] = getAddress(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]));
+                Selected_Parking[Plus_array][1] = All_Parkinglot[i][1];
+                Selected_Parking[Plus_array][2] = All_Parkinglot[i][2];
+                Selected_Parking[Plus_array][3] = All_Parkinglot[i][3];
+                Selected_Parking[Plus_array][4] = All_Parkinglot[i][0];
+                Plus_array++;
+            }
+        }
+        for (int i = 0; i < Selected_Parking.length; i++) {
+            for (int j = i + 1; j < Selected_Parking.length; j++) {
+                if ((int) getDistance(clat, clon, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3])))
+                        > (int) getDistance(clat, clon, latlngConv(Double.parseDouble(Selected_Parking[j][2]), Double.parseDouble(Selected_Parking[j][3])))) {
+                    String tempdis = Selected_Parking[i][0];
+                    String tempprice = Selected_Parking[i][1];
+                    String templat = Selected_Parking[i][2];
+                    String templng = Selected_Parking[i][3];
+                    String tempid = Selected_Parking[i][4];
+                    Selected_Parking[i][0] = Selected_Parking[j][0];
+                    Selected_Parking[i][1] = Selected_Parking[j][1];
+                    Selected_Parking[i][2] = Selected_Parking[j][2];
+                    Selected_Parking[i][3] = Selected_Parking[j][3];
+                    Selected_Parking[i][4] = Selected_Parking[j][4];
+                    Selected_Parking[j][0] = tempdis;
+                    Selected_Parking[j][1] = tempprice;
+                    Selected_Parking[j][2] = templat;
+                    Selected_Parking[j][3] = templng;
+                    Selected_Parking[j][4] = tempid;
+                }
+            }
+        }
+
+        for(int i = 0; i < Selected_Parking.length; i++) {
+            if((int) getDistance(clat, clon, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) < 4000) {
+                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1] + " 원", (int) getDistance(clat, clon, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m", Selected_Parking[i][4]);
+
+                System.out.println(Selected_Parking[i][0] + ", " + Selected_Parking[i][1] + " 원"+ ", " + Selected_Parking[i][2]+ ", " +Selected_Parking[i][3]);
+            }
+        }
+    }
+
 
     private void getData_Price() {
         mListView = (ListView) getView().findViewById(R.id.list_parkinglot);
@@ -403,18 +541,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         count_ranged = 0;
         Plus_array = 0;
         for(int i = 0; i < All_Parkinglot.length; i++) {
-            if ((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]))) < 6000) {
+            if ((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]))) < 4000) {
                 count_ranged++;
             }
         }
-        Selected_Parking = new String[count_ranged][4];
+        Selected_Parking = new String[count_ranged][5];
         for(int i = 0; i < All_Parkinglot.length; i++) {
-            if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]))) < 6000) {
+            if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]))) < 4000) {
                 count_ranged++;
                 Selected_Parking[Plus_array][0] = getAddress(Double.parseDouble(All_Parkinglot[i][2]), Double.parseDouble(All_Parkinglot[i][3]));
                 Selected_Parking[Plus_array][1] = All_Parkinglot[i][1];
                 Selected_Parking[Plus_array][2] = All_Parkinglot[i][2];
                 Selected_Parking[Plus_array][3] = All_Parkinglot[i][3];
+                Selected_Parking[Plus_array][4] = All_Parkinglot[i][0];
                 Plus_array++;
             }
         }
@@ -425,21 +564,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     String tempprice = Selected_Parking[i][1];
                     String templat = Selected_Parking[i][2];
                     String templng = Selected_Parking[i][3];
+                    String tempid = Selected_Parking[i][4];
                     Selected_Parking[i][0] = Selected_Parking[j][0];
                     Selected_Parking[i][1] = Selected_Parking[j][1];
                     Selected_Parking[i][2] = Selected_Parking[j][2];
                     Selected_Parking[i][3] = Selected_Parking[j][3];
+                    Selected_Parking[i][4] = Selected_Parking[j][4];
                     Selected_Parking[j][0] = tempdis;
                     Selected_Parking[j][1] = tempprice;
                     Selected_Parking[j][2] = templat;
                     Selected_Parking[j][3] = templng;
+                    Selected_Parking[j][4] = tempid;
                 }
             }
         }
 
         for(int i = 0; i < Selected_Parking.length; i++) {
-            if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) < 6000) {
-                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1] + " 원", (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m");
+            if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) < 4000) {
+                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1] + " 원", (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m", Selected_Parking[i][4]);
 
                 System.out.println(Selected_Parking[i][0] + ", " + Selected_Parking[i][1] + " 원"+ ", " + Selected_Parking[i][2]+ ", " +Selected_Parking[i][3]);
             }
@@ -478,8 +620,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     @Override
     public void onResume() {
         super.onResume();
-
-        mapView.onResume();
     }
 
     @Override
@@ -532,13 +672,37 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        LatLng ABC = new LatLng(37.340917, 126.7336682);
         mMap = googleMap;
         mMap.setOnMapClickListener(this);
         mMap.setMinZoomPreference((float) 7.5);
+        enableMyLocationBtn();
+        checkp();
+
+        //mainActivity.GetMyLocation();
+        mlatitude = MainActivity.mlat;
+        mlongitude = MainActivity.mlon;
+        LatLng ABC = new LatLng(mlatitude, mlongitude);
+        System.out.println("내 위치 :" + mlatitude + ", " + mlongitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ABC, 14.0f));
         clusterManager = new ClusterManager<>(mapFragment, mMap);
+
+        //mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener(){
+
+            @Override
+            public boolean onMyLocationButtonClick() {
+                checkp();
+                TabLayout.Tab tab3 = tabLayout.getTabAt(3);
+                if(tab3 != null) {
+                    tabLayout.removeTabAt(3);
+                }
+                LatLng point = new LatLng(mlatitude, mlongitude);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 16));
+                return true;
+            }
+        });
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
@@ -557,10 +721,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         }
         clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MyItem>() {
             @Override
-            public boolean onClusterItemClick(MyItem item) {
+            public boolean onClusterItemClick(MyItem item) {TabLayout.Tab tab3 = tabLayout.getTabAt(3);
+                if(tab3 != null) {
+                    tabLayout.removeTabAt(3);
+                }
+
+                imm.hideSoftInputFromWindow(search_edt.getWindowToken(), 0);
                 LatLng latLng = new LatLng(item.getPosition().latitude, item.getPosition().longitude);
                 mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                //mainActivity.GetMyLocation();
+                mlatitude = MainActivity.mlat;
+                mlongitude = MainActivity.mlon;
+                System.out.println("내 위치 :" + mlatitude + ", " + mlongitude);
                 slidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                TabLayout.Tab tab = tabLayout.getTabAt(0);
+                tab.select();
                 tab1_layout.setVisibility(View.VISIBLE);
                 tab1_text.setVisibility(View.GONE);
                 ParkingID = MyItem.returnID();
@@ -618,7 +793,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         if ((ZoomLevel >= 10.8000 && ZoomLevel <= 11.2000) || (ZoomLevel >= 12.8000 && ZoomLevel <= 13.2000) || (ZoomLevel >= 14.8000 && ZoomLevel <= 15.2000)) {
             Connect_Flag++;
             return true;
-            // ?��?�� ?��?��
 
         } else {
             Connect_Flag = 0;
@@ -629,7 +803,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     @Override
     public void onMapClick(LatLng latLng) {
-
+        imm.hideSoftInputFromWindow(search_edt.getWindowToken(), 0);
         tab1_text.setVisibility(View.VISIBLE);
     }
     public double getDistance(double mlat, double mlng , LatLng LatLng2) {
@@ -653,5 +827,105 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         LatLng newLatlng = new LatLng(a, b);
         return newLatlng;
     }
+    public void onLocationChanged(Location location) {
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        Toast.makeText(mapFragment, "Latitude: " + latitude + "\nLongitude: " + longitude,Toast.LENGTH_LONG ).show();
+    }
+    public void checkp(){
+        boolean permissionAccessCoarseLocationApproved =
+                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED;
+        if (permissionAccessCoarseLocationApproved) {
+            boolean backgroundLocationPermissionApproved =
+                    ActivityCompat.checkSelfPermission(MainActivity.getAppContext(),
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED;
 
+            if (backgroundLocationPermissionApproved) {
+                // App can access location both in the foreground and in the background.
+                // Start your service that doesn't have a foreground service type
+                // defined.
+                ActivityCompat.requestPermissions(getActivity(), new String[]{
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION},
+                        REQUEST_LOCATION);
+                ActivityCompat.requestPermissions(getActivity(), new String[]{
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION},
+                        REQUEST_LOCATION);
+                LocationManager locationManager = (LocationManager) MainActivity.getAppContext().getSystemService(Context.LOCATION_SERVICE);
+                location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+                mlat = location.getLatitude();
+                mlon = location.getLongitude();
+                System.out.println("내 위치 mlat, mlon :" + mlat + ", " + mlon);
+
+            } else {
+                // App can only access location in the foreground. Display a dialog
+                // warning the user that your app must have all-the-time access to
+                // location in order to function properly. Then, request background
+                // location.
+                ActivityCompat.requestPermissions(getActivity(), new String[]{
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION},
+                        REQUEST_LOCATION);
+                ActivityCompat.requestPermissions(getActivity(), new String[]{
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION},
+                        REQUEST_LOCATION);
+                LocationManager locationManager = (LocationManager) MainActivity.getAppContext().getSystemService(Context.LOCATION_SERVICE);
+                location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+                mlat = location.getLatitude();
+                mlon = location.getLongitude();
+                System.out.println("내 위치 mlat, mlon :" + mlat + ", " + mlon);
+
+            }
+        } else {
+            // App doesn't have access to the device's location at all. Make full request
+            // for permission.
+            ActivityCompat.requestPermissions(getActivity(), new String[] {
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                    },
+                    REQUEST_LOCATION);
+        }
+    }
+    public void enableMyLocationBtn(){
+        boolean permissionAccessCoarseLocationApproved =
+                ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED;
+        if (permissionAccessCoarseLocationApproved) {
+            boolean backgroundLocationPermissionApproved =
+                    ActivityCompat.checkSelfPermission(MainActivity.getAppContext(),
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED;
+
+            if (backgroundLocationPermissionApproved) {
+                // App can access location both in the foreground and in the background.
+                // Start your service that doesn't have a foreground service type
+                // defined.
+                ActivityCompat.requestPermissions(getActivity(), new String[]{
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION},
+                        REQUEST_LOCATION);
+                mMap.setMyLocationEnabled(true);
+                System.out.println("로케이션 버튼");
+
+            } else {
+                // App can only access location in the foreground. Display a dialog
+                // warning the user that your app must have all-the-time access to
+                // location in order to function properly. Then, request background
+                // location.
+                ActivityCompat.requestPermissions(getActivity(), new String[]{
+                                Manifest.permission.ACCESS_BACKGROUND_LOCATION},
+                        REQUEST_LOCATION);
+                mMap.setMyLocationEnabled(true);
+                System.out.println("로케이션 버튼");
+
+            }
+        } else {
+            // App doesn't have access to the device's location at all. Make full request
+            // for permission.
+            ActivityCompat.requestPermissions(getActivity(), new String[] {
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                    },
+                    REQUEST_LOCATION);
+        }
+    }
 }
