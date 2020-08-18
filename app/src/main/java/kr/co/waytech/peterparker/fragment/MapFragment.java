@@ -4,9 +4,13 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.app.Fragment;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -14,6 +18,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import kr.co.waytech.peterparker.DownloadImageTask;
 import kr.co.waytech.peterparker.ParkingItem;
 import kr.co.waytech.peterparker.activity.PostClass;
 import androidx.core.content.ContextCompat;
@@ -48,6 +54,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -77,6 +84,9 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -404,22 +414,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
 
          */
-    private void getData_pick(String Address, int Price, double distance) {
-        List<String> listAddress = Arrays.asList(Address);
-        List<String> listContent_Price = Arrays.asList("주차요금 : " + "시간당 " +Price + "원");
-        List<String> listContent_Time = Arrays.asList("운영시간 :00:00 ~ 12:00");
-        List<String> listContent_Distance = Arrays.asList((int)distance + "m");
-        List<Integer> listResId = Arrays.asList(R.drawable.parkinglot1);
-        for (int i = 0; i < listAddress.size(); i++) {
-            Data data = new Data();
-            data.setAddress(listAddress.get(i));
-            data.setContent_Price(listContent_Price.get(i));
-            data.setContent_time(listContent_Time.get(i));
-            data.setResId(listResId.get(i));
-            data.setDistance(listContent_Distance.get(i));
-            adapter.addItem(data);
-        }
-        adapter.notifyDataSetChanged();
+    private void getData_pick(String ID, final String Address, final int Price, final double distance) throws IOException {
+        Postc.send_Location(ID); Handler mHandler = new Handler();
+        mHandler.postDelayed(new Runnable()  {
+            public void run() {
+                List<String> listAddress = Arrays.asList(Address);
+                List<String> listContent_Price = Arrays.asList("주차요금 : " + "시간당 " +Price + "원");
+                List<String> listContent_Time = Arrays.asList("운영시간 :00:00 ~ 12:00");
+                List<String> listContent_Distance = Arrays.asList((int)distance + "m");
+                List<Drawable> listResId = null;
+                try {
+                    listResId = Arrays.asList(drawableFromUrl(Postc.Parking_img[0]));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                for (int i = 0; i < listAddress.size(); i++) {
+                    Data data = new Data();
+                    data.setAddress(listAddress.get(i));
+                    data.setContent_Price(listContent_Price.get(i));
+                    data.setContent_time(listContent_Time.get(i));
+                    data.setResId(listResId.get(i));
+                    data.setDistance(listContent_Distance.get(i));
+                    adapter.addItem(data);
+                }
+                adapter.notifyDataSetChanged();}
+        }, 200);
+
 
     }
 
@@ -743,8 +763,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 System.out.println(ssid);
                 System.out.println("주소 : "+ getAddress(item.getPosition().latitude, item.getPosition().longitude));
                 init();
-                getData_pick(getAddress(item.getPosition().latitude, item.getPosition().longitude),
-                        item.getPrice(), getDistance(mlatitude, mlongitude, item.getPosition()));
+                try {
+                    getData_pick(ssid, getAddress(item.getPosition().latitude, item.getPosition().longitude),
+                            item.getPrice(), getDistance(mlatitude, mlongitude, item.getPosition()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 return false;
             }
         });
@@ -771,16 +795,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             }
         });
 
-        /*
-        ClusterManager<ClusterItem> clusterManager = new ClusterManager<>(homeFragment, mMap);
-        mMap.setOnCameraIdleListener(clusterManager);
-        for(int i = 0; i < 10; i++){
-            double lat = ABC_LAT + (i / 200d);
-            double lng = ABC_LNG + (i / 200d);
-            clusterManager.addItem(new ParkingItem(new LatLng(lat, lng), "Parking" + i));
-        }
-
-         */
         mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
             public void onCameraMove() {
@@ -927,5 +941,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     },
                     REQUEST_LOCATION);
         }
+    }
+    public static Drawable drawableFromUrl(String url) throws IOException {
+        Bitmap x;
+
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.connect();
+        InputStream input = connection.getInputStream();
+
+        x = BitmapFactory.decodeStream(input);
+        return new BitmapDrawable(Resources.getSystem(), x);
     }
 }

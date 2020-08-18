@@ -64,7 +64,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             textView_address = itemView.findViewById(R.id.textView_Address);
             textView_price = itemView.findViewById(R.id.textView_price);
             textView_time = itemView.findViewById(R.id.textView_time);
-            imageView = itemView.findViewById(R.id.imageView);
+            imageView = itemView.findViewById(R.id.picked_imageView);
             textview_distance = itemView.findViewById(R.id.textview_distance);
         }
 
@@ -73,7 +73,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             textView_price.setText(data.getContent_Price());
             textView_time.setText(data.getContent_time());
             textview_distance.setText(data.getDistance());
-            imageView.setImageResource(data.getResId());
+            imageView.setImageDrawable(data.getResId());
         }
     }
 }

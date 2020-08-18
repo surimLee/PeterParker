@@ -1,12 +1,14 @@
 package kr.co.waytech.peterparker;
 
+import android.graphics.drawable.Drawable;
+
 public class Data {
 
     private String Address;
     private String content_Price;
     private String content_time;
     private String Distance;
-    private int resId;
+    private Drawable resId;
 
     public String getAddress() {
         return Address;
@@ -39,11 +41,11 @@ public class Data {
         this.content_Price = content_Price;
     }
 
-    public int getResId() {
+    public Drawable getResId() {
         return resId;
     }
 
-    public void setResId(int resId) {
+    public void setResId(Drawable resId) {
         this.resId = resId;
     }
 }

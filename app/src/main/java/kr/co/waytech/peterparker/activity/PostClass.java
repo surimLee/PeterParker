@@ -38,7 +38,7 @@ public class PostClass {
     public static Integer Count_Parkinglot;
     public static int[] ParkingPrice;
     public static double[] ParkingLat, ParkingLng;
-    public static String[] split_location, Parking_phone;
+    public static String[] Parking_img, Parking_phone;
     public static String[][] All_Parkinglot;
     public static int b = 7;
     static File tempSelectFile;
@@ -294,8 +294,20 @@ public class PostClass {
         body_parkinglot = response.body().string();
         System.out.println("Body is" + body_parkinglot);
         String[] split_locationcount = body_parkinglot.split(",");
-        System.out.println("splited Body is " + split_locationcount[0]);
-
+        String phone_number = split_locationcount[11].split("\"")[3];
+        String Image_1 = split_locationcount[5].split("\"")[3].replace("\\", "");
+        String Image_2 = split_locationcount[6].split("\"")[3].replace("\\", "");
+        String Image_3 = split_locationcount[7].split("\"")[3].replace("\\", "");
+        String Image_4 = split_locationcount[8].split("\"")[3].replace("\\", "");
+        Parking_phone = new String[1];
+        Parking_img = new String[4];
+        Parking_img[0] = Image_1;
+        Parking_img[1] = Image_2;
+        Parking_img[2] = Image_3;
+        Parking_img[3] = Image_4;
+        Parking_phone[0] = phone_number;
+        System.out.println(Parking_phone[0]);
+        /*
         String[] split_onebody = body_parkinglot.split("\\{");
         System.out.println(split_onebody[0]);
         split_location = body_parkinglot.split("\"");
@@ -323,7 +335,11 @@ public class PostClass {
             ParkingPrice[countbody-2] = Integer.parseInt(dataArray[countbody-2][4]);
             Parking_phone = new String[count];
             Parking_phone[countbody-2] = dataArray[countbody-2][11];
+
+
       }
+
+         */
         // ID : 7 , ownerID : 11, Name : 15, Address : 19, Price : 22, Image1 : 25, Image2 : 29, Image3 : 33, Image4 : 37, Lat : 40, Lng : 42
     }
 

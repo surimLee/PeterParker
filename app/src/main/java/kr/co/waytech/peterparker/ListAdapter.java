@@ -45,10 +45,11 @@ import static kr.co.waytech.peterparker.activity.BookingActivity.booking_parking
 public class ListAdapter extends BaseAdapter {
 
     private Context mContext;
-    public static String address, price, distance, phone;
+    public static String address, price, distance, phone, ID;
 
     private ArrayList<ListData> array_parking_lot = new ArrayList<ListData>();
-    private PostClass Postc;
+    final PostClass Postc = new PostClass();
+
 
     public ListAdapter() {
 
@@ -82,7 +83,8 @@ public class ListAdapter extends BaseAdapter {
 
         convertView = inflater.inflate(R.layout.map_list_item,
                 parent, false);
-
+        Postc.send_Location(listViewItem.getId());
+        System.out.println("get id " + listViewItem.getId());
         TextView textView_address = (TextView)convertView.findViewById(R.id.list_text_address);
         TextView textView_price = (TextView) convertView.findViewById(R.id.list_text_price);
 
@@ -91,7 +93,13 @@ public class ListAdapter extends BaseAdapter {
         textView_address.setText(listViewItem.getAddress());
         textView_price.setText(listViewItem.getContent_Price());
         textView_Distance.setText(listViewItem.getDistance());
-        new DownloadImageTask((ImageView)convertView.findViewById(R.id.list_image)).execute("http://blazingcode.asuscomm.com/storage/profile_image/default.png");
+        Handler mHandler = new Handler();
+        final View finalConvertView = convertView;
+        mHandler.postDelayed(new Runnable()  {
+            public void run() {
+                new DownloadImageTask((ImageView) finalConvertView.findViewById(R.id.list_image)).execute(Postc.Parking_img[0]);
+            }
+        }, 200);
         final CardView cmdArea = (CardView)convertView.findViewById(R.id.List_cardview);
         cmdArea.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,6 +110,8 @@ public class ListAdapter extends BaseAdapter {
                 distance = listViewItem.getDistance();
                 System.out.println(address);
                 Postc.send_Location(listViewItem.getId());
+
+                ID = listViewItem.getId();
                 Handler mHandler = new Handler();
                 mHandler.postDelayed(new Runnable()  {
                     public void run() {

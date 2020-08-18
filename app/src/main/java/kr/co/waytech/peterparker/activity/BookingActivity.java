@@ -9,9 +9,12 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import kr.co.waytech.peterparker.BookingImgAdapter;
 import kr.co.waytech.peterparker.R;
 
 import static kr.co.waytech.peterparker.ListAdapter.address;
@@ -40,7 +44,7 @@ public class BookingActivity extends AppCompatActivity {
     public static TextView booking_parking_lot_address, booking_parking_lot_phone, booking_parking_lot_price, booking_parking_lot_distance;
     String textprice, texttime;
     public static Button btnbooking, CalendarBtn;
-
+    ViewPager viewPager;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookinglist);
@@ -52,6 +56,9 @@ public class BookingActivity extends AppCompatActivity {
         booking_parking_lot_phone = findViewById(R.id.booking_parking_lot_phone);
         booking_parking_lot_price = findViewById(R.id.booking_parking_lot_price);
         booking_parking_lot_distance = findViewById(R.id.booking_parking_lot_distance);
+        viewPager = (ViewPager) findViewById(R.id.view);
+        PagerAdapter adapter = new BookingImgAdapter(BookingActivity.this);
+        viewPager.setAdapter(adapter);
 
         booking_parking_lot_address.setText(address);
         booking_parking_lot_price.setText("시간당 " + price);
@@ -180,23 +187,29 @@ public class BookingActivity extends AppCompatActivity {
                         g++;
                     }
 
-                    builder.setTitle("주차장 예약을 하시겠습니까?").setMessage(textprice + "\n" + texttime).setIcon(R.drawable.booking_icon_enable);
-                    builder.setPositiveButton("예약", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            System.out.println("예약함");
-                            //post 함수
-                        }
-                    });
-                    builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            System.out.println("취소함");
-                        }
-                    });
-                    AlertDialog alertDialog = builder.create();
 
-                    alertDialog.show();
+                    if(checkedcount != 0) {
+                        builder.setTitle("주차장 예약을 하시겠습니까?").setMessage(textprice + "\n" + texttime).setIcon(R.drawable.booking_icon_enable);
+                        builder.setPositiveButton("예약", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                System.out.println("예약함");
+                                //post 함수
+                            }
+                        });
+                        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                System.out.println("취소함");
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+
+                        alertDialog.show();
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), "예약 시간을 선택해 주세요.", Toast.LENGTH_LONG).show();
+                    }
                 }
             });
 
