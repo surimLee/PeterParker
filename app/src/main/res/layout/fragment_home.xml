@@ -103,10 +103,13 @@
                     android:layout_height="match_parent"
                     android:text="선택된 주차장이 없습니다시마">
                 </TextView>
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerview_main_list"
+                <ListView
+                    android:id="@+id/picked_parkinglot"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="0dp"
+                    android:scrollbars="vertical" />
 
             </LinearLayout>
             <LinearLayout

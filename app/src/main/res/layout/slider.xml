@@ -12,18 +12,5 @@
         android:layout_height="270dp"
         android:scaleType="fitXY"
         android:adjustViewBounds="true"/>
-
-    <TextView
-        android:id="@+id/booking_img_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="1/2"
-        android:gravity="center"
-        android:textColor="#ffffff"
-        android:layout_alignBottom="@+id/booking_image"
-        android:layout_alignLeft="@+id/booking_image"
-        android:layout_alignRight="@+id/booking_image"
-        android:layout_alignTop="@+id/booking_image"
-        android:layout_marginTop="160dp"/>
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

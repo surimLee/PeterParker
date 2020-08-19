@@ -134,7 +134,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public static LinearLayout tab2_layout;
     public static TextView tab1_text;
     private ArrayList<ListData> array_parking_lot;
-    private ListView mListView;
+    private ListView mListView, mPickedView;
     ImageButton search_btn;
     Button filter_btn;
     EditText search_edt;
@@ -156,7 +156,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private ClusterManager<MyItem> clusterManager;
     public static Geocoder geocoder;
     TabItem tab1, tab2, tab3;
-    private RecyclerAdapter adapter;
+    private RecyclerAdapter recyclerAdapter;
     private ListAdapter listadapter;
 
 
@@ -196,7 +196,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mlongitude = MainActivity.mlon;
 
          */
-       // System.out.println("내 위치 :" + mlatitude + ", " + mlongitude);
+        // System.out.println("내 위치 :" + mlatitude + ", " + mlongitude);
 
 
         //String provider = mainActivity.location.getProvider();
@@ -319,7 +319,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     }
 
                     imm.hideSoftInputFromWindow(search_edt.getWindowToken(), 0);
-                   // mainActivity.GetMyLocation();
+                    // mainActivity.GetMyLocation();
                     mlatitude = MainActivity.mlat;
                     mlongitude = MainActivity.mlon;
                     System.out.println("내 위치 :" + mlatitude + ", " + mlongitude);
@@ -327,15 +327,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     ZoomLevel = mMap.getCameraPosition().zoom;
                     lat = mlatitude;
                     lng = mlongitude;
-                    /*
-                    System.out.println("통신---------------------------------------------------------");
-                    x1 = (lat + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    y1 = (lng - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    x2 = (lat - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    y2 = (lng + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    Postc.send_Location(x1, y1);
-                    System.out.println(ZoomLevel + " 위치 :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
-                     */
                     tab1_layout.setVisibility(View.GONE);
                     tab2_layout.setVisibility(View.GONE);
                     tab2_layout.setVisibility(View.VISIBLE);
@@ -414,32 +405,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
 
          */
-    private void getData_pick(String ID, final String Address, final int Price, final double distance) throws IOException {
-        Postc.send_Location(ID); Handler mHandler = new Handler();
-        mHandler.postDelayed(new Runnable()  {
-            public void run() {
-                List<String> listAddress = Arrays.asList(Address);
-                List<String> listContent_Price = Arrays.asList("주차요금 : " + "시간당 " +Price + "원");
-                List<String> listContent_Time = Arrays.asList("운영시간 :00:00 ~ 12:00");
-                List<String> listContent_Distance = Arrays.asList((int)distance + "m");
-                List<Drawable> listResId = null;
-                try {
-                    listResId = Arrays.asList(drawableFromUrl(Postc.Parking_img[0]));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                for (int i = 0; i < listAddress.size(); i++) {
-                    Data data = new Data();
-                    data.setAddress(listAddress.get(i));
-                    data.setContent_Price(listContent_Price.get(i));
-                    data.setContent_time(listContent_Time.get(i));
-                    data.setResId(listResId.get(i));
-                    data.setDistance(listContent_Distance.get(i));
-                    adapter.addItem(data);
-                }
-                adapter.notifyDataSetChanged();}
-        }, 200);
-
+    private void getData_pick(String ID, String Address, int Price, double distance){
+        mPickedView = (ListView) getView().findViewById(R.id.picked_parkinglot);
+        recyclerAdapter = new RecyclerAdapter();
+        mPickedView.setAdapter(recyclerAdapter);
+        recyclerAdapter.addItem(Address, Integer.toString(Price), (int)distance + "m", ID);
 
     }
 
@@ -491,9 +461,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         for(int i = 0; i < Selected_Parking.length; i++) {
             if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) < 4000) {
-                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1] + " 원", (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m", Selected_Parking[i][4]);
+                listadapter.addItem(Selected_Parking[i][0], "30분당" + Selected_Parking[i][1] + " 원", (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m", Selected_Parking[i][4]);
 
-               System.out.println(Selected_Parking[i][0] + ", " + Selected_Parking[i][1] + " 원"+ ", " + Selected_Parking[i][2]+ ", " +Selected_Parking[i][3]);
+                System.out.println(Selected_Parking[i][0] + ", " + Selected_Parking[i][1] + " 원"+ ", " + Selected_Parking[i][2]+ ", " +Selected_Parking[i][3]);
             }
         }
     }
@@ -606,16 +576,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 System.out.println(Selected_Parking[i][0] + ", " + Selected_Parking[i][1] + " 원"+ ", " + Selected_Parking[i][2]+ ", " +Selected_Parking[i][3]);
             }
         }
-    }
-
-    private void init() {
-        RecyclerView recyclerView = getView().findViewById(R.id.recyclerview_main_list);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mapFragment);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-        adapter = new RecyclerAdapter();
-        recyclerView.setAdapter(adapter);
     }
 
 
@@ -762,17 +722,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 final String ssid = item.getTitle();
                 System.out.println(ssid);
                 System.out.println("주소 : "+ getAddress(item.getPosition().latitude, item.getPosition().longitude));
-                init();
-                try {
-                    getData_pick(ssid, getAddress(item.getPosition().latitude, item.getPosition().longitude),
-                            item.getPrice(), getDistance(mlatitude, mlongitude, item.getPosition()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                getData_pick(ssid, getAddress(item.getPosition().latitude, item.getPosition().longitude),
+                        item.getPrice(), getDistance(mlatitude, mlongitude, item.getPosition()));
                 return false;
             }
         });
-         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
             }
@@ -867,7 +822,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                                 Manifest.permission.ACCESS_BACKGROUND_LOCATION},
                         REQUEST_LOCATION);
                 LocationManager locationManager = (LocationManager) MainActivity.getAppContext().getSystemService(Context.LOCATION_SERVICE);
-                location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+                String locationProvider = LocationManager.NETWORK_PROVIDER;
+                location = locationManager.getLastKnownLocation(locationProvider);
                 mlat = location.getLatitude();
                 mlon = location.getLongitude();
                 System.out.println("내 위치 mlat, mlon :" + mlat + ", " + mlon);

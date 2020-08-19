@@ -87,8 +87,8 @@ public class MainActivity extends AppCompatActivity {
                                 Manifest.permission.ACCESS_BACKGROUND_LOCATION},
                         REQUEST_LOCATION);
                 LocationManager locationManager = (LocationManager) MainActivity.getAppContext().getSystemService(Context.LOCATION_SERVICE);
-                Criteria criteria = new Criteria();
-                location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+                String locationProvider = LocationManager.NETWORK_PROVIDER;
+                location = locationManager.getLastKnownLocation(locationProvider);
                 mlat = location.getLatitude();
                 mlon = location.getLongitude();
             } else {
@@ -100,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
                                 Manifest.permission.ACCESS_BACKGROUND_LOCATION},
                         REQUEST_LOCATION);
                 LocationManager locationManager = (LocationManager) MainActivity.getAppContext().getSystemService(Context.LOCATION_SERVICE);
-                Criteria criteria = new Criteria();
-                location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+                String locationProvider = LocationManager.NETWORK_PROVIDER;
+                location = locationManager.getLastKnownLocation(locationProvider);
                 ActivityCompat.requestPermissions(MainActivity.this, new String[] {
                                 Manifest.permission.ACCESS_BACKGROUND_LOCATION},
                         REQUEST_LOCATION);

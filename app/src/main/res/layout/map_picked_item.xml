@@ -7,22 +7,22 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/tools">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/picked_imageView"
-                android:layout_width="match_parent"
-                android:scaleType="fitXY"
-                android:layout_height="200dp"
-                android:layout_gravity="center" />
+        <ImageView
+            android:id="@+id/picked_imageView"
+            android:layout_width="match_parent"
+            android:scaleType="fitXY"
+            android:layout_height="220dp"
+            android:layout_gravity="center" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
             <TextView
                 android:id="@+id/textView_Address"
                 android:layout_width="wrap_content"
@@ -31,43 +31,61 @@
                 android:textSize="15dp"
                 android:text="경기도 시흥시 정왕동 산기대학로 237"
                 android:textStyle="bold"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
                 android:layout_gravity="center"
                 android:src="@drawable/list_pin_marker_black">
             </ImageView>
-
             <TextView
                 android:id="@+id/textview_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:gravity="center"
                 android:text="100m"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
-        </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:id="@+id/textView_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textSize="15dp"
-                    android:text="주차요금  1시간  3000원"
-                    android:textStyle="bold"/>
-                <TextView
-                    android:id="@+id/textView_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textSize="15dp"
-                    android:text="운영시간  08:00 ~ 20:00"
-                    android:textStyle="bold"/>
             </LinearLayout>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/textView_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="15dp"
+                android:text="주차요금  1시간  3000원"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/textView_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:textSize="15dp"
+                android:text="운영시간  08:00 ~ 20:00"
+                android:textStyle="bold"/>
+        </LinearLayout>
+        <Button
+            android:id="@+id/picked_Btn"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="5dp"
+            android:background="@drawable/btn_orange"
+            android:textColor="@android:color/white"
+            android:fontFamily="@font/nanumgothicbold"
+            android:text="예약"
+            style="?android:attr/borderlessButtonStyle"
+            android:textSize="15sp"
+            android:layout_gravity="center">
+
+        </Button>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

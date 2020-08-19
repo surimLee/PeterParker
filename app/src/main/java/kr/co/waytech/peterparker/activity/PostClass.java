@@ -30,7 +30,7 @@ import okhttp3.Response;
 
 public class PostClass {
     public static int imgcount = 1;
-    protected static String realtoken;
+    protected static String realtoken, bookingbody;
     String status = "none";
     int Thread_Status = 3 ;
     int Login_Status = 3;
@@ -148,6 +148,23 @@ public class PostClass {
             }
         }.start();
     }
+    public void send_booking(final String syear, final String smonth, final String sday, final String shour, final String smin, final String eyear, final String emonth, final String eday
+            , final String ehour, final String emin, final String ID, final String token){
+        new Thread() {
+            public void run() {
+                Bundle bun = new Bundle();
+                Message msg = handler.obtainMessage();
+                msg.setData(bun);
+                handler.sendMessage(msg);
+                try {
+                    post_booking(syear, smonth, sday, shour, smin, eyear, emonth, eday, ehour, emin, ID, token);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
     private void Post_Login(String ID, String Password) throws IOException{
             OkHttpClient client = new OkHttpClient().newBuilder().build();
             MediaType mediaType = MediaType.parse("text/plain");
@@ -295,6 +312,7 @@ public class PostClass {
         System.out.println("Body is" + body_parkinglot);
         String[] split_locationcount = body_parkinglot.split(",");
         String phone_number = split_locationcount[11].split("\"")[3];
+        System.out.println("phone : " + phone_number);
         String Image_1 = split_locationcount[5].split("\"")[3].replace("\\", "");
         String Image_2 = split_locationcount[6].split("\"")[3].replace("\\", "");
         String Image_3 = split_locationcount[7].split("\"")[3].replace("\\", "");
@@ -384,6 +402,33 @@ public class PostClass {
             System.out.println("전체 데이터 수신/스플릿 오류");
         }
 
+    }
+    public void post_booking(String syear, String smonth, String sday, String shour, String smin, String eyear, String emonth, String eday
+    , String ehour, String emin, String ID, String token) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("start_year", syear)
+                .addFormDataPart("start_month", smonth)
+                .addFormDataPart("start_day", sday)
+                .addFormDataPart("start_hour", shour)
+                .addFormDataPart("start_min", smin)
+                .addFormDataPart("end_year", eyear)
+                .addFormDataPart("end_month", emonth)
+                .addFormDataPart("end_day", eday)
+                .addFormDataPart("end_hour", ehour)
+                .addFormDataPart("end_min", emin)
+                .addFormDataPart("parking_lot_id", ID)
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/booking")
+                .method("POST", body)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+        Response response = client.newCall(request).execute();
+        bookingbody = response.toString();
+        System.out.println(bookingbody);
     }
     public int getcountnumber(){
         return count;

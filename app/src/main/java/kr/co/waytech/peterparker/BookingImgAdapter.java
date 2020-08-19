@@ -49,10 +49,10 @@ public class BookingImgAdapter  extends PagerAdapter {
         inflater = (LayoutInflater)context.getSystemService
                 (Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.slider, container, false);
-        Postc.send_Location(ListAdapter.ID);
+        //Postc.send_Location(ListAdapter.ID);
         String drawableRes= Postc.Parking_img[position];
         System.out.println(Postc.Parking_img[position]);
-        TextView textView = (TextView)v.findViewById(R.id.booking_img_text);
+        //TextView textView = (TextView)v.findViewById(R.id.booking_img_text);
         View viewItem = inflater.inflate(R.layout.activity_bookinglist, container, false);
         ImageView imageView = (ImageView) viewItem.findViewById(R.id.booking_image);
         if(drawableRes == "null") {

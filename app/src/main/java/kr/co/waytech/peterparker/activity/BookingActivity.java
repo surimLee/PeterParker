@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,10 +27,12 @@ import java.util.Date;
 import kr.co.waytech.peterparker.BookingImgAdapter;
 import kr.co.waytech.peterparker.R;
 
+import static kr.co.waytech.peterparker.ListAdapter.ID;
 import static kr.co.waytech.peterparker.ListAdapter.address;
 import static kr.co.waytech.peterparker.ListAdapter.phone;
 import static kr.co.waytech.peterparker.ListAdapter.price;
 import static kr.co.waytech.peterparker.ListAdapter.distance;
+import static kr.co.waytech.peterparker.activity.ConfirmActivity.onetime;
 
 public class BookingActivity extends AppCompatActivity {
     public static int count;
@@ -42,7 +45,8 @@ public class BookingActivity extends AppCompatActivity {
     public static ArrayList<TextView> textviewArrayList;
     public static double checkedcount;
     public static TextView booking_parking_lot_address, booking_parking_lot_phone, booking_parking_lot_price, booking_parking_lot_distance;
-    String textprice, texttime;
+    public static String textprice, texttime;
+    public static String starttime, endtime, parking_ID;
     public static Button btnbooking, CalendarBtn;
     ViewPager viewPager;
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +60,13 @@ public class BookingActivity extends AppCompatActivity {
         booking_parking_lot_phone = findViewById(R.id.booking_parking_lot_phone);
         booking_parking_lot_price = findViewById(R.id.booking_parking_lot_price);
         booking_parking_lot_distance = findViewById(R.id.booking_parking_lot_distance);
+        ImageButton booking_act_back_btn = findViewById(R.id.booking_act_back_btn);
         viewPager = (ViewPager) findViewById(R.id.view);
         PagerAdapter adapter = new BookingImgAdapter(BookingActivity.this);
         viewPager.setAdapter(adapter);
-
+        parking_ID = ID;
         booking_parking_lot_address.setText(address);
-        booking_parking_lot_price.setText("시간당 " + price);
+        booking_parking_lot_price.setText("30분당 " + price + "원");
         booking_parking_lot_distance.setText(distance);
         booking_parking_lot_phone.setText(phone);
         CalendarBtn.setText(formatDate);
@@ -88,7 +93,6 @@ public class BookingActivity extends AppCompatActivity {
                         if (bool == true) {
                             compoundButton.setButtonDrawable(R.drawable.ic_booking_time_enable);
                             textviewArrayList.get(a).setTextColor(Color.parseColor("#ffffff"));
-                            selectcount++;
                             for (int b = 0; b < checkBoxArrayList.size(); b++) {
                                 if (checkBoxArrayList.get(a).isChecked() && checkBoxArrayList.get(b).isChecked()) {
                                     if (b > a) {
@@ -150,17 +154,30 @@ public class BookingActivity extends AppCompatActivity {
             btnbooking.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(BookingActivity.this);
+
                     checkedcount = 0;
-                    int g;
+                    int g = 0;
+
+                    while(g < checkBoxArrayList.size()){
+                        if (checkBoxArrayList.get(g).isChecked()) {
+                            if(checkedcount == 0){
+                                starttime = (String)textviewArrayList.get(g).getText();
+                            }
+                            checkedcount++;
+                        }
+                        g++;
+                    }
+                    System.out.println(starttime);
+                    System.out.println(checkedcount);
+                    /*
                     for (g = 0; g < checkBoxArrayList.size(); g++) {
                         if (checkBoxArrayList.get(g).isChecked()) {
                             checkedcount++;
-                            textprice = ("결제 금액 : " + (int) (3000 * (checkedcount / 2)) + " 원");
+                            textprice = ((int) (Integer.parseInt(price) * 2 * (checkedcount / 2)) + " 원");
                             System.out.println(checkedcount);
                         }
                         if(checkedcount == 0){
-                            textprice = ("결제 금액 : " + "0 원");
+                            textprice = ("0 원");
                             System.out.println(checkedcount);
                         }
                     }
@@ -170,10 +187,17 @@ public class BookingActivity extends AppCompatActivity {
                             if(checkedcount != 0) {
                                 if(checkedcount == 48) {
                                     texttime = ("예약 시간 : " + textviewArrayList.get(g).getText() + " ~  23:59" );
+                                    starttime = (String) textviewArrayList.get(g).getText();
+                                    endtime = "24:00";
+                                    System.out.println(starttime + " ~ " + endtime);
 
                                 }
+
                                 else {
                                     texttime = ("예약 시간 : " + textviewArrayList.get(g).getText() + " ~ " + textviewArrayList.get(g + (int) checkedcount).getText());
+                                    starttime = (String) textviewArrayList.get(g).getText();
+                                    endtime = (String) textviewArrayList.get(g + (int) checkedcount).getText();
+                                    System.out.println(starttime + " ~ " + endtime);
                                     break;
                                 }
                             }
@@ -187,25 +211,12 @@ public class BookingActivity extends AppCompatActivity {
                         g++;
                     }
 
+                     */
+
 
                     if(checkedcount != 0) {
-                        builder.setTitle("주차장 예약을 하시겠습니까?").setMessage(textprice + "\n" + texttime).setIcon(R.drawable.booking_icon_enable);
-                        builder.setPositiveButton("예약", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                System.out.println("예약함");
-                                //post 함수
-                            }
-                        });
-                        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                System.out.println("취소함");
-                            }
-                        });
-                        AlertDialog alertDialog = builder.create();
-
-                        alertDialog.show();
+                        Intent intent = new Intent(getApplicationContext(), ConfirmActivity.class);
+                        startActivity(intent);
                     }
                     else{
                         Toast.makeText(getApplicationContext(), "예약 시간을 선택해 주세요.", Toast.LENGTH_LONG).show();
@@ -214,7 +225,13 @@ public class BookingActivity extends AppCompatActivity {
             });
 
         }
-
+        booking_act_back_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
+
 
 }

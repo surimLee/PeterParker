@@ -108,6 +108,7 @@ public class ListAdapter extends BaseAdapter {
                 address = listViewItem.getAddress();
                 price = listViewItem.getContent_Price();
                 distance = listViewItem.getDistance();
+                ID = listViewItem.getId();
                 System.out.println(address);
                 Postc.send_Location(listViewItem.getId());
 
@@ -134,67 +135,5 @@ public class ListAdapter extends BaseAdapter {
         item.setId(id);
         array_parking_lot.add(item);
     }
-
-/*
-    @Override
-            public int getCount() {
-                return array_parking_lot.size();
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return array_parking_lot.get(position);
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return position;
-            }
-
-
-
-            @Override
-
-            public View getView(int position, View convertView, ViewGroup parent) {
-                // ViewHoldr 패턴
-                if (convertView == null) {
-                    convertView = LayoutInflater.from(mContext).inflate(R.layout.map_list_item, parent, false);
-                    mViewHolder = new ViewHolder(convertView);
-                    convertView.setTag(mViewHolder);
-                } else {
-                    mViewHolder = (ViewHolder) convertView.getTag();
-                }
-
-                // View에 Data 세팅
-                for(int i = 0; i < 5; i ++) {
-                    String[] Data = array_parking_lot.get(i).split("\\*");
-                    System.out.println(Data[i]);
-                    mViewHolder.textView_address.setText(Data[1]);
-                    mViewHolder.textView_price.setText(Data[2] + " 원");
-                }
-
-                return convertView;
-
-            }
-
-
-
-            public class ViewHolder {
-                private TextView textView_address;
-                private TextView textView_price;
-                private ImageView imageView;
-
-                public ViewHolder(View convertView) {
-
-            textView_address = (TextView) convertView.findViewById(R.id.list_text_address);
-            textView_price = (TextView) convertView.findViewById(R.id.list_text_price);
-            imageView = (ImageView) convertView.findViewById(R.id.list_image);
-
-        }
-
-    }
-
- */
-
 }
 
