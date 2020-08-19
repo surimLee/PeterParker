@@ -1,4 +1,4 @@
-package kr.co.waytech.peterparker;
+package kr.co.waytech.peterparker.model;
 
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
@@ -10,6 +10,8 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
+
+import kr.co.waytech.peterparker.R;
 
 public class MyItem implements ClusterItem {
     private final LatLng mPosition;

@@ -1,46 +1,25 @@
-package kr.co.waytech.peterparker;
+package kr.co.waytech.peterparker.adapter;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.cardview.*;
 
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.BreakIterator;
 import java.util.ArrayList;
 
+import kr.co.waytech.peterparker.DownloadImageTask;
+import kr.co.waytech.peterparker.model.ListData;
+import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.activity.BookingActivity;
-import kr.co.waytech.peterparker.activity.LoginActivity;
 import kr.co.waytech.peterparker.activity.PostClass;
-
-import static kr.co.waytech.peterparker.activity.BookingActivity.booking_parking_lot_address;
-import static kr.co.waytech.peterparker.activity.BookingActivity.booking_parking_lot_phone;
-
-import static kr.co.waytech.peterparker.activity.BookingActivity.booking_parking_lot_price;
 
 public class ListAdapter extends BaseAdapter {
 
@@ -91,7 +70,7 @@ public class ListAdapter extends BaseAdapter {
         TextView textView_Distance = (TextView) convertView.findViewById(R.id.text_distance);
         ImageView imageView = (ImageView) convertView.findViewById(R.id.list_image);
         textView_address.setText(listViewItem.getAddress());
-        textView_price.setText(listViewItem.getContent_Price());
+        textView_price.setText(listViewItem.getContent_Price() + " 원");
         textView_Distance.setText(listViewItem.getDistance());
         Handler mHandler = new Handler();
         final View finalConvertView = convertView;

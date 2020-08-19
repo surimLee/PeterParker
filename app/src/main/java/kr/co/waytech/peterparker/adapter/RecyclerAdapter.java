@@ -1,4 +1,4 @@
-package kr.co.waytech.peterparker;
+package kr.co.waytech.peterparker.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,13 +13,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
 
+import kr.co.waytech.peterparker.DownloadImageTask;
+import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.activity.BookingActivity;
 import kr.co.waytech.peterparker.activity.PostClass;
-import static kr.co.waytech.peterparker.ListAdapter.address;
-import static kr.co.waytech.peterparker.ListAdapter.phone;
-import static kr.co.waytech.peterparker.ListAdapter.price;
-import static kr.co.waytech.peterparker.ListAdapter.distance;
-import static kr.co.waytech.peterparker.ListAdapter.ID;
+import kr.co.waytech.peterparker.model.Data;
+
+import static kr.co.waytech.peterparker.adapter.ListAdapter.address;
+import static kr.co.waytech.peterparker.adapter.ListAdapter.phone;
+import static kr.co.waytech.peterparker.adapter.ListAdapter.price;
+import static kr.co.waytech.peterparker.adapter.ListAdapter.distance;
+import static kr.co.waytech.peterparker.adapter.ListAdapter.ID;
 
 public class RecyclerAdapter extends BaseAdapter {
 

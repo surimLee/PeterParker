@@ -1,4 +1,4 @@
-package kr.co.waytech.peterparker;
+package kr.co.waytech.peterparker.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,6 +22,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import kr.co.waytech.peterparker.DownloadImageTask;
+import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.activity.PostClass;
 
 

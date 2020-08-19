@@ -1,4 +1,4 @@
-package kr.co.waytech.peterparker;
+package kr.co.waytech.peterparker.model;
 
 public class ListData {
 

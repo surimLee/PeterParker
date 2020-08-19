@@ -1,9 +1,10 @@
 package kr.co.waytech.peterparker.activity;
 
-import android.content.DialogInterface;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -12,27 +13,22 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.prolificinteractive.materialcalendarview.CalendarDay;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
-import kr.co.waytech.peterparker.BookingImgAdapter;
+import kr.co.waytech.peterparker.adapter.BookingImgAdapter;
 import kr.co.waytech.peterparker.R;
 
-import static kr.co.waytech.peterparker.ListAdapter.ID;
-import static kr.co.waytech.peterparker.ListAdapter.address;
-import static kr.co.waytech.peterparker.ListAdapter.phone;
-import static kr.co.waytech.peterparker.ListAdapter.price;
-import static kr.co.waytech.peterparker.ListAdapter.distance;
-import static kr.co.waytech.peterparker.activity.ConfirmActivity.onetime;
+import static kr.co.waytech.peterparker.adapter.ListAdapter.ID;
+import static kr.co.waytech.peterparker.adapter.ListAdapter.address;
+import static kr.co.waytech.peterparker.adapter.ListAdapter.phone;
+import static kr.co.waytech.peterparker.adapter.ListAdapter.price;
+import static kr.co.waytech.peterparker.adapter.ListAdapter.distance;
 
 public class BookingActivity extends AppCompatActivity {
     public static int count;
@@ -41,6 +37,7 @@ public class BookingActivity extends AppCompatActivity {
     SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy년 MM월 dd일");
     String formatDate = sdfNow.format(date_today);
     public static double selectcount = 0;
+    public static Activity bookingActivity;
     public static ArrayList<CheckBox> checkBoxArrayList;
     public static ArrayList<TextView> textviewArrayList;
     public static double checkedcount;
@@ -48,10 +45,12 @@ public class BookingActivity extends AppCompatActivity {
     public static String textprice, texttime;
     public static String starttime, endtime, parking_ID;
     public static Button btnbooking, CalendarBtn;
+    public static int totalprice;
     ViewPager viewPager;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookinglist);
+        bookingActivity = BookingActivity.this;
         checkBoxArrayList= new ArrayList<>();
         textviewArrayList= new ArrayList<>();
         btnbooking = (Button)findViewById(R.id.booking_btn);
@@ -79,7 +78,7 @@ public class BookingActivity extends AppCompatActivity {
         });
 
         for(count = 0; count < 48; count++) {
-            String checkboxid = "checkbox_time_" + (count + 1);
+            final String checkboxid = "checkbox_time_" + (count + 1);
             String textviewid = "checkbox_text_" + (count + 1);
             int cresID = getResources().getIdentifier(checkboxid, "id", getPackageName());
             int tresID = getResources().getIdentifier(textviewid, "id", getPackageName());
@@ -157,69 +156,34 @@ public class BookingActivity extends AppCompatActivity {
 
                     checkedcount = 0;
                     int g = 0;
-
+                    int b = 0;
                     while(g < checkBoxArrayList.size()){
                         if (checkBoxArrayList.get(g).isChecked()) {
                             if(checkedcount == 0){
                                 starttime = (String)textviewArrayList.get(g).getText();
+                                b = g;
                             }
                             checkedcount++;
                         }
                         g++;
+                    }
+                    if((int)checkedcount == 48){
+                        endtime = "24:00";
+                    }
+                    else {
+                       endtime = (String)textviewArrayList.get(b + (int) checkedcount).getText();
                     }
                     System.out.println(starttime);
+                    System.out.println(endtime);
                     System.out.println(checkedcount);
-                    /*
-                    for (g = 0; g < checkBoxArrayList.size(); g++) {
-                        if (checkBoxArrayList.get(g).isChecked()) {
-                            checkedcount++;
-                            textprice = ((int) (Integer.parseInt(price) * 2 * (checkedcount / 2)) + " 원");
-                            System.out.println(checkedcount);
-                        }
-                        if(checkedcount == 0){
-                            textprice = ("0 원");
-                            System.out.println(checkedcount);
-                        }
-                    }
-                    g = 0;
-                    while (g < checkBoxArrayList.size()) {
-                        if (checkBoxArrayList.get(g).isChecked()) {
-                            if(checkedcount != 0) {
-                                if(checkedcount == 48) {
-                                    texttime = ("예약 시간 : " + textviewArrayList.get(g).getText() + " ~  23:59" );
-                                    starttime = (String) textviewArrayList.get(g).getText();
-                                    endtime = "24:00";
-                                    System.out.println(starttime + " ~ " + endtime);
-
-                                }
-
-                                else {
-                                    texttime = ("예약 시간 : " + textviewArrayList.get(g).getText() + " ~ " + textviewArrayList.get(g + (int) checkedcount).getText());
-                                    starttime = (String) textviewArrayList.get(g).getText();
-                                    endtime = (String) textviewArrayList.get(g + (int) checkedcount).getText();
-                                    System.out.println(starttime + " ~ " + endtime);
-                                    break;
-                                }
-                            }
-
-                        }
-                        if(checkedcount == 0) {
-                            texttime = ("예약 시간 : " + "선택된 시간이 없습니다.");
-                            System.out.println(checkedcount);
-                            break;
-                        }
-                        g++;
-                    }
-
-                     */
-
-
+                    totalprice = (int)checkedcount * Integer.parseInt(price);
                     if(checkedcount != 0) {
                         Intent intent = new Intent(getApplicationContext(), ConfirmActivity.class);
                         startActivity(intent);
                     }
                     else{
                         Toast.makeText(getApplicationContext(), "예약 시간을 선택해 주세요.", Toast.LENGTH_LONG).show();
+                        checkedcount = 0;
                     }
                 }
             });
@@ -231,7 +195,9 @@ public class BookingActivity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
+
 
 
 }
