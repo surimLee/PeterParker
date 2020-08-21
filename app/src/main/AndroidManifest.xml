@@ -56,6 +56,9 @@
         <activity android:name=".activity.CalendarActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
+        <activity android:name=".activity.ManagementTimeActivity"
+            android:theme="@style/ActionBarTheme">
+        </activity>
         <activity android:name=".activity.ConfirmActivity"
             android:theme="@style/ActionBarTheme">
         </activity>

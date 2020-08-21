@@ -70,7 +70,7 @@ public class RecyclerAdapter extends BaseAdapter {
         TextView textView_Distance = (TextView) convertView.findViewById(R.id.textview_distance);
         TextView textView_time = (TextView) convertView.findViewById(R.id.textView_time);
         textView_address.setText(data.getAddress());
-        textView_price.setText(data.getContent_Price());
+        textView_price.setText(data.getContent_Price() + " 원");
         textView_Distance.setText(data.getDistance());
         Handler mHandler = new Handler();
         final View finalConvertView = convertView;
@@ -78,7 +78,7 @@ public class RecyclerAdapter extends BaseAdapter {
             public void run() {
                 new DownloadImageTask((ImageView) finalConvertView.findViewById(R.id.picked_imageView)).execute(Postc.Parking_img[0]);
             }
-        }, 200);
+        }, 400);
         Button picked_btn = (Button)convertView.findViewById(R.id.picked_Btn);
         picked_btn.setOnClickListener(new View.OnClickListener() {
             @Override

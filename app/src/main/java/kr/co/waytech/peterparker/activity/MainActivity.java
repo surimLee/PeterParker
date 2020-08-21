@@ -6,16 +6,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -27,6 +28,8 @@ import kr.co.waytech.peterparker.fragment.MapFragment;
 import kr.co.waytech.peterparker.fragment.ParkingFragment;
 import kr.co.waytech.peterparker.fragment.ProfileFragment;
 
+import static kr.co.waytech.peterparker.activity.BookingSuccessActivity.bookinglist_flag;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_LOCATION = 1;
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     public static double mlat, mlon;
     private static Context context;
     public static Location location;
-
+    public static BottomNavigationView bottomNavigationView;
     private androidx.appcompat.widget.Toolbar toolbar;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -45,10 +48,12 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.context = getApplicationContext();
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
-
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.mainactivity_bottomnavigationview);
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.mainactivity_bottomnavigationview);
         bottomNavigationView.setSelectedItemId(R.id.action_map);
         getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new MapFragment()).commit();
+        if(bookinglist_flag == 1){
+            showBookingList();
+        }
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -160,6 +165,12 @@ public class MainActivity extends AppCompatActivity {
 
     public static Context getAppContext() {
         return MainActivity.context;
+    }
+    public void showBookingList(){
+        bottomNavigationView.setSelectedItemId(R.id.action_bookingList);
+        getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new BookingListFragment()).commit();
+        System.out.print("예약리스트 조회");
+        bookinglist_flag = 0;
     }
 }
 

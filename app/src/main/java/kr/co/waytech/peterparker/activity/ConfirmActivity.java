@@ -1,6 +1,8 @@
 package kr.co.waytech.peterparker.activity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
@@ -38,12 +40,19 @@ public class ConfirmActivity extends AppCompatActivity {
     Date date_today = new Date(now);
     SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy년-MM월-dd일");
     String formatDate = sdfNow.format(date_today);
+    public static String success_day, success_total_price;
+    public static Activity confirmActivity;
+    public static String Imgurl;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking_one);
+        confirmActivity = ConfirmActivity.this;
+
         getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>주차장 예약</font>"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(1);
+
         final AlertDialog.Builder builder = new AlertDialog.Builder(ConfirmActivity.this);
         Button booking_one_confirm_button = findViewById(R.id.booking_one_confirm_button);
         oneprice = findViewById(R.id.booking_one_parking_lot_price);
@@ -58,7 +67,7 @@ public class ConfirmActivity extends AppCompatActivity {
         startYear =  Integer.toString(mYear);
         startMonth = Integer.toString(mMonth);
         startDay = Integer.toString(mDay);
-
+        Imgurl = Postc.Parking_img[0];
         if(mYear == 0){
             oneday.setText(formatDate);
             startYear =  formatDate.split("년")[0];
@@ -68,7 +77,8 @@ public class ConfirmActivity extends AppCompatActivity {
 
         oneprice.setText("30분당 " + price + "원");
         total_price.setText(totalprice + "원");
-
+        success_day = (String) oneday.getText();
+        success_total_price = (String) total_price.getText();
         booking_one_confirm_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,9 +93,10 @@ public class ConfirmActivity extends AppCompatActivity {
                         mHandler.postDelayed(new Runnable(){
                             public void run() {
                                 if(Postc.bookingbody.split(",")[2].split("=")[1].equals("OK")){
+                                    System.out.println(Postc.bookingbody.split(",")[2].split("=")[1]);
                                     Toast.makeText(getApplicationContext(), "예약되었습니다.", Toast.LENGTH_LONG).show();
-                                    bookingActivity.finish();
-                                    finish();
+                                    Intent intent = new Intent(getApplicationContext(), BookingSuccessActivity.class);
+                                    startActivity(intent);
                                 }
                                 else{
                                     Toast.makeText(getApplicationContext(), "예약에 실패하였습니다.", Toast.LENGTH_LONG).show();
