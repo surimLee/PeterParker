@@ -19,25 +19,15 @@
             layout="@layout/custom_actionbar_back"
             android:layout_width="match_parent"
             android:layout_marginBottom="-56dp"/>
-        <ImageView
-            android:id="@+id/booking_image"
-            android:layout_marginBottom="-40dp"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="270dp"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:src="@drawable/parkinglot4"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1/2"
-            android:gravity="center"
-            android:textColor="#ffffff"
-            android:layout_alignBottom="@+id/booking_image"
-            android:layout_alignLeft="@+id/booking_image"
-            android:layout_alignRight="@+id/booking_image"
-            android:layout_alignTop="@+id/booking_image"
-            android:layout_marginTop="160dp"/>
+            android:layout_height="280dp">
+            <androidx.viewpager.widget.ViewPager
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/view">
+            </androidx.viewpager.widget.ViewPager>
+        </RelativeLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -90,18 +80,18 @@
                         android:background="@drawable/ic_baseline_explore_24_enable"
                         android:textColor="#ffffff">
                     </ImageView>
+
                     <TextView
                         android:id="@+id/booking_parking_lot_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="경기도 시흥시 정왕동 2121-1 산업기술대학교 종합관"
-                        android:textColor="#000000"
-                        android:textSize="15sp"
-                        android:gravity="center"
                         android:layout_marginLeft="18dp"
+                        android:layout_marginTop="3dp"
                         android:fontFamily="@font/notosans_regular"
-                        android:layout_marginTop="3dp">
-                    </TextView>
+                        android:gravity="center"
+                        android:text="주소"
+                        android:textColor="#000000"
+                        android:textSize="15sp"></TextView>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -121,7 +111,7 @@
                         android:id="@+id/booking_parking_lot_distance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="240m"
+                        android:text="거리"
                         android:textColor="#000000"
                         android:textSize="15sp"
                         android:gravity="center"
@@ -144,18 +134,18 @@
                         android:background="@drawable/ic_baseline_local_phone_24_enable"
                         android:textColor="#ffffff">
                     </ImageView>
+
                     <TextView
                         android:id="@+id/booking_parking_lot_phone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="010-1234-5678"
-                        android:textColor="#000000"
-                        android:textSize="15sp"
-                        android:gravity="center"
                         android:layout_marginLeft="18dp"
                         android:layout_marginTop="3dp"
-                        android:fontFamily="@font/notosans_regular">
-                    </TextView>
+                        android:fontFamily="@font/notosans_regular"
+                        android:gravity="center"
+                        android:text="전화번호"
+                        android:textColor="#000000"
+                        android:textSize="15sp"></TextView>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"

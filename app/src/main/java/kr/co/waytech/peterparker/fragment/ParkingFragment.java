@@ -3,13 +3,9 @@ package kr.co.waytech.peterparker.fragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
@@ -21,11 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kr.co.waytech.peterparker.R;
-import kr.co.waytech.peterparker.activity.AddParkinglotActivity;
-import kr.co.waytech.peterparker.activity.LoginActivity;
-import kr.co.waytech.peterparker.adapter.BookingListAdapter;
 import kr.co.waytech.peterparker.adapter.ParkingAdapter;
-import kr.co.waytech.peterparker.model.BookingList;
 import kr.co.waytech.peterparker.model.ParkingList;
 
 public class ParkingFragment extends Fragment {
@@ -70,8 +62,8 @@ public class ParkingFragment extends Fragment {
         {
             @Override
             public void onClick(View view) {
-                Intent intent_addParkinglot = new Intent(getActivity(), AddParkinglotActivity.class);
-                startActivity(intent_addParkinglot);
+                //Intent intent_addParkinglot = new Intent(getActivity(), AddParkinglotActivity.class);
+                //startActivity(intent_addParkinglot);
             }
         });
 

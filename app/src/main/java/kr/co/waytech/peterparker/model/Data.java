@@ -1,14 +1,14 @@
-package kr.co.waytech.peterparker;
+package kr.co.waytech.peterparker.model;
 
-public class ListData {
+import android.graphics.drawable.Drawable;
+
+public class Data {
 
     private String Address;
     private String content_Price;
     private String id;
     private String Distance;
     private int resId;
-
-
     public void setAddress(String Address) {
         this.Address = Address;
     }

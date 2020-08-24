@@ -3,6 +3,7 @@ package kr.co.waytech.peterparker.adapter;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseSettings;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import kr.co.waytech.peterparker.R;
+import kr.co.waytech.peterparker.activity.BookingActivity;
+import kr.co.waytech.peterparker.activity.ManagementTimeActivity;
 import kr.co.waytech.peterparker.model.BookingList;
 import kr.co.waytech.peterparker.model.ParkingList;
 
@@ -60,12 +63,22 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.MyViewHo
 
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
 
         holder.parkinglotName.setText(parkingList.get(position).getPLName());
         holder.parkinglotAddress.setText(parkingList.get(position).getPLAddress());
         holder.parkinglotPrice.setText(parkingList.get(position).getPLPrice());
         holder.parkinglotImage.setImageResource(parkingList.get(position).getPLImageUrl());
+        holder.set_time_btn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View view) {
+                int pos = holder.getAdapterPosition();
+                Toast.makeText(mContext,"Click Item"+ pos,Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(holder.set_time_btn.getContext(), ManagementTimeActivity.class);
+                holder.set_time_btn.getContext().startActivity(intent);
+            }
+        });
 
         //Dialog ini
         holder.set_time_btn.setOnClickListener(new View.OnClickListener() {

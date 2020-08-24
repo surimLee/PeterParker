@@ -3,6 +3,7 @@ package kr.co.waytech.peterparker.activity;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -47,6 +48,9 @@ public class CalendarActivity extends AppCompatActivity  {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar_booking);
+        getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>주차장 예약</font>"));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setElevation(1);
         calendar_text1 = findViewById(R.id.calendar_text1);
         materialCalendarView = findViewById(R.id.calendarView);
         select_btn = findViewById(R.id.calendar_btn);
@@ -83,25 +87,10 @@ public class CalendarActivity extends AppCompatActivity  {
             }
         });
 
-        /*
-        materialCalendarView.setOnRangeSelectedListener(new OnRangeSelectedListener() {
-            @Override public void onRangeSelected(@NonNull MaterialCalendarView widget, @NonNull List<CalendarDay> dates)
-            { // do stuff
-                if (dates.get(0).isAfter(dates.get(1))) {
-                    System.out.println("1");
-                } else {
-                    System.out.println(dates.get(0).toString() + ", " + dates.get(dates.size() - 1).toString());
-                    dateraw1 = dates.get(0).toString().split("\\{");
-                    dateraw2 = dates.get(0).toString().split("\\{");
-                    splited_date1 = dateraw1[1].split("-");
-
-                }
-
-            }
-        });
-
-         */
-
+    }
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 
 }

@@ -1,48 +1,31 @@
 package kr.co.waytech.peterparker.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
+import android.graphics.BitmapFactory;
 import android.app.Fragment;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.viewpager.widget.ViewPager;
-
-import kr.co.waytech.peterparker.ParkingItem;
 import kr.co.waytech.peterparker.activity.PostClass;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-
-import kr.co.waytech.peterparker.Data;
-import kr.co.waytech.peterparker.ListData;
 import kr.co.waytech.peterparker.activity.MainActivity;
-import kr.co.waytech.peterparker.MyItem;
-import kr.co.waytech.peterparker.OwnIconRendered;
-import kr.co.waytech.peterparker.activity.PostClass;
-import kr.co.waytech.peterparker.activity.PostClass;
+import kr.co.waytech.peterparker.model.MyItem;
+import kr.co.waytech.peterparker.model.OwnIconRendered;
 import kr.co.waytech.peterparker.R;
-import kr.co.waytech.peterparker.RecyclerAdapter;
-import kr.co.waytech.peterparker.ListAdapter;
-
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
+import kr.co.waytech.peterparker.adapter.RecyclerAdapter;
+import kr.co.waytech.peterparker.adapter.ListAdapter;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,36 +33,26 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-
 import java.io.IOException;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static kr.co.waytech.peterparker.activity.MainActivity.location;
@@ -96,11 +69,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public static String[][] Selected_Parking;
     public static MainActivity mainActivity;
     public static final LatLng target = null;
-    public static List<String> listAddress, listContent_Price, listContent_Time;
-    public static List<Integer> listResId;
-    Marker selectedMarker;
-    View marker_root_view;
-    TextView tv_marker;
     private GoogleApiClient mGoogleApiClient = null;
     private Marker currentMarker = null;
 
@@ -110,33 +78,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     private static final int FASTEST_UPDATE_INTERVAL_MS = 500; // 0.5초
     private static final int REQUEST_LOCATION = 1;
 
-    private AppCompatActivity mActivity;
-    boolean askPermissionOnceAgain = false;
-    boolean mRequestingLocationUpdates = false;
-    Location mCurrentLocatiion;
-    boolean mMoveMapByUser = true;
-    boolean mMoveMapByAPI = true;
-    LatLng currentPosition;
-
     public static double mlatitude, mlongitude;
     public static String ParkingID;
     public static LinearLayout tab1_layout;
     public static LinearLayout tab2_layout;
     public static TextView tab1_text;
-    private ArrayList<ListData> array_parking_lot;
-    private ListView mListView;
+    private ListView mListView, mPickedView;
     ImageButton search_btn;
     Button filter_btn;
     EditText search_edt;
-    public static MyItem ParkingItem;
     public static double lat, lng;
     public static int Plus_array;
     public static double x1, y1, x2, y2;
     final PostClass Postc = new PostClass();
     public static SlidingUpPanelLayout slidingUpPanelLayout;
-    String search_result;
     TabLayout tabLayout;
-    ViewPager viewPager;
     public static List<Address> AddressList;
     public static InputMethodManager imm = null;
     public static GoogleMap mMap;
@@ -145,8 +101,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     FrameLayout frameLayout;
     private ClusterManager<MyItem> clusterManager;
     public static Geocoder geocoder;
-    TabItem tab1, tab2, tab3;
-    private RecyclerAdapter adapter;
+    private RecyclerAdapter recyclerAdapter;
     private ListAdapter listadapter;
 
 
@@ -180,20 +135,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         filter_btn = (Button) view.findViewById(R.id.filter_btn);
         tab1_text = (TextView) view.findViewById(R.id.tab1_text);
         geocoder = new Geocoder(mapFragment);
-        /*
-        mainActivity.GetMyLocation();
-        mlatitude = MainActivity.mlat;
-        mlongitude = MainActivity.mlon;
-
-         */
-       // System.out.println("내 위치 :" + mlatitude + ", " + mlongitude);
-
-
-        //String provider = mainActivity.location.getProvider();
-        //mlatitude = mainActivity.location.getLatitude();
-        //mlongitude = mainActivity.location.getLongitude();
-        //mlatitude = 37;
-        //mlongitude = 128;
         search_edt.setOnClickListener(new View.OnClickListener(){
 
 
@@ -289,17 +230,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     ZoomLevel = mMap.getCameraPosition().zoom;
                     lat = mMap.getCameraPosition().target.latitude;
                     lng = mMap.getCameraPosition().target.longitude;
-                    /*
-                    // 줌레벨이 11, 13, 15일때 통신
-                    System.out.println("통신---------------------------------------------------------");
-                    x1 = (lat + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    y1 = (lng - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    x2 = (lat - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    y2 = (lng + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    Postc.send_Location(x1, y1);
-                    System.out.println(ZoomLevel + " 위치 :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
-
-                     */
                     tab1_layout.setVisibility(View.VISIBLE);
                     tab2_layout.setVisibility(View.GONE);
                 } else if (pos == 1) {
@@ -309,7 +239,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     }
 
                     imm.hideSoftInputFromWindow(search_edt.getWindowToken(), 0);
-                   // mainActivity.GetMyLocation();
+                    // mainActivity.GetMyLocation();
                     mlatitude = MainActivity.mlat;
                     mlongitude = MainActivity.mlon;
                     System.out.println("내 위치 :" + mlatitude + ", " + mlongitude);
@@ -317,15 +247,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     ZoomLevel = mMap.getCameraPosition().zoom;
                     lat = mlatitude;
                     lng = mlongitude;
-                    /*
-                    System.out.println("통신---------------------------------------------------------");
-                    x1 = (lat + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    y1 = (lng - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    x2 = (lat - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    y2 = (lng + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    Postc.send_Location(x1, y1);
-                    System.out.println(ZoomLevel + " 위치 :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
-                     */
                     tab1_layout.setVisibility(View.GONE);
                     tab2_layout.setVisibility(View.GONE);
                     tab2_layout.setVisibility(View.VISIBLE);
@@ -346,17 +267,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     ZoomLevel = mMap.getCameraPosition().zoom;
                     lat = mlatitude;
                     lng = mlongitude;
-                    /*
-                    // 줌레벨이 11, 13, 15?��?�� ?��?��
-                    System.out.println("통신---------------------------------------------------------");
-                    x1 = (lat + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    y1 = (lng - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    x2 = (lat - 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    y2 = (lng + 1 * (0.012 * (2 ^ (int) (15.0 - ZoomLevel))));
-                    Postc.send_Location(x1, y1);
-                    System.out.println(ZoomLevel + " 위치 :  (" + x1 + ", " + y1 + ")" + " (" + x2 + ", " + y2 + ")");
-
-                     */
                     tab1_layout.setVisibility(View.GONE);
                     tab2_layout.setVisibility(View.GONE);
                     tab2_layout.setVisibility(View.VISIBLE);
@@ -404,22 +314,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
 
          */
-    private void getData_pick(String Address, int Price, double distance) {
-        List<String> listAddress = Arrays.asList(Address);
-        List<String> listContent_Price = Arrays.asList("주차요금 : " + "시간당 " +Price + "원");
-        List<String> listContent_Time = Arrays.asList("운영시간 :00:00 ~ 12:00");
-        List<String> listContent_Distance = Arrays.asList((int)distance + "m");
-        List<Integer> listResId = Arrays.asList(R.drawable.parkinglot1);
-        for (int i = 0; i < listAddress.size(); i++) {
-            Data data = new Data();
-            data.setAddress(listAddress.get(i));
-            data.setContent_Price(listContent_Price.get(i));
-            data.setContent_time(listContent_Time.get(i));
-            data.setResId(listResId.get(i));
-            data.setDistance(listContent_Distance.get(i));
-            adapter.addItem(data);
-        }
-        adapter.notifyDataSetChanged();
+    private void getData_pick(String ID, String Address, int Price, double distance){
+        mPickedView = (ListView) getView().findViewById(R.id.picked_parkinglot);
+        recyclerAdapter = new RecyclerAdapter();
+        mPickedView.setAdapter(recyclerAdapter);
+        recyclerAdapter.addItem(Address, Integer.toString(Price), (int)distance + "m", ID);
 
     }
 
@@ -471,9 +370,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         for(int i = 0; i < Selected_Parking.length; i++) {
             if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) < 4000) {
-                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1] + " 원", (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m", Selected_Parking[i][4]);
+                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1], (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m", Selected_Parking[i][4]);
 
-               System.out.println(Selected_Parking[i][0] + ", " + Selected_Parking[i][1] + " 원"+ ", " + Selected_Parking[i][2]+ ", " +Selected_Parking[i][3]);
+                System.out.println(Selected_Parking[i][0] + ", " + Selected_Parking[i][1] + ", " + Selected_Parking[i][2]+ ", " +Selected_Parking[i][3]);
             }
         }
     }
@@ -526,7 +425,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         for(int i = 0; i < Selected_Parking.length; i++) {
             if((int) getDistance(clat, clon, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) < 4000) {
-                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1] + " 원", (int) getDistance(clat, clon, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m", Selected_Parking[i][4]);
+                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1], (int) getDistance(clat, clon, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m", Selected_Parking[i][4]);
 
                 System.out.println(Selected_Parking[i][0] + ", " + Selected_Parking[i][1] + " 원"+ ", " + Selected_Parking[i][2]+ ", " +Selected_Parking[i][3]);
             }
@@ -581,21 +480,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
         for(int i = 0; i < Selected_Parking.length; i++) {
             if((int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) < 4000) {
-                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1] + " 원", (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m", Selected_Parking[i][4]);
+                listadapter.addItem(Selected_Parking[i][0], Selected_Parking[i][1], (int) getDistance(mlatitude, mlongitude, latlngConv(Double.parseDouble(Selected_Parking[i][2]), Double.parseDouble(Selected_Parking[i][3]))) + "m", Selected_Parking[i][4]);
 
                 System.out.println(Selected_Parking[i][0] + ", " + Selected_Parking[i][1] + " 원"+ ", " + Selected_Parking[i][2]+ ", " +Selected_Parking[i][3]);
             }
         }
-    }
-
-    private void init() {
-        RecyclerView recyclerView = getView().findViewById(R.id.recyclerview_main_list);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mapFragment);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-        adapter = new RecyclerAdapter();
-        recyclerView.setAdapter(adapter);
     }
 
 
@@ -706,7 +595,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                LatLng latLng = new LatLng(37.340917, 126.7336682);
+                LatLng latLng = new LatLng(mlatitude, mlongitude);
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
@@ -742,13 +631,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 final String ssid = item.getTitle();
                 System.out.println(ssid);
                 System.out.println("주소 : "+ getAddress(item.getPosition().latitude, item.getPosition().longitude));
-                init();
-                getData_pick(getAddress(item.getPosition().latitude, item.getPosition().longitude),
+                getData_pick(ssid, getAddress(item.getPosition().latitude, item.getPosition().longitude),
                         item.getPrice(), getDistance(mlatitude, mlongitude, item.getPosition()));
                 return false;
             }
         });
-         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
             }
@@ -771,16 +659,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             }
         });
 
-        /*
-        ClusterManager<ClusterItem> clusterManager = new ClusterManager<>(homeFragment, mMap);
-        mMap.setOnCameraIdleListener(clusterManager);
-        for(int i = 0; i < 10; i++){
-            double lat = ABC_LAT + (i / 200d);
-            double lng = ABC_LNG + (i / 200d);
-            clusterManager.addItem(new ParkingItem(new LatLng(lat, lng), "Parking" + i));
-        }
-
-         */
         mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
             public void onCameraMove() {
@@ -853,7 +731,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                                 Manifest.permission.ACCESS_BACKGROUND_LOCATION},
                         REQUEST_LOCATION);
                 LocationManager locationManager = (LocationManager) MainActivity.getAppContext().getSystemService(Context.LOCATION_SERVICE);
-                location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+                String locationProvider = LocationManager.NETWORK_PROVIDER;
+                location = locationManager.getLastKnownLocation(locationProvider);
                 mlat = location.getLatitude();
                 mlon = location.getLongitude();
                 System.out.println("내 위치 mlat, mlon :" + mlat + ", " + mlon);

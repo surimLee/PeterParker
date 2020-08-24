@@ -1,16 +1,15 @@
-package kr.co.waytech.peterparker;
+package kr.co.waytech.peterparker.model;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+
+import kr.co.waytech.peterparker.R;
+import kr.co.waytech.peterparker.model.MyItem;
 
 public class OwnIconRendered extends DefaultClusterRenderer<MyItem> {
 

@@ -48,15 +48,24 @@
         <activity android:name=".activity.LoginActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
-        <activity android:name=".activity.BookingActivity"/>
-        <activity android:name=".activity.CalendarActivity"/>
+        <activity android:name=".activity.BookingSuccessActivity"
+            android:theme="@style/ActionBarTheme">
+        </activity>
+        <activity android:name=".activity.BookingActivity">
+        </activity>
+        <activity android:name=".activity.CalendarActivity"
+            android:theme="@style/ActionBarTheme">
+        </activity>
+        <activity android:name=".activity.ManagementTimeActivity"
+            android:theme="@style/ActionBarTheme">
+        </activity>
+        <activity android:name=".activity.ConfirmActivity"
+            android:theme="@style/ActionBarTheme">
+        </activity>
         <activity android:name=".activity.FineIDActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
         <activity android:name=".activity.FinePWActivity"
-            android:theme="@style/ActionBarTheme">
-        </activity>
-        <activity android:name=".activity.AddParkinglotActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
         <activity android:name=".WebViewActivity"
