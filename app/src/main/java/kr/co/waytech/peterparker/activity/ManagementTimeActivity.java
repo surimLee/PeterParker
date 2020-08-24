@@ -81,39 +81,28 @@ public class ManagementTimeActivity extends AppCompatActivity {
                 checkday.setVisibility(View.VISIBLE);
             }
         });
-        /*
         for(count_day = 0; count_day < 7; count_day++) {
             final String checkboxid_day = "management_checkbox_day_" + (count_day + 1);
-            String textviewid_day = "management_checkbox_text_day_" + (count_day + 1);
+            String textviewid_day = "management_text_day_" + (count_day + 1);
             int cresID_day = getResources().getIdentifier(checkboxid_day, "id", getPackageName());
             int tresID_day = getResources().getIdentifier(textviewid_day, "id", getPackageName());
-            Manage_checkBoxArrayList_day.add((CheckBox) findViewById(cresID_day));
-            Manage_textviewArrayList_day.add((TextView) findViewById(tresID_day));
+            Manage_checkBoxArrayList_each_day.add((CheckBox) findViewById(cresID_day));
+            Manage_checkBoxArrayList_each_day_text.add((TextView) findViewById(tresID_day));
 
-            Manage_checkBoxArrayList_day.get(count_time).setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
-                int b = count_time;
+            Manage_checkBoxArrayList_each_day.get(count_day).setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+                int b = count_day;
                 public void onCheckedChanged(CompoundButton compoundButton, boolean bool) {
                     if (bool == true) {
-                        compoundButton.setButtonDrawable(R.drawable.ic_booking_time_enable);
-                        Manage_textviewArrayList_day.get(b).setTextColor(Color.parseColor("#ffffff"));
+                        compoundButton.setButtonDrawable(R.drawable.ic_booking_time_enable_small);
+                        Manage_checkBoxArrayList_each_day_text.get(b).setTextColor(Color.parseColor("#ffffff"));
                     }
                     else{
-                        compoundButton.setButtonDrawable(R.drawable.ic_booking_time_disable);
-                        Manage_textviewArrayList_day.get(b).setTextColor(Color.parseColor("#000000"));
+                        compoundButton.setButtonDrawable(R.drawable.ic_booking_time_disable_small);
+                        Manage_checkBoxArrayList_each_day_text.get(b).setTextColor(Color.parseColor("#000000"));
                     }
                 }
             });
-
-
-
-            Manage_checkBoxArrayList_day.get(count_day).setOnLongClickListener(new CheckBox.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    check_day = count_day;
-                    return false;
-                }
-            });
-        }*/
+        }
 
         checkall.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton compoundButton, boolean bool) {

@@ -23,6 +23,7 @@ import org.altbeacon.beacon.BeaconTransmitter;
 import java.util.Arrays;
 import java.util.List;
 
+import kr.co.waytech.peterparker.DownloadImageTask;
 import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.model.BookingList;
 
@@ -89,13 +90,13 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
+        View v = holder.itemView;
         holder.parkinglotName.setText(bookingList.get(position).getParkinglotName());
         holder.status.setText(bookingList.get(position).getStatus());
         holder.parkinglotAddress.setText(bookingList.get(position).getParkinglotAddress());
         holder.parkinglotPrice.setText(bookingList.get(position).getParkinglotPrice());
         holder.parkinglotSchedule.setText(bookingList.get(position).getParkinglotSchedule());
-        holder.parkinglotImage.setImageResource(bookingList.get(position).getImageUrl());
+        new DownloadImageTask(holder.parkinglotImage).execute(bookingList.get(position).getImageUrl());
 
     }
 

@@ -1,7 +1,9 @@
 package kr.co.waytech.peterparker.activity;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -11,10 +13,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import kr.co.waytech.peterparker.DownloadImageTask;
 import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.fragment.BookingListFragment;
-import kr.co.waytech.peterparker.fragment.MapFragment;
 
 import static kr.co.waytech.peterparker.activity.ConfirmActivity.Imgurl;
 import static kr.co.waytech.peterparker.activity.ConfirmActivity.confirmActivity;
@@ -24,8 +26,6 @@ import static kr.co.waytech.peterparker.activity.BookingActivity.starttime;
 import static kr.co.waytech.peterparker.activity.ConfirmActivity.success_total_price;
 import static kr.co.waytech.peterparker.activity.ConfirmActivity.success_day;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.address;
-import static kr.co.waytech.peterparker.adapter.ListAdapter.price;
-import static kr.co.waytech.peterparker.fragment.MapFragment.mainActivity;
 
 
 public class BookingSuccessActivity extends AppCompatActivity {
@@ -33,6 +33,7 @@ public class BookingSuccessActivity extends AppCompatActivity {
     TextView success_list_text, success_address, success_time, success_price;
     ImageView success_img;
     public static int bookinglist_flag = 0;
+    int drawable_img;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_success);
@@ -55,7 +56,13 @@ public class BookingSuccessActivity extends AppCompatActivity {
         success_list_text.setText(content);
         bookingActivity.finish();
         confirmActivity.finish();
-
+        Handler mHandler = new Handler();
+        mHandler.postDelayed(new Runnable(){
+            public void run() {
+                BookingListFragment.addlist("Name", "사용예정", address, success_total_price, success_day + " / " + starttime + " ~ " + endtime, Imgurl);
+                System.out.println("add success");
+            }
+        }, 300);
         success_list_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

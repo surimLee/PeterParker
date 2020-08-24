@@ -78,7 +78,7 @@ public class ListAdapter extends BaseAdapter {
             public void run() {
                 new DownloadImageTask((ImageView) finalConvertView.findViewById(R.id.list_image)).execute(Postc.Parking_img[0]);
             }
-        }, 200);
+        }, 800);
         final CardView cmdArea = (CardView)convertView.findViewById(R.id.List_cardview);
         cmdArea.setOnClickListener(new View.OnClickListener() {
             @Override

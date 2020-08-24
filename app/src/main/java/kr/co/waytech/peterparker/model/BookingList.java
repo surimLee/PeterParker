@@ -1,5 +1,7 @@
 package kr.co.waytech.peterparker.model;
 
+import android.graphics.drawable.Drawable;
+
 public class BookingList {
 
     String parkinglotName;
@@ -7,9 +9,9 @@ public class BookingList {
     String parkinglotAddress;
     String parkinglotPrice;
     String parkinglotSchedule;
-    Integer imageUrl;
+    String imageUrl;
 
-    public BookingList(String parkinglotName, String status, String parkinglotAddress, String parkinglotPrice, String parkinglotSchedule, Integer imageUrl) {
+    public BookingList(String parkinglotName, String status, String parkinglotAddress, String parkinglotPrice, String parkinglotSchedule, String imageUrl) {
         this.parkinglotName = parkinglotName;
         this.status = status;
         this.parkinglotAddress = parkinglotAddress;
@@ -52,11 +54,11 @@ public class BookingList {
 
     public void setParkinglotSchedule(String parkinglotSchedule) { this.parkinglotSchedule = parkinglotSchedule; }
 
-    public Integer getImageUrl() {
+    public String getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(Integer imageUrl) {
+    public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
 }
