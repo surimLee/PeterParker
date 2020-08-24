@@ -37,8 +37,6 @@ public class CalendarActivity extends AppCompatActivity  {
     public static int mYear, mMonth, mDay;
     Date date_today = new Date(now);
     public Drawable drawable;
-    String[] dateraw1, dateraw2;
-    String[] splited_date1, splited_date2;
     Date date_max = new Date(MaximumDate);
     final List<CalendarDay> days = new ArrayList<>();
     Color color = new Color();

@@ -23,13 +23,14 @@ import android.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
+
 import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.SessionManager;
 import kr.co.waytech.peterparker.fragment.BookingListFragment;
 import kr.co.waytech.peterparker.fragment.MapFragment;
 import kr.co.waytech.peterparker.fragment.ParkingFragment;
 import kr.co.waytech.peterparker.fragment.ProfileFragment;
-
 import static kr.co.waytech.peterparker.activity.BookingSuccessActivity.bookinglist_flag;
 
 public class MainActivity extends AppCompatActivity {
