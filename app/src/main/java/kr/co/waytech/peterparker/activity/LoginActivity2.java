@@ -15,16 +15,17 @@ public class LoginActivity2 extends AppCompatActivity {
     Button LoginBtn, SignupBtn, TokenBtn;
     private EditText EdID, EdPW;
     private String VID, VPW;
-    public static Activity loginActivity;
+    public static Activity loginActivity2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         final PostClass Postc = new PostClass();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login2);
-        loginActivity = LoginActivity2.this;
-        EdID = (EditText)findViewById(R.id.loginActivity_edittext_id);
-        EdPW = (EditText)findViewById(R.id.loginActivity_edittext_password);
-        LoginBtn =(Button)findViewById(R.id.loginActivity_button_login);
+        loginActivity2 = LoginActivity2.this;
+
+        EdID = (EditText)findViewById(R.id.loginActivity_edittext_id2);
+        EdPW = (EditText)findViewById(R.id.loginActivity_edittext_password2);
+        LoginBtn =(Button)findViewById(R.id.loginActivity_button_login2);
         LoginBtn.setOnClickListener(new View.OnClickListener()
         {
             public void onClick (View v) {
@@ -35,11 +36,9 @@ public class LoginActivity2 extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
             }
         });
-        SignupBtn =(Button)findViewById(R.id.loginActivity_button_signup);
+        SignupBtn =(Button)findViewById(R.id.loginActivity_button_signup2);
         SignupBtn.setOnClickListener(new View.OnClickListener()
         {
             public void onClick (View v) {
@@ -47,7 +46,7 @@ public class LoginActivity2 extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        TokenBtn =(Button)findViewById(R.id.loginActivity_button_token);
+        TokenBtn =(Button)findViewById(R.id.loginActivity_button_token2);
         TokenBtn.setOnClickListener(new View.OnClickListener()
         {
             public void onClick (View v) {
@@ -56,7 +55,7 @@ public class LoginActivity2 extends AppCompatActivity {
         });
     }
     public void Success_Login(){
-        loginActivity.finish();
+        loginActivity2.finish();
     }
 }
 

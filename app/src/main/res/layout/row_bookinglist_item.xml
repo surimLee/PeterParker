@@ -173,6 +173,7 @@
                 android:textSize="13sp" />
 
             <Button
+                android:id="@+id/delete_booking_Button"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="183dp"
                 android:layout_height="32dp"

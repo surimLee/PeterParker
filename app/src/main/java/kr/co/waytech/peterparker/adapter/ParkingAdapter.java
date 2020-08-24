@@ -46,17 +46,6 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.MyViewHo
         final MyViewHolder vHolder = new MyViewHolder(view);
 
 
-        //Dialog ini
-        vHolder.set_time_btn.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void onClick(View view) {
-//                Toast.makeText(mContext,"Click Item"+ vHolder.getAdapterPosition(),Toast.LENGTH_SHORT).show();
-                Toast.makeText(mContext,"Click Timesetting",Toast.LENGTH_SHORT).show();
-                //Click Event here
-            }
-        });
-
         vHolder.edit_info_btn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
@@ -77,6 +66,17 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.MyViewHo
         holder.parkinglotAddress.setText(parkingList.get(position).getPLAddress());
         holder.parkinglotPrice.setText(parkingList.get(position).getPLPrice());
         holder.parkinglotImage.setImageResource(parkingList.get(position).getPLImageUrl());
+
+        //Dialog ini
+        holder.set_time_btn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View view) {
+//                Toast.makeText(mContext,"Click Item"+ vHolder.getAdapterPosition(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"Click Timesetting",Toast.LENGTH_SHORT).show();
+                //Click Event here
+            }
+        });
 
     }
 

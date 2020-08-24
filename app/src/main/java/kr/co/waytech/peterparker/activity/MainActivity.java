@@ -16,11 +16,15 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+
 import kr.co.waytech.peterparker.R;
+import kr.co.waytech.peterparker.SessionManager;
 import kr.co.waytech.peterparker.fragment.BookingListFragment;
 import kr.co.waytech.peterparker.fragment.MapFragment;
 import kr.co.waytech.peterparker.fragment.ParkingFragment;
@@ -155,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
         // Other 'case' lines to check for other
         // permissions this app might request.
     }
+
 
 
     public static Context getAppContext() {

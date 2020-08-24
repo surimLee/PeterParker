@@ -5,7 +5,7 @@ android {
     buildToolsVersion "30.0.0"
     defaultConfig {
         applicationId "kr.co.waytech.peterparker"
-        minSdkVersion 16
+        minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -15,6 +15,18 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    allprojects {
+        repositories {
+            google()
+            jcenter()
         }
     }
 }
@@ -54,6 +66,8 @@ dependencies {
     implementation 'gun0912.ted:tedbottompicker:2.0.1'
     implementation "io.reactivex.rxjava2:rxjava:2.2.6"
     implementation 'com.github.bumptech.glide:glide:4.7.1'
+
+    implementation 'com.google.android.material:material: 30.0.0' //dialog
 
 
 
