@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kr.co.waytech.peterparker.R;
+import kr.co.waytech.peterparker.activity.AddParkinglotActivity;
 import kr.co.waytech.peterparker.adapter.ParkingAdapter;
 import kr.co.waytech.peterparker.model.ParkingList;
 
@@ -62,8 +63,8 @@ public class ParkingFragment extends Fragment {
         {
             @Override
             public void onClick(View view) {
-                //Intent intent_addParkinglot = new Intent(getActivity(), AddParkinglotActivity.class);
-                //startActivity(intent_addParkinglot);
+                Intent intent_addParkinglot = new Intent(getActivity(), AddParkinglotActivity.class);
+                startActivity(intent_addParkinglot);
             }
         });
 

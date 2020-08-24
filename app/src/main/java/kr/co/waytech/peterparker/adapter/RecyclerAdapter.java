@@ -11,7 +11,10 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import kr.co.waytech.peterparker.DownloadImageTask;
 import kr.co.waytech.peterparker.R;
@@ -30,6 +33,10 @@ public class RecyclerAdapter extends BaseAdapter {
 
     private Context mContext;
     private ArrayList<Data> picked_parking_lot = new ArrayList<Data>();
+    long now = System.currentTimeMillis() - 1000;
+    Date date_today = new Date(now);
+    SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd");
+    String formatDate = sdfNow.format(date_today);
     final PostClass Postc = new PostClass();
 
 
@@ -90,7 +97,7 @@ public class RecyclerAdapter extends BaseAdapter {
                 price = data.getContent_Price();
                 distance = data.getDistance();
                 ID = data.getId();
-                Postc.send_booking_time_id(data.getId());
+                Postc.send_booking_time_id(data.getId(), formatDate.split("-")[0], formatDate.split("-")[1], formatDate.split("-")[2]);
                 System.out.println(address);
                 Handler mHandler = new Handler();
                 mHandler.postDelayed(new Runnable()  {

@@ -25,6 +25,7 @@ import org.altbeacon.beacon.BeaconTransmitter;
 import java.util.Arrays;
 import java.util.List;
 
+import kr.co.waytech.peterparker.DownloadImageTask;
 import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.activity.MainActivity;
 import kr.co.waytech.peterparker.model.BookingList;
@@ -50,14 +51,16 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
 
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
 
+        View v = holder.itemView;
         holder.parkinglotName.setText(bookingList.get(position).getParkinglotName());
         holder.status.setText(bookingList.get(position).getStatus());
         holder.parkinglotAddress.setText(bookingList.get(position).getParkinglotAddress());
         holder.parkinglotPrice.setText(bookingList.get(position).getParkinglotPrice());
         holder.parkinglotSchedule.setText(bookingList.get(position).getParkinglotSchedule());
-        holder.parkinglotImage.setImageResource(bookingList.get(position).getImageUrl());
+        new DownloadImageTask(holder.parkinglotImage).execute(bookingList.get(position).getImageUrl());
+
 
         //Dialog ini
         holder.checkin_btn.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +80,7 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View view) {
-                int pos = holder.getAdapterPosition();
+                final int pos = holder.getAdapterPosition();
                 Toast.makeText(mContext,"Click Item"+ pos,Toast.LENGTH_SHORT).show();
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(holder.delete_booking_btn.getContext());
@@ -90,7 +93,7 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
                                 bookingList.remove(pos);
                                 notifyItemRemoved(pos);
                                 notifyItemChanged(pos, bookingList.size());
-                                Toast.makeText(holder.delete_booking_btn.getContext(),"position : "+pos + " size : " + bookingList.size(),Toast.LENGTH_SHORT).show();
+                                Toast.makeText(holder.delete_booking_btn.getContext(),"position : "+ pos + " size : " + bookingList.size(),Toast.LENGTH_SHORT).show();
                                 // 서버에 삭제한 거 전송
                             }
                         })

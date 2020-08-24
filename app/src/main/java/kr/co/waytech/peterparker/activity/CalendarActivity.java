@@ -1,12 +1,15 @@
 package kr.co.waytech.peterparker.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +31,10 @@ import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.SaturdayDecorator;
 import kr.co.waytech.peterparker.SundayDecorator;
 
+import static kr.co.waytech.peterparker.activity.BookingActivity.bookingActivity;
+import static kr.co.waytech.peterparker.activity.BookingActivity.parking_ID;
+import static kr.co.waytech.peterparker.adapter.ListAdapter.avaible_time;
+
 
 public class CalendarActivity extends AppCompatActivity  {
 
@@ -42,6 +49,7 @@ public class CalendarActivity extends AppCompatActivity  {
     Color color = new Color();
     TextView calendar_text1, calendar_text2;
     Button select_btn, booking_day_text;
+    final PostClass Postc = new PostClass();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,8 +88,15 @@ public class CalendarActivity extends AppCompatActivity  {
         select_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BookingActivity.CalendarBtn.setText(mYear + "년 " + mMonth + "월 " + mDay + "일 ");
-                finish();
+                Postc.send_booking_time_id(parking_ID,  Integer.toString(mYear),Integer.toString(mMonth), Integer.toString(mDay));
+                Handler mHandler = new Handler();
+                mHandler.postDelayed(new Runnable(){
+                    public void run() {
+                       avaible_time = Postc.Avaible_time;
+                       BookingActivity.CalendarBtn.setText(mYear + "년 " + mMonth + "월 " + mDay + "일 ");
+                       finish();
+                    }
+                }, 500);
             }
         });
 

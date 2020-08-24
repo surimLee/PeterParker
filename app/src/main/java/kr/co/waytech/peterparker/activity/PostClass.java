@@ -207,7 +207,7 @@ public class PostClass {
             }
         }.start();
     }
-    public void send_booking_time_id(final String ID){
+    public void send_booking_time_id(final String ID, final String year, final String month, final String day){
         new Thread() {
             public void run() {
                 Bundle bun = new Bundle();
@@ -215,7 +215,7 @@ public class PostClass {
                 msg.setData(bun);
                 handler.sendMessage(msg);
                 try {
-                    post_avaible_booking_time(ID);
+                    post_avaible_booking_time(ID, year, month, day);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -505,15 +505,30 @@ public class PostClass {
     }
 
      */
-    public void post_avaible_booking_time(String id) throws IOException {
+    public void post_avaible_booking_time(String id, String year, String month, String day) throws IOException {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/show/time/" + id)
+                .url("http://blazingcode.asuscomm.com/api/show/time/" + id + '-' + year + '-' + month + '-' + day)
                 .method("GET", null)
                 .build();
         Response response = client.newCall(request).execute();
         Avaible_time = response.body().string();
         System.out.println("time is .. " + Avaible_time);
+    }
+
+    public void post_avaible_time(String id) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("parking_lot_id", id)
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/show/time")
+                .method("POST", body)
+                .addHeader("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibGF6aW5nY29kZS5hc3VzY29tbS5jb21cL2FwaVwvbG9naW4iLCJpYXQiOjE1OTgyNDk5NjEsImV4cCI6MTU5ODI1MzU2MSwibmJmIjoxNTk4MjQ5OTYxLCJqdGkiOiIyUDhOUDB1NEdmeVhuWk1FIiwic3ViIjoxNSwicHJ2IjoiODdlMGFmMWVmOWZkMTU4MTJmZGVjOTcxNTNhMTRlMGIwNDc1NDZhYSJ9.GC91Nz26F7bYqg3WgFAXalb7jEQFRuyIF65jpaaZ5mQ")
+                .build();
+        Response response = client.newCall(request).execute();
     }
 }

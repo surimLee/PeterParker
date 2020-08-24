@@ -13,7 +13,9 @@ import androidx.cardview.widget.CardView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import kr.co.waytech.peterparker.DownloadImageTask;
 import kr.co.waytech.peterparker.model.ListData;
@@ -27,6 +29,10 @@ public class ListAdapter extends BaseAdapter {
     public static String address, price, distance, phone, ID, avaible_time;
 
     private ArrayList<ListData> array_parking_lot = new ArrayList<ListData>();
+    long now = System.currentTimeMillis() - 1000;
+    Date date_today = new Date(now);
+    SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy-MM-dd");
+    String formatDate = sdfNow.format(date_today);
     final PostClass Postc = new PostClass();
 
 
@@ -90,8 +96,7 @@ public class ListAdapter extends BaseAdapter {
                 ID = listViewItem.getId();
                 System.out.println(address);
                 Postc.send_Location(listViewItem.getId());
-                Postc.send_booking_time_id(listViewItem.getId());
-
+                Postc.send_booking_time_id(listViewItem.getId(), formatDate.split("-")[0], formatDate.split("-")[1], formatDate.split("-")[2]);
                 ID = listViewItem.getId();
                 Handler mHandler = new Handler();
                 mHandler.postDelayed(new Runnable()  {

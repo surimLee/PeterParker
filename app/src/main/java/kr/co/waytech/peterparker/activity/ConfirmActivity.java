@@ -63,7 +63,7 @@ public class ConfirmActivity extends AppCompatActivity {
         new DownloadImageTask((ImageView)findViewById(R.id.booking_one_parking_lot_img)).execute(Postc.Parking_img[0]);
         onetime.setText(starttime + " ~ " + endtime);
         oneAddress.setText(address);
-        oneday.setText(mYear + "년-" + mMonth + "월-" + mDay + "일-");
+        oneday.setText(mYear + "년-" + mMonth + "월-" + mDay + "일");
         startYear =  Integer.toString(mYear);
         startMonth = Integer.toString(mMonth);
         startDay = Integer.toString(mDay);
