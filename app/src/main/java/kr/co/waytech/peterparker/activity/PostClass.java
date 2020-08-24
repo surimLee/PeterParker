@@ -40,6 +40,7 @@ public class PostClass {
     public static double[] ParkingLat, ParkingLng;
     public static String[] Parking_img, Parking_phone;
     public static String[][] All_Parkinglot;
+    public static String Avaible_time;
     public static int b = 7;
     static File tempSelectFile;
     public static Marker ParkingMark;
@@ -164,7 +165,21 @@ public class PostClass {
             }
         }.start();
     }
-
+    public void send_booking_time_id(final String ID){
+        new Thread() {
+            public void run() {
+                Bundle bun = new Bundle();
+                Message msg = handler.obtainMessage();
+                msg.setData(bun);
+                handler.sendMessage(msg);
+                try {
+                    post_avaible_booking_time(ID);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
     private void Post_Login(String ID, String Password) throws IOException{
             OkHttpClient client = new OkHttpClient().newBuilder().build();
             MediaType mediaType = MediaType.parse("text/plain");
@@ -448,4 +463,15 @@ public class PostClass {
     }
 
      */
-     }
+    public void post_avaible_booking_time(String id) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/show/time/" + id)
+                .method("GET", null)
+                .build();
+        Response response = client.newCall(request).execute();
+        Avaible_time = response.body().string();
+        System.out.println("time is .. " + Avaible_time);
+    }
+}

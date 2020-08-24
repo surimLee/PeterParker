@@ -26,6 +26,7 @@ import kr.co.waytech.peterparker.R;
 
 import static kr.co.waytech.peterparker.adapter.ListAdapter.ID;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.address;
+import static kr.co.waytech.peterparker.adapter.ListAdapter.avaible_time;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.phone;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.price;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.distance;
@@ -78,14 +79,36 @@ public class BookingActivity extends AppCompatActivity {
         });
 
         for(count = 0; count < 48; count++) {
-            final String checkboxid = "checkbox_time_" + (count + 1);
-            String textviewid = "checkbox_text_" + (count + 1);
-            int cresID = getResources().getIdentifier(checkboxid, "id", getPackageName());
-            int tresID = getResources().getIdentifier(textviewid, "id", getPackageName());
-            checkBoxArrayList.add((CheckBox) findViewById(cresID));
-            textviewArrayList.add((TextView)findViewById(tresID));
-            checkBoxArrayList.get(count).setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
-            int a = count;
+            System.out.println("splited .. " + count + "번째 : "  + avaible_time.charAt(count));//.substring(count));
+                final String checkboxid = "checkbox_time_" + (count + 1);
+                String textviewid = "checkbox_text_" + (count + 1);
+                int cresID = getResources().getIdentifier(checkboxid, "id", getPackageName());
+                int tresID = getResources().getIdentifier(textviewid, "id", getPackageName());
+                checkBoxArrayList.add((CheckBox) findViewById(cresID));
+                textviewArrayList.add((TextView)findViewById(tresID));
+                if(avaible_time.charAt(count) == '0') {
+                    checkBoxArrayList.get(count).setChecked(false);
+                    checkBoxArrayList.get(count).setButtonDrawable(R.drawable.ic_booking_time_cannot);
+                    textviewArrayList.get(count).setTextColor(Color.parseColor("#ffffff"));
+                    checkBoxArrayList.get(count).setVisibility(View.INVISIBLE);
+                    textviewArrayList.get(count).setVisibility(View.INVISIBLE);
+                    checkBoxArrayList.get(count).setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+                        int c = count;
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean bool) {
+                            /*
+                            checkBoxArrayList.get(c).setChecked(false);
+                            checkBoxArrayList.get(c).setButtonDrawable(R.drawable.ic_booking_time_cannot);
+                            textviewArrayList.get(c).setTextColor(Color.parseColor("#ffffff"));
+
+                             */
+
+                        }
+                    });
+                }
+                else if (avaible_time.charAt(count) == '1'){
+                checkBoxArrayList.get(count).setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+                    int a = count;
+
                     @Override
 
                     public void onCheckedChanged(CompoundButton compoundButton, boolean bool) {
@@ -97,19 +120,44 @@ public class BookingActivity extends AppCompatActivity {
                                     if (b > a) {
                                         for (int c = a + 1; c < b; c++) {
                                             if (!checkBoxArrayList.get(c).isChecked()) {
-                                                checkBoxArrayList.get(c).setChecked(true);
-                                                checkBoxArrayList.get(c).setButtonDrawable(R.drawable.ic_booking_time_enable);
-                                                textviewArrayList.get(c).setTextColor(Color.parseColor("#ffffff"));
+                                                if(checkBoxArrayList.get(c).getVisibility() == View.INVISIBLE){
+                                                    Toast.makeText(getApplicationContext(), "예약 불가능한 시간입니다." + textviewArrayList.get(c).getText(), Toast.LENGTH_SHORT).show();
+                                                    for (int d = 0; d < 48; d++) {
+                                                            checkBoxArrayList.get(d).setChecked(false);
+                                                            checkBoxArrayList.get(d).setButtonDrawable(R.drawable.ic_booking_time_disable);
+                                                            textviewArrayList.get(d).setTextColor(Color.parseColor("#000000"));
+
+                                                    }
+                                                    break;
+                                                }
+                                                else {
+                                                    checkBoxArrayList.get(c).setChecked(true);
+                                                    checkBoxArrayList.get(c).setButtonDrawable(R.drawable.ic_booking_time_enable);
+                                                    textviewArrayList.get(c).setTextColor(Color.parseColor("#ffffff"));
+                                                }
+
                                                 System.out.println("선택 : " + a + ", c = " + c);
                                             }
                                         }
                                     } else if (a > b) {
                                         for (int c = b; c < a; c++) {
                                             if (!checkBoxArrayList.get(c).isChecked()) {
-                                                checkBoxArrayList.get(c).setChecked(true);
-                                                checkBoxArrayList.get(c).setButtonDrawable(R.drawable.ic_booking_time_enable);
-                                                textviewArrayList.get(c).setTextColor(Color.parseColor("#ffffff"));
-                                                System.out.println("선택 : " + a + ", c = " + c);
+                                                if(checkBoxArrayList.get(c).getVisibility() == View.INVISIBLE){
+                                                    Toast.makeText(getApplicationContext(), "예약 불가능한 시간입니다." + textviewArrayList.get(c).getText(), Toast.LENGTH_SHORT).show();
+                                                    for (int d = 0; d < 48; d++) {
+                                                        checkBoxArrayList.get(d).setChecked(false);
+                                                        checkBoxArrayList.get(d).setButtonDrawable(R.drawable.ic_booking_time_disable);
+                                                        textviewArrayList.get(d).setTextColor(Color.parseColor("#000000"));
+
+                                                    }
+                                                    break;
+                                                }
+                                                else {
+                                                    checkBoxArrayList.get(c).setChecked(true);
+                                                    checkBoxArrayList.get(c).setButtonDrawable(R.drawable.ic_booking_time_enable);
+                                                    textviewArrayList.get(c).setTextColor(Color.parseColor("#ffffff"));
+                                                    System.out.println("선택 : " + a + ", c = " + c);
+                                                }
                                             }
                                         }
                                     }
@@ -148,8 +196,8 @@ public class BookingActivity extends AppCompatActivity {
                             }
                         }
                     }
-            });
-
+                });
+            }
             btnbooking.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -24,7 +24,7 @@ import kr.co.waytech.peterparker.activity.PostClass;
 public class ListAdapter extends BaseAdapter {
 
     private Context mContext;
-    public static String address, price, distance, phone, ID;
+    public static String address, price, distance, phone, ID, avaible_time;
 
     private ArrayList<ListData> array_parking_lot = new ArrayList<ListData>();
     final PostClass Postc = new PostClass();
@@ -90,12 +90,14 @@ public class ListAdapter extends BaseAdapter {
                 ID = listViewItem.getId();
                 System.out.println(address);
                 Postc.send_Location(listViewItem.getId());
+                Postc.send_booking_time_id(listViewItem.getId());
 
                 ID = listViewItem.getId();
                 Handler mHandler = new Handler();
                 mHandler.postDelayed(new Runnable()  {
                     public void run() {
                         phone = Postc.Parking_phone[0];
+                        avaible_time = Postc.Avaible_time;
                         // 시간 지난 후 실행할 코딩
                         Intent intent = new Intent(context.getApplicationContext(), BookingActivity.class);
                         context.startActivity(intent);
