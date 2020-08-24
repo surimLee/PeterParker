@@ -18,14 +18,14 @@ public class SignupActivity2 extends AppCompatActivity {
 
     private static EditText EdEM, EdPW, EdID, EdNM, EdNN, EdPN, EdCN;
     private static String VID, VPW, VNM, VEM, VNN, VPN, VCN;
-    public static Activity SignupActivity;
+    public static Activity SignupActivity2;
     public static boolean SignupableID, SignupablePW, SignupableNM, SignupableEM, SignupableNN, SignupablePN, SignupableCN = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         final PostClass Postc = new PostClass();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup2);
-        SignupActivity = SignupActivity2.this;
+        SignupActivity2 = SignupActivity2.this;
         EdEM = (EditText)findViewById(R.id.signupActiviy_edittext_email);
         EdID = (EditText)findViewById(R.id.signupActiviy_edittext_ID);
         EdNN = (EditText)findViewById(R.id.signupActiviy_edittext_nickname);
@@ -63,7 +63,7 @@ public class SignupActivity2 extends AppCompatActivity {
         });
     }
     public void Success_Signup(){
-        SignupActivity.finish();
+        SignupActivity2.finish();
     } //String strID, String strPW, String strEM, String strPN, String strCN
     public static void regularTextID(){
         EdID.addTextChangedListener(new TextWatcher() {

@@ -2,9 +2,12 @@ package kr.co.waytech.peterparker.activity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -29,6 +32,7 @@ import okhttp3.Response;
 
 
 public class PostClass {
+    public static int responseCode = 0; //중복확인에서 리턴되는 코드 확인 위한
     public static int imgcount = 1;
     protected static String realtoken, bookingbody;
     String status = "none";
@@ -40,11 +44,13 @@ public class PostClass {
     public static double[] ParkingLat, ParkingLng;
     public static String[] Parking_img, Parking_phone;
     public static String[][] All_Parkinglot;
+    public static String Avaible_time;
     public static int b = 7;
     static File tempSelectFile;
     public static Marker ParkingMark;
     public static String body_parkinglot = "abc";
-    LoginActivity2 LogA = new LoginActivity2();
+    LoginActivity LogA = new LoginActivity();
+    SignupActivity SignupA = new SignupActivity();
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             Bundle bun = msg.getData();
@@ -84,6 +90,43 @@ public class PostClass {
                 }
             }
         }.start();
+    }
+
+    protected void send_id_duplication (final String SID){
+        new Thread() {
+            public void run() {
+                Bundle bun = new Bundle();
+                Message msg = handler.obtainMessage();
+                msg.setData(bun);
+                handler.sendMessage(msg);
+                try {
+                    Post_id_duplication(SID);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    private void Post_id_duplication(String ID) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("user_id", ID)
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/check/id")
+                .method("POST", body)
+                .build();
+        responseCode = 0;
+        Response response = client.newCall(request).execute();
+        String result = response.toString();
+        System.out.println("Response Body is " + response);
+        Log.d("Post_id_duplication", "Response Body is " + response);
+
+        responseCode = response.code();
+
     }
 
     public void send_token(){
@@ -164,7 +207,21 @@ public class PostClass {
             }
         }.start();
     }
-
+    public void send_booking_time_id(final String ID){
+        new Thread() {
+            public void run() {
+                Bundle bun = new Bundle();
+                Message msg = handler.obtainMessage();
+                msg.setData(bun);
+                handler.sendMessage(msg);
+                try {
+                    post_avaible_booking_time(ID);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
     private void Post_Login(String ID, String Password) throws IOException{
             OkHttpClient client = new OkHttpClient().newBuilder().build();
             MediaType mediaType = MediaType.parse("text/plain");
@@ -448,4 +505,15 @@ public class PostClass {
     }
 
      */
-     }
+    public void post_avaible_booking_time(String id) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/show/time/" + id)
+                .method("GET", null)
+                .build();
+        Response response = client.newCall(request).execute();
+        Avaible_time = response.body().string();
+        System.out.println("time is .. " + Avaible_time);
+    }
+}

@@ -1,13 +1,20 @@
 package kr.co.waytech.peterparker.fragment;
 
 import android.app.Fragment;
+import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +39,7 @@ public class BookingListFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         if(bookingList == null) {
             bookingList = new ArrayList<>();
@@ -49,6 +57,8 @@ public class BookingListFragment extends Fragment {
 
 
 
+    Button DeleteBookingBtn;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -60,7 +70,9 @@ public class BookingListFragment extends Fragment {
         bookingListAdapter = new BookingListAdapter(getActivity(), bookingList);
         bookingListRecyclerView.setAdapter(bookingListAdapter);
 
+
         return fragmentView;
+
     }
     public static void addlist(String name, String use,String address, String price, String time, String img){
         if(bookingList == null) {

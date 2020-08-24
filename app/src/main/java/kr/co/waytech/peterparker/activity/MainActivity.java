@@ -11,6 +11,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -25,6 +26,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 
 import kr.co.waytech.peterparker.R;
+import kr.co.waytech.peterparker.SessionManager;
 import kr.co.waytech.peterparker.fragment.BookingListFragment;
 import kr.co.waytech.peterparker.fragment.MapFragment;
 import kr.co.waytech.peterparker.fragment.ParkingFragment;

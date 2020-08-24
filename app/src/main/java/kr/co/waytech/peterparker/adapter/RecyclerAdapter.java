@@ -23,6 +23,7 @@ import static kr.co.waytech.peterparker.adapter.ListAdapter.address;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.phone;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.price;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.distance;
+import static kr.co.waytech.peterparker.adapter.ListAdapter.avaible_time;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.ID;
 
 public class RecyclerAdapter extends BaseAdapter {
@@ -89,12 +90,14 @@ public class RecyclerAdapter extends BaseAdapter {
                 price = data.getContent_Price();
                 distance = data.getDistance();
                 ID = data.getId();
+                Postc.send_booking_time_id(data.getId());
                 System.out.println(address);
                 Handler mHandler = new Handler();
                 mHandler.postDelayed(new Runnable()  {
                     public void run() {
                         phone = Postc.Parking_phone[0];
                         // 시간 지난 후 실행할 코딩
+                        avaible_time = Postc.Avaible_time;
                         Intent intent = new Intent(context.getApplicationContext(), BookingActivity.class);
                         context.startActivity(intent);
                     }

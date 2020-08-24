@@ -3,6 +3,7 @@ package kr.co.waytech.peterparker.adapter;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseSettings;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.altbeacon.beacon.Beacon;
@@ -23,8 +25,8 @@ import org.altbeacon.beacon.BeaconTransmitter;
 import java.util.Arrays;
 import java.util.List;
 
-import kr.co.waytech.peterparker.DownloadImageTask;
 import kr.co.waytech.peterparker.R;
+import kr.co.waytech.peterparker.activity.MainActivity;
 import kr.co.waytech.peterparker.model.BookingList;
 
 public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.MyViewHolder> {
@@ -43,20 +45,68 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.row_bookinglist_item, parent, false);
 
-        final MyViewHolder vHolder = new MyViewHolder(view);
+        return new MyViewHolder(view);
+    }
 
+
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+
+        holder.parkinglotName.setText(bookingList.get(position).getParkinglotName());
+        holder.status.setText(bookingList.get(position).getStatus());
+        holder.parkinglotAddress.setText(bookingList.get(position).getParkinglotAddress());
+        holder.parkinglotPrice.setText(bookingList.get(position).getParkinglotPrice());
+        holder.parkinglotSchedule.setText(bookingList.get(position).getParkinglotSchedule());
+        holder.parkinglotImage.setImageResource(bookingList.get(position).getImageUrl());
 
         //Dialog ini
-        vHolder.checkin_btn.setOnClickListener(new View.OnClickListener() {
+        holder.checkin_btn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View view) {
-//                Toast.makeText(mContext,"Click Item"+ vHolder.getAdapterPosition(),Toast.LENGTH_SHORT).show();
-                Toast.makeText(mContext,"Click Item",Toast.LENGTH_SHORT).show();
+                int pos = holder.getAdapterPosition();
+                Toast.makeText(mContext,"Click Item"+ pos,Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext,"Click Item",Toast.LENGTH_SHORT).show();
                 connectIBeacon();
             }
         });
-        return new MyViewHolder(view);
+
+
+        //Dialog ini
+        holder.delete_booking_btn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View view) {
+                int pos = holder.getAdapterPosition();
+                Toast.makeText(mContext,"Click Item"+ pos,Toast.LENGTH_SHORT).show();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(holder.delete_booking_btn.getContext());
+                builder.setTitle("예약취소")
+                        .setMessage("정말로 예약을 취소하시겠습니까.")
+                        .setCancelable(false)
+                        .setPositiveButton("네", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                bookingList.remove(pos);
+                                notifyItemRemoved(pos);
+                                notifyItemChanged(pos, bookingList.size());
+                                Toast.makeText(holder.delete_booking_btn.getContext(),"position : "+pos + " size : " + bookingList.size(),Toast.LENGTH_SHORT).show();
+                                // 서버에 삭제한 거 전송
+                            }
+                        })
+                        .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //No 눌렀을 때 반응 여기
+                            }
+                        });
+                //Creating dialog box
+                AlertDialog dialog  = builder.create();
+                dialog.show();
+
+            }
+        });
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -89,23 +139,11 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        View v = holder.itemView;
-        holder.parkinglotName.setText(bookingList.get(position).getParkinglotName());
-        holder.status.setText(bookingList.get(position).getStatus());
-        holder.parkinglotAddress.setText(bookingList.get(position).getParkinglotAddress());
-        holder.parkinglotPrice.setText(bookingList.get(position).getParkinglotPrice());
-        holder.parkinglotSchedule.setText(bookingList.get(position).getParkinglotSchedule());
-        new DownloadImageTask(holder.parkinglotImage).execute(bookingList.get(position).getImageUrl());
-
-    }
-
-    @Override
     public int getItemCount() { return bookingList.size(); }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        Button checkin_btn;
+        Button checkin_btn, delete_booking_btn;
         ImageView parkinglotImage;
         TextView parkinglotName, status, parkinglotAddress, parkinglotPrice, parkinglotSchedule;
 
@@ -113,6 +151,7 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
             super(itemView);
 
             checkin_btn = itemView.findViewById(R.id.btn_check_in);
+            delete_booking_btn = itemView.findViewById(R.id.delete_booking_Button);
             parkinglotImage = itemView.findViewById(R.id.parkinglotImage);
             parkinglotName = itemView.findViewById(R.id.parkinglotName);
             status = itemView.findViewById(R.id.status);
@@ -123,3 +162,5 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
         }
     }
 }
+
+
