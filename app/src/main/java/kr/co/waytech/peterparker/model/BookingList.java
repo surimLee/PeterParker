@@ -1,7 +1,5 @@
 package kr.co.waytech.peterparker.model;
 
-import android.graphics.drawable.Drawable;
-
 public class BookingList {
 
     String parkinglotName;

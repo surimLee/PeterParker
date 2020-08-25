@@ -166,4 +166,3 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
     }
 }
 
-

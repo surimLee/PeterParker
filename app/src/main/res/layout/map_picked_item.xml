@@ -142,10 +142,6 @@
             style="?android:attr/borderlessButtonStyle"
             android:textSize="15sp"
             android:layout_gravity="center">
-
         </Button>
-
     </androidx.cardview.widget.CardView>
-
-
 </LinearLayout>

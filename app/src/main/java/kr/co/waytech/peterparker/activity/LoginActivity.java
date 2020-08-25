@@ -14,10 +14,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.io.IOException;
 
 import kr.co.waytech.peterparker.R;
+import kr.co.waytech.peterparker.fragment.ProfileFragment;
 
 import static android.os.SystemClock.sleep;
 
@@ -93,6 +96,9 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = sharedPreferences.edit(); //SP를 제어할 editor를 선언
                         editor.putString("token", loginToken);
                         editor.commit();
+
+                        ProfileFragment.set_afterLoginView();
+
                     } else {
 //                        Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
                         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
@@ -119,6 +125,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void Success_Login(){
+
         //로그인 액티비티 종료
         loginActivity.finish();
     }

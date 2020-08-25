@@ -123,4 +123,3 @@ public class RecyclerAdapter extends BaseAdapter {
         picked_parking_lot.add(item);
     }
 }
-
