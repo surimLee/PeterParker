@@ -6,8 +6,6 @@ public class ListData {
     private String content_Price;
     private String id;
     private String Distance;
-    private int resId;
-
 
     public void setAddress(String Address) {
         this.Address = Address;

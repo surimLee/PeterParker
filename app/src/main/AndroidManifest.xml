@@ -48,6 +48,9 @@
         <activity android:name=".activity.LoginActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
+        <activity android:name=".activity.EditParkinglotActivity"
+            android:theme="@style/ActionBarTheme">
+        </activity>
         <activity android:name=".activity.BookingActivity"/>
         <activity android:name=".activity.BookingSuccessActivity"
             android:theme="@style/ActionBarTheme">

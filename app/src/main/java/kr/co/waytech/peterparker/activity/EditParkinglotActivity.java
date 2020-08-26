@@ -10,7 +10,6 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.text.Html;
 import android.util.TypedValue;
@@ -30,19 +29,18 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
-
-import com.bumptech.glide.RequestManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import gun0912.tedbottompicker.TedBottomPicker;
-import kr.co.waytech.peterparker.R;
 import io.reactivex.disposables.Disposable;
+import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.WebViewActivity;
 
 import static kr.co.waytech.peterparker.fragment.MapFragment.mlatitude;
@@ -50,18 +48,18 @@ import static kr.co.waytech.peterparker.fragment.MapFragment.mlongitude;
 import static kr.co.waytech.peterparker.fragment.ParkingFragment.parking_adding_flag;
 import static kr.co.waytech.peterparker.fragment.ProfileFragment.str_Token;
 
-public class AddParkinglotActivity extends AppCompatActivity {
+public class EditParkinglotActivity  extends AppCompatActivity {
 
     private Disposable multiImageDisposable;
-    private ViewGroup mSelectedImagesContainer;
+    private ViewGroup edit_mSelectedImagesContainer;
     private RequestManager requestManager;
-    private ImageView iv_image;
-    private List<Uri> selectedUriList;
+    private ImageView edit_iv_image;
+    private List<Uri> edit_selectedUriList;
     private Uri selectedUri;
-    private EditText et_address, et_id, et_address_detail, et_price, et_name;
+    private EditText edit_et_address, edit_et_address_detail, edit_et_price, edit_et_name;
     public static double plongitude = 0.0;
     public static double platitude = 0.0;
-    public static Bitmap PL_img1, PL_img2, PL_img3, PL_img4;
+    public static Bitmap edit_PL_img1, edit_PL_img2, edit_PL_img3, edit_PL_img4;
     final PostClass Postc = new PostClass();
 
     private static final int SEARCH_ADDRESS_ACTIVITY = 10000;
@@ -69,44 +67,45 @@ public class AddParkinglotActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_addparkinglot);
+        setContentView(R.layout.activity_edit_parkinglot);
 
         final LocationManager locationManagerm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        iv_image = findViewById(R.id.iv_image_);
-        mSelectedImagesContainer = findViewById(R.id.selected_photos_container);
+        edit_iv_image = findViewById(R.id.edit_iv_image_);
+        edit_mSelectedImagesContainer = findViewById(R.id.edit_selected_photos_container);
         requestManager = Glide.with(this);
 
-        getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>내 주차장 등록</font>"));
+        getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>내 주차장 수정</font>"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setElevation(1);
+
         setMultiShowButton();
 
 
-        et_id = (EditText)findViewById(R.id.et_id);
-        et_address = (EditText)findViewById(R.id.et_address);
-        et_address_detail = (EditText)findViewById(R.id.et_address_detail);
-        et_price = (EditText)findViewById(R.id.et_price);
-        et_name = (EditText)findViewById(R.id.et_name);
-        Button btn_search = findViewById(R.id.btn_find_address);
-        if (btn_search != null)
-            btn_search.setOnClickListener(new View.OnClickListener() {
+        edit_et_address = (EditText)findViewById(R.id.edit_et_address);
+        edit_et_address_detail = (EditText)findViewById(R.id.edit_et_address_detail);
+        edit_et_price = (EditText)findViewById(R.id.edit_et_price);
+        edit_et_name = (EditText)findViewById(R.id.edit_et_name);
+        Button edit_btn_search = findViewById(R.id.edit_btn_find_address);
+        Button edit_btn_delete = findViewById(R.id.edit_btn_delete_PL);
+        if (edit_btn_search != null)
+            edit_btn_search.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(AddParkinglotActivity.this, WebViewActivity.class);
+                    Intent i = new Intent(EditParkinglotActivity.this, WebViewActivity.class);
                     startActivityForResult(i, SEARCH_ADDRESS_ACTIVITY);
                 }
             });
 
-        Button btn_getXY = findViewById(R.id.btn_getXY);
-        btn_getXY.setOnClickListener(new View.OnClickListener() {
+        Button edit_btn_getXY = findViewById(R.id.edit_btn_getXY);
+        edit_btn_getXY.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 if ( Build.VERSION.SDK_INT >= 23 &&
                         ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-                    ActivityCompat.requestPermissions( AddParkinglotActivity.this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
+                    ActivityCompat.requestPermissions( EditParkinglotActivity.this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
                             0 );
                 }
                 else {
@@ -115,11 +114,18 @@ public class AddParkinglotActivity extends AppCompatActivity {
                     plongitude = location.getLongitude();
                     platitude = location.getLatitude();
 
-                   Toast.makeText(AddParkinglotActivity.this,"위도 : " + plongitude + "\n" +
+                    Toast.makeText(EditParkinglotActivity.this,"위도 : " + plongitude + "\n" +
                             "경도 : " + platitude,Toast.LENGTH_SHORT).show();
 
 
                 }
+            }
+        });
+        edit_btn_delete.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                //post delete parking lot
             }
         });
 
@@ -133,45 +139,41 @@ public class AddParkinglotActivity extends AppCompatActivity {
             case R.id.menu_register:
                 if(str_Token.length() > 10 && platitude == 0.0) {
                     try {
-                        PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(0));
-                        PL_img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(1));
-                        PL_img3 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(2));
-                        PL_img4 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(3));
+                        edit_PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), edit_selectedUriList.get(0));
+                        edit_PL_img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), edit_selectedUriList.get(1));
+                        edit_PL_img3 = MediaStore.Images.Media.getBitmap(getContentResolver(), edit_selectedUriList.get(2));
+                        edit_PL_img4 = MediaStore.Images.Media.getBitmap(getContentResolver(), edit_selectedUriList.get(3));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     parking_adding_flag = 1;
-                    Postc.post_add_parking_lot(et_id.getText().toString(), et_name.getText().toString(), et_address.getText().toString().split(",")[1] + " " + et_address_detail.getText().toString(),
-                            Double.toString(mlatitude), Double.toString(mlongitude), et_price.getText().toString(), str_Token,
-                            PL_img1, PL_img2, PL_img3, PL_img4);
-                    Toast.makeText(AddParkinglotActivity.this,"등록에 성공하였습니다." ,Toast.LENGTH_SHORT).show();
+                    //post
+                    Toast.makeText(EditParkinglotActivity.this,"등록에 성공하였습니다." ,Toast.LENGTH_SHORT).show();
 
 
                 }
                 else if(str_Token.length() > 10 && platitude != 0.0){
                     try {
-                        PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(0));
-                        PL_img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(1));
-                        PL_img3 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(2));
-                        PL_img4 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(3));
+                        edit_PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), edit_selectedUriList.get(0));
+                        edit_PL_img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), edit_selectedUriList.get(1));
+                        edit_PL_img3 = MediaStore.Images.Media.getBitmap(getContentResolver(), edit_selectedUriList.get(2));
+                        edit_PL_img4 = MediaStore.Images.Media.getBitmap(getContentResolver(), edit_selectedUriList.get(3));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     parking_adding_flag = 1;
-                    Postc.post_add_parking_lot(et_id.getText().toString(), et_name.getText().toString(), et_address.getText().toString().split(",")[1] + " " + et_address_detail.getText().toString(),
-                            Double.toString(platitude), Double.toString(plongitude), et_price.getText().toString(), str_Token,
-                            PL_img1, PL_img2, PL_img3, PL_img4);
-                    Toast.makeText(AddParkinglotActivity.this,"등록에 성공하였습니다." ,Toast.LENGTH_SHORT).show();
+                    //Post
+                    Toast.makeText(EditParkinglotActivity.this,"등록에 성공하였습니다." ,Toast.LENGTH_SHORT).show();
                 }
                 else if(str_Token.length() < 10){
-                    Toast.makeText(AddParkinglotActivity.this,"로그인이 필요합니다." ,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditParkinglotActivity.this,"로그인이 필요합니다." ,Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    Toast.makeText(AddParkinglotActivity.this,"오류 발생" ,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditParkinglotActivity.this,"오류 발생" ,Toast.LENGTH_SHORT).show();
                 }
                 //Add Register Button Listener Here
                 //Send Data to Server Here
-                AddParkinglotActivity.this.finish();
+                EditParkinglotActivity.this.finish();
                 return true;
 
             default:
@@ -192,7 +194,7 @@ public class AddParkinglotActivity extends AppCompatActivity {
                 if(resultCode == RESULT_OK){
                     String data = intent.getExtras().getString("data");
                     if (data != null)
-                        et_address.setText(data);
+                        edit_et_address.setText(data);
                 }
                 break;
         }
@@ -200,29 +202,29 @@ public class AddParkinglotActivity extends AppCompatActivity {
 
     private void setMultiShowButton() {
 
-        Button btnMultiShow = findViewById(R.id.btn_add_pic);
+        Button btnMultiShow = findViewById(R.id.edit_btn_add_pic);
         btnMultiShow.setOnClickListener(view -> {
 
             PermissionListener permissionlistener = new PermissionListener() {
                 @Override
                 public void onPermissionGranted() {
 
-                    TedBottomPicker.with(AddParkinglotActivity.this)
+                    TedBottomPicker.with(EditParkinglotActivity.this)
                             //.setPeekHeight(getResources().getDisplayMetrics().heightPixels/2)
                             .setPeekHeight(1600)
                             .showTitle(false)
                             .setCompleteButtonText("Done")
                             .setEmptySelectionText("No Select")
-                            .setSelectedUriList(selectedUriList)
+                            .setSelectedUriList(edit_selectedUriList)
                             .setSelectMaxCount(4)
                             .showMultiImage(uriList -> {
-                                selectedUriList = uriList;
+                                edit_selectedUriList = uriList;
                                 showUriList(uriList);
                             });
                 }
                 @Override
                 public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-                    Toast.makeText(AddParkinglotActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditParkinglotActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
                 }
             };
             checkPermission(permissionlistener);
@@ -230,7 +232,7 @@ public class AddParkinglotActivity extends AppCompatActivity {
     }
 
     private void checkPermission(PermissionListener permissionlistener) {
-        TedPermission.with(AddParkinglotActivity.this)
+        TedPermission.with(EditParkinglotActivity.this)
                 .setPermissionListener(permissionlistener)
                 .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
                 .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -240,10 +242,10 @@ public class AddParkinglotActivity extends AppCompatActivity {
     private void showUriList(List<Uri> uriList) {
         // Remove all views before
         // adding the new ones.
-        mSelectedImagesContainer.removeAllViews();
+        edit_mSelectedImagesContainer.removeAllViews();
 
-        iv_image.setVisibility(View.GONE);
-        mSelectedImagesContainer.setVisibility(View.VISIBLE);
+        edit_iv_image.setVisibility(View.GONE);
+        edit_mSelectedImagesContainer.setVisibility(View.VISIBLE);
 
         int widthPixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
         int heightPixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
@@ -258,7 +260,7 @@ public class AddParkinglotActivity extends AppCompatActivity {
                     .apply(new RequestOptions().fitCenter())
                     .into(thumbnail);
 
-            mSelectedImagesContainer.addView(imageHolder);
+            edit_mSelectedImagesContainer.addView(imageHolder);
 
             thumbnail.setLayoutParams(new FrameLayout.LayoutParams(widthPixel, heightPixel));
         }

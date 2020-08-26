@@ -2,6 +2,7 @@ package kr.co.waytech.peterparker.fragment;
 
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,8 +30,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Context.MODE_PRIVATE;
 import static kr.co.waytech.peterparker.activity.PostClass.my_booking_list;
 import static kr.co.waytech.peterparker.activity.PostClass.my_parking_lot;
+import static kr.co.waytech.peterparker.fragment.ProfileFragment.str_Token;
 
 public class BookingListFragment extends Fragment {
 
@@ -49,11 +52,13 @@ public class BookingListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("login", MODE_PRIVATE);
+        str_Token = sharedPreferences.getString("token", "");
         if(bookingList == null) {
             bookingList = new ArrayList<>();
         }
         if(adding_booking_flag == 1) {
-            Postc.get_my_booking_list("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibGF6aW5nY29kZS5hc3VzY29tbS5jb21cL2FwaVwvbG9naW4iLCJpYXQiOjE1OTgzMjgzODIsImV4cCI6MTU5ODMzMTk4MiwibmJmIjoxNTk4MzI4MzgyLCJqdGkiOiI0cEZLZm1CbEZPRjRnRm9MIiwic3ViIjoxNSwicHJ2IjoiODdlMGFmMWVmOWZkMTU4MTJmZGVjOTcxNTNhMTRlMGIwNDc1NDZhYSJ9.atzyEUIUSqabgdE0uH5qZW5Nl87eSJgWrX7tbyY7lYE");
+            Postc.get_my_booking_list(str_Token);
             Handler mHandler = new Handler();
             mHandler.postDelayed(new Runnable() {
                 public void run() {
@@ -61,11 +66,15 @@ public class BookingListFragment extends Fragment {
                     for(int i = 2; i < Postc.count_my_booking_list + 2; i ++) {
                         if (my_booking_list.split("\\{")[i].split(",")[15].split("\"")[3] == null) {
                             break;
-                        } else {
+                        }
+                        else if (my_booking_list.split("\\{")[i].split(",")[14].split(":")[1].equals("\"cancel\"")){
 
+                        } else {
+                            Postc.my_booking_id = my_booking_list.split("\\{")[i].split(",")[0].split(":")[1];
                             Postc.my_booking_name = my_booking_list.split("\\{")[i].split(",")[15].split("\"")[3];
                             Postc.my_booking_address = my_booking_list.split("\\{")[i].split(",")[16].split("\"")[3];
-                            Postc.my_booking_price = my_booking_list.split("\\{")[i].split(",")[2].split(":")[1];
+                            Postc.my_booking_price = Integer.toString(Integer.parseInt(my_booking_list.split("\\{")[i].split(",")[1].split(":")[1]) +
+                                                                        Integer.parseInt(my_booking_list.split("\\{")[i].split(",")[2].split(":")[1]));
                             Postc.my_booking_time = my_booking_list.split("\\{")[i].split(",")[3].split("\"")[3] + "년 "
                                     + my_booking_list.split("\\{")[i].split(",")[4].split("\"")[3] + "월 "
                                     + my_booking_list.split("\\{")[i].split(",")[5].split("\"")[3] + "일 "
@@ -76,9 +85,13 @@ public class BookingListFragment extends Fragment {
                                     + my_booking_list.split("\\{")[i].split(",")[10].split("\"")[3] + "일 "
                                     + my_booking_list.split("\\{")[i].split(",")[11].split("\"")[3] + "시 "
                                     + my_booking_list.split("\\{")[i].split(",")[12].split("\"")[3] + "분";
-                            Postc.my_booking_img = my_booking_list.split("\\{")[2].split(",")[17].split("\"")[3].replace("\\", "");
+                            Postc.my_booking_img = my_booking_list.split("\\{")[i].split(",")[17].split("\"")[3].replace("\\", "");
                             System.out.println("splited result : " + Postc.count_my_booking_list + " 개, " + Postc.my_booking_address + ", " + Postc.my_booking_price + "원, " + Postc.my_booking_time + ", ");
-                            bookingList.add(new BookingList(Postc.my_booking_name, "사용완료", Postc.my_booking_address, Postc.my_booking_price + "원", Postc.my_booking_time, Postc.my_booking_img));
+                            if(i == 2) {
+                                bookingList.clear();
+                                bookingList = new ArrayList<>();
+                            }
+                            bookingList.add(new BookingList(Postc.my_booking_id ,Postc.my_booking_name, "사용완료", Postc.my_booking_address, Postc.my_booking_price + "원", Postc.my_booking_time, Postc.my_booking_img));
 
                         }
                     }
@@ -117,10 +130,10 @@ public class BookingListFragment extends Fragment {
         return fragmentView;
 
     }
-    public static void addlist(String name, String use,String address, String price, String time, String img){
+    public static void addlist(String id, String name, String use,String address, String price, String time, String img){
         if(bookingList == null) {
             bookingList = new ArrayList<>();
         }
-        bookingList.add(new BookingList(name,use,address, price, time, img));
+        bookingList.add(new BookingList(id, name,use,address, price, time, img));
     }
 }

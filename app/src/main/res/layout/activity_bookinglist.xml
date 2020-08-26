@@ -55,9 +55,9 @@
                 </TextView>
 
                 <TextView
+                    android:id="@+id/booking_parking_lot_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="한국산업기술대학교 종합관 뒤"
                     android:textColor="#000000"
                     android:textSize="20sp"
                     android:textStyle="bold"

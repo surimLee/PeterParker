@@ -29,6 +29,7 @@ import static kr.co.waytech.peterparker.activity.BookingActivity.starttime;
 import static kr.co.waytech.peterparker.activity.ConfirmActivity.success_total_price;
 import static kr.co.waytech.peterparker.activity.ConfirmActivity.success_day;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.address;
+import static kr.co.waytech.peterparker.fragment.BookingListFragment.adding_booking_flag;
 
 
 public class BookingSuccessActivity extends AppCompatActivity {
@@ -64,6 +65,7 @@ public class BookingSuccessActivity extends AppCompatActivity {
             public void onClick(View view) {
                 bookinglist_flag = 1;
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                adding_booking_flag = 1;
                 startActivity(intent);
                 finish();
             }

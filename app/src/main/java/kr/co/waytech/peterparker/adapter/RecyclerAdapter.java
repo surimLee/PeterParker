@@ -32,6 +32,7 @@ import static kr.co.waytech.peterparker.adapter.ListAdapter.price;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.distance;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.avaible_time;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.ID;
+import static kr.co.waytech.peterparker.adapter.ListAdapter.name;
 
 public class RecyclerAdapter extends BaseAdapter {
 
@@ -112,6 +113,7 @@ public class RecyclerAdapter extends BaseAdapter {
                 mHandler.postDelayed(new Runnable()  {
                     public void run() {
                         phone = Postc.Parking_phone[0];
+                        name = Postc.one_parking_lot_name;
                         // 시간 지난 후 실행할 코딩
                         avaible_time = Postc.Avaible_time;
                         Intent intent = new Intent(context.getApplicationContext(), BookingActivity.class);

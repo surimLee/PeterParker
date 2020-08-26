@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -17,7 +18,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
+import kr.co.waytech.peterparker.DownloadImageTask;
 import kr.co.waytech.peterparker.R;
+
+import static kr.co.waytech.peterparker.adapter.ParkingAdapter.manage_parking_lot_address;
+import static kr.co.waytech.peterparker.adapter.ParkingAdapter.manage_parking_lot_img_url;
+import static kr.co.waytech.peterparker.adapter.ParkingAdapter.manage_parking_lot_name;
+import static kr.co.waytech.peterparker.adapter.ParkingAdapter.manage_parking_lot_price;
 
 public class ManagementTimeActivity extends AppCompatActivity {
 
@@ -32,6 +39,8 @@ public class ManagementTimeActivity extends AppCompatActivity {
     public static ArrayList<TextView> Manage_textviewArrayList_day_text;
     public static ArrayList<TextView> Manage_textviewArrayList_all_time;
     Button show_all_btn, show_day_btn;
+    TextView manage_PL_name, manage_PL_address, manage_PL_price;
+    ImageView PLImg;
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +60,14 @@ public class ManagementTimeActivity extends AppCompatActivity {
         getSupportActionBar().setElevation(1);
         final LinearLayout checking_all = findViewById(R.id.checking_all);
         final LinearLayout checking_day = findViewById(R.id.checking_day);
+        PLImg = findViewById(R.id.manage_parkinglotImage);
+        new DownloadImageTask(PLImg).execute(manage_parking_lot_img_url);
+        manage_PL_name = findViewById(R.id.manage_parkinglotName);
+        manage_PL_address = findViewById(R.id.manage_parkinglotAddress);
+        manage_PL_price = findViewById(R.id.manage_parkinglotPrice);
+        manage_PL_name.setText(manage_parking_lot_name);
+        manage_PL_address.setText(manage_parking_lot_address);
+        manage_PL_price.setText(manage_parking_lot_price + "원");
         show_all_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

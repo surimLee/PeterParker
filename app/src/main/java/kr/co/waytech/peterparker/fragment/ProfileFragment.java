@@ -46,7 +46,7 @@ public class ProfileFragment extends android.app.Fragment {
     }
 
     Button LoginBtn, UploadBtn, btn_getToken, DeleteAccountBtn, btn_logout;
-    String str_Token;
+    public static String str_Token;
     static View view_beforeLogin;
     static View view_afterLogin;
     @Nullable
@@ -180,6 +180,7 @@ public class ProfileFragment extends android.app.Fragment {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.detach(this).attach(this).commit();
     }
+
 
 
 }

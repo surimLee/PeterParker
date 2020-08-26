@@ -34,6 +34,7 @@ import static kr.co.waytech.peterparker.activity.BookingActivity.starttime;
 import static kr.co.waytech.peterparker.activity.CalendarActivity.mDay;
 import static kr.co.waytech.peterparker.activity.CalendarActivity.mMonth;
 import static kr.co.waytech.peterparker.activity.CalendarActivity.mYear;
+import static kr.co.waytech.peterparker.fragment.ProfileFragment.str_Token;
 
 public class ConfirmActivity extends AppCompatActivity {
     PostClass Postc = new PostClass();
@@ -91,7 +92,7 @@ public class ConfirmActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         System.out.println("예약함");
                         Postc.send_booking(startYear, startMonth, startDay, starttime.split(":")[0], starttime.split(":")[1],
-                                startYear, startMonth, startDay, endtime.split(":")[0], endtime.split(":")[1], parking_ID, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibGF6aW5nY29kZS5hc3VzY29tbS5jb21cL2FwaVwvbG9naW4iLCJpYXQiOjE1OTgzNDIwMDAsImV4cCI6MTU5ODM0NTYwMCwibmJmIjoxNTk4MzQyMDAwLCJqdGkiOiI3QjA1Yjl2SmxKc1lsZ1B0Iiwic3ViIjoxNSwicHJ2IjoiODdlMGFmMWVmOWZkMTU4MTJmZGVjOTcxNTNhMTRlMGIwNDc1NDZhYSJ9.PIyDHM5GYIV3ZD5S2_UM4mIjjcPFxDECMFOCh-kKHUY");
+                                startYear, startMonth, startDay, endtime.split(":")[0], endtime.split(":")[1], parking_ID, str_Token);
                         Handler mHandler = new Handler();
                         mHandler.postDelayed(new Runnable(){
                             public void run() {

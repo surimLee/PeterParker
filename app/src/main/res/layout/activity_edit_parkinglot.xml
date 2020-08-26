@@ -29,7 +29,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="기본 정보"
+                    android:text="정보 수정"
                     android:textStyle="bold"
                     android:textColor="@android:color/black"
                     android:textSize="17sp"/>
@@ -48,7 +48,7 @@
                         android:textSize="15sp"/>
 
                     <EditText
-                        android:id="@+id/et_name"
+                        android:id="@+id/edit_et_name"
                         android:layout_width="250dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -57,27 +57,7 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp">
 
-                    <TextView
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:text="기기 일련번호"
-                        android:textSize="13sp"/>
-
-                    <EditText
-                        android:id="@+id/et_id"
-                        android:layout_width="250dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:maxLines="1"
-                        android:textSize="15sp" />
-
-                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -99,7 +79,7 @@
 
 
                         <Button
-                            android:id="@+id/btn_find_address"
+                            android:id="@+id/edit_btn_find_address"
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
                             android:background="@drawable/address_button_style_rounded"
@@ -115,7 +95,7 @@
                             android:layout_height="wrap_content">
 
                             <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/et_address"
+                                android:id="@+id/edit_et_address"
                                 android:layout_width="250dp"
                                 android:layout_height="wrap_content"
                                 android:focusable="false"
@@ -130,7 +110,7 @@
                             android:layout_height="wrap_content">
 
                             <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/et_address_detail"
+                                android:id="@+id/edit_et_address_detail"
                                 android:layout_width="250dp"
                                 android:layout_height="wrap_content"
                                 android:inputType="text"
@@ -154,7 +134,7 @@
                         android:textSize="15sp"/>
 
                     <EditText
-                        android:id="@+id/et_price"
+                        android:id="@+id/edit_et_price"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:maxLines="1"
@@ -184,7 +164,7 @@
                         android:textStyle="bold" />
 
                     <Button
-                        android:id="@+id/btn_add_pic"
+                        android:id="@+id/edit_btn_add_pic"
                         android:layout_width="wrap_content"
                         android:layout_height="30dp"
                         android:layout_marginLeft="10dp"
@@ -196,7 +176,7 @@
                 </LinearLayout>
 
                 <ImageView
-                    android:id="@+id/iv_image_"
+                    android:id="@+id/edit_iv_image_"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -228,7 +208,7 @@
             </HorizontalScrollView>
 
             <Button
-                android:id="@+id/btn_getXY"
+                android:id="@+id/edit_btn_getXY"
                 android:layout_width="337dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
@@ -237,6 +217,19 @@
                 android:textColor="@android:color/white"
                 android:fontFamily="@font/nanumgothicbold"
                 android:text="주차장 위치 측정하기"
+                style="?android:attr/borderlessButtonStyle"
+                android:textSize="15sp"
+                />
+            <Button
+                android:id="@+id/edit_btn_delete_PL"
+                android:layout_width="337dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:paddingVertical="10dp"
+                android:background="@drawable/btn_more_gray"
+                android:textColor="@android:color/white"
+                android:fontFamily="@font/nanumgothicbold"
+                android:text="주차장 삭제하기"
                 style="?android:attr/borderlessButtonStyle"
                 android:textSize="15sp"
                 />

@@ -4,6 +4,7 @@ import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseSettings;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,12 +29,18 @@ import java.util.List;
 import kr.co.waytech.peterparker.DownloadImageTask;
 import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.activity.MainActivity;
+import kr.co.waytech.peterparker.activity.PostClass;
 import kr.co.waytech.peterparker.model.BookingList;
+
+import static android.content.Context.MODE_PRIVATE;
+import static kr.co.waytech.peterparker.fragment.BookingListFragment.adding_booking_flag;
+import static kr.co.waytech.peterparker.fragment.ProfileFragment.str_Token;
 
 public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.MyViewHolder> {
 
     Context mContext;
     List<BookingList> bookingList;
+    PostClass Postc = new PostClass();
 
     public BookingListAdapter(Context mContext, List<BookingList> bookingList) {
         this.mContext = mContext;
@@ -90,7 +97,9 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                Postc.post_cancel_booking(bookingList.get(pos).getBooking_id(), str_Token);
                                 bookingList.remove(pos);
+                                adding_booking_flag = 1;
                                 notifyItemRemoved(pos);
                                 notifyItemChanged(pos, bookingList.size());
                                 Toast.makeText(holder.delete_booking_btn.getContext(),"position : "+ pos + " size : " + bookingList.size(),Toast.LENGTH_SHORT).show();
@@ -155,7 +164,7 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
 
             checkin_btn = itemView.findViewById(R.id.btn_check_in);
             delete_booking_btn = itemView.findViewById(R.id.delete_booking_Button);
-            parkinglotImage = itemView.findViewById(R.id.parkinglotImage);
+            parkinglotImage = itemView.findViewById(R.id.booking_parkinglotImage);
             parkinglotName = itemView.findViewById(R.id.parkinglotName);
             status = itemView.findViewById(R.id.status);
             parkinglotAddress = itemView.findViewById(R.id.parkinglotAddress);

@@ -33,6 +33,7 @@ import static kr.co.waytech.peterparker.adapter.ListAdapter.avaible_time;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.phone;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.price;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.distance;
+import static kr.co.waytech.peterparker.adapter.ListAdapter.name;
 
 public class BookingActivity extends AppCompatActivity {
     public static int count;
@@ -45,7 +46,7 @@ public class BookingActivity extends AppCompatActivity {
     public static ArrayList<CheckBox> checkBoxArrayList;
     public static ArrayList<TextView> textviewArrayList;
     public static double checkedcount;
-    public static TextView booking_parking_lot_address, booking_parking_lot_phone, booking_parking_lot_price, booking_parking_lot_distance;
+    public static TextView booking_parking_lot_name, booking_parking_lot_address, booking_parking_lot_phone, booking_parking_lot_price, booking_parking_lot_distance;
     public static String textprice, texttime;
     public static String starttime, endtime, parking_ID;
     public static Button btnbooking, CalendarBtn;
@@ -63,11 +64,13 @@ public class BookingActivity extends AppCompatActivity {
         booking_parking_lot_phone = findViewById(R.id.booking_parking_lot_phone);
         booking_parking_lot_price = findViewById(R.id.booking_parking_lot_price);
         booking_parking_lot_distance = findViewById(R.id.booking_parking_lot_distance);
+        booking_parking_lot_name = findViewById(R.id.booking_parking_lot_name);
         ImageButton booking_act_back_btn = findViewById(R.id.booking_act_back_btn);
         viewPager = (ViewPager) findViewById(R.id.view);
         PagerAdapter adapter = new BookingImgAdapter(BookingActivity.this);
         viewPager.setAdapter(adapter);
         parking_ID = ID;
+        booking_parking_lot_name.setText(name);
         booking_parking_lot_address.setText(address);
         booking_parking_lot_price.setText("30분당 " + price + "원");
         booking_parking_lot_distance.setText(distance);

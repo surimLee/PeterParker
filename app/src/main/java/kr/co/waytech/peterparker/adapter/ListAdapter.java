@@ -31,7 +31,7 @@ import static kr.co.waytech.peterparker.activity.CalendarActivity.sYear;
 public class ListAdapter extends BaseAdapter {
 
     private Context mContext;
-    public static String address, price, distance, phone, ID, avaible_time;
+    public static String address, price, distance, phone, ID, avaible_time, name;
 
     private ArrayList<ListData> array_parking_lot = new ArrayList<ListData>();
     long now = System.currentTimeMillis() - 1000;
@@ -111,6 +111,7 @@ public class ListAdapter extends BaseAdapter {
                 Handler mHandler = new Handler();
                 mHandler.postDelayed(new Runnable()  {
                     public void run() {
+                        name = Postc.one_parking_lot_name;
                         phone = Postc.Parking_phone[0];
                         avaible_time = Postc.Avaible_time;
                         // 시간 지난 후 실행할 코딩

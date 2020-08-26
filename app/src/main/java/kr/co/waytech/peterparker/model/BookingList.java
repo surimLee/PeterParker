@@ -8,8 +8,10 @@ public class BookingList {
     String parkinglotPrice;
     String parkinglotSchedule;
     String imageUrl;
+    String booking_id;
 
-    public BookingList(String parkinglotName, String status, String parkinglotAddress, String parkinglotPrice, String parkinglotSchedule, String imageUrl) {
+    public BookingList( String booking_id, String parkinglotName, String status, String parkinglotAddress, String parkinglotPrice, String parkinglotSchedule, String imageUrl) {
+        this.booking_id = booking_id;
         this.parkinglotName = parkinglotName;
         this.status = status;
         this.parkinglotAddress = parkinglotAddress;
@@ -58,5 +60,13 @@ public class BookingList {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getBooking_id() {
+        return booking_id;
+    }
+
+    public void setBooking_id(String booking_id) {
+        this.booking_id = booking_id;
     }
 }

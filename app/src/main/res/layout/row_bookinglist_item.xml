@@ -25,12 +25,11 @@
             android:layout_marginLeft="8dp">
 
             <ImageView
-                android:id="@+id/parkinglotImage"
+                android:id="@+id/booking_parkinglotImage"
                 android:layout_width="140dp"
                 android:layout_height="120dp"
                 android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                android:background="@drawable/parkinglot1"/>
+                android:scaleType="fitXY"/>
 
         </androidx.cardview.widget.CardView>
 

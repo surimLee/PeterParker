@@ -29,6 +29,7 @@ import kr.co.waytech.peterparker.DownloadImageTask;
 import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.activity.BookingActivity;
 import kr.co.waytech.peterparker.activity.BookingSuccessActivity;
+import kr.co.waytech.peterparker.activity.EditParkinglotActivity;
 import kr.co.waytech.peterparker.activity.ManagementTimeActivity;
 import kr.co.waytech.peterparker.activity.PostClass;
 import kr.co.waytech.peterparker.model.BookingList;
@@ -40,6 +41,7 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.MyViewHo
 
     Context mContext;
     List<ParkingList> parkingList;
+    public static String manage_parking_lot_img_url, manage_parking_lot_name, manage_parking_lot_address, manage_parking_lot_price;
 
     public ParkingAdapter(Context mContext, List<ParkingList> parkingList) {
         this.mContext = mContext;
@@ -54,6 +56,7 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.MyViewHo
 
         final MyViewHolder vHolder = new MyViewHolder(view);
 
+        /*
         vHolder.edit_info_btn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
@@ -63,6 +66,8 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.MyViewHo
                 //Click Event here
             }
         });
+
+         */
         return new MyViewHolder(view);
     }
 
@@ -74,24 +79,30 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.MyViewHo
         holder.parkinglotAddress.setText(parkingList.get(position).getPLAddress());
         holder.parkinglotPrice.setText(parkingList.get(position).getPLPrice());
         new DownloadImageTask(holder.parkinglotImage).execute(parkingList.get(position).getImageUrl());
-        holder.set_time_btn.setOnClickListener(new View.OnClickListener() {
+
+        holder.edit_info_btn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View view) {
-                int pos = holder.getAdapterPosition();
-                Toast.makeText(mContext,"Click Item"+ pos,Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(holder.set_time_btn.getContext(), ManagementTimeActivity.class);
+                Intent intent = new Intent(holder.set_time_btn.getContext(), EditParkinglotActivity.class);
                 holder.set_time_btn.getContext().startActivity(intent);
+
             }
         });
+
+
 
         //Dialog ini
         holder.set_time_btn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View view) {
-//                Toast.makeText(mContext,"Click Item"+ vHolder.getAdapterPosition(),Toast.LENGTH_SHORT).show();
-                Toast.makeText(mContext,"Click Timesetting",Toast.LENGTH_SHORT).show();
+                manage_parking_lot_img_url = parkingList.get(position).getImageUrl();
+                manage_parking_lot_name = parkingList.get(position).getPLName();
+                manage_parking_lot_address = parkingList.get(position).getPLAddress();
+                manage_parking_lot_price = parkingList.get(position).getPLPrice();
+                Intent intent = new Intent(holder.set_time_btn.getContext(), ManagementTimeActivity.class);
+                holder.set_time_btn.getContext().startActivity(intent);
                 //Click Event here
             }
         });

@@ -2,6 +2,7 @@ package kr.co.waytech.peterparker.fragment;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -24,7 +25,9 @@ import kr.co.waytech.peterparker.adapter.ParkingAdapter;
 import kr.co.waytech.peterparker.model.BookingList;
 import kr.co.waytech.peterparker.model.ParkingList;
 
+import static android.content.Context.MODE_PRIVATE;
 import static kr.co.waytech.peterparker.activity.PostClass.my_parking_lot;
+import static kr.co.waytech.peterparker.fragment.ProfileFragment.str_Token;
 
 public class ParkingFragment extends Fragment {
 
@@ -33,7 +36,7 @@ public class ParkingFragment extends Fragment {
     ParkingAdapter parkingListAdapter;
     public static List<ParkingList> parkingList;
     final PostClass Postc = new PostClass();
-    public static int adding_flag = 1;
+    public static int parking_adding_flag = 1;
 
     public ParkingFragment()
     {
@@ -44,27 +47,39 @@ public class ParkingFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("login", MODE_PRIVATE);
+        str_Token = sharedPreferences.getString("token", "");
         //Add dummy data in Booking class here
         if(parkingList == null) {
             parkingList = new ArrayList<>();
         }
-        if(adding_flag == 1) {
-            Postc.get_my_parking_lot("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibGF6aW5nY29kZS5hc3VzY29tbS5jb21cL2FwaVwvbG9naW4iLCJpYXQiOjE1OTgzNDU4MzIsImV4cCI6MTU5ODM0OTQzMiwibmJmIjoxNTk4MzQ1ODMyLCJqdGkiOiI2M0VWUlBLa1dpeDhYRlJ3Iiwic3ViIjoxNSwicHJ2IjoiODdlMGFmMWVmOWZkMTU4MTJmZGVjOTcxNTNhMTRlMGIwNDc1NDZhYSJ9.LNH9ovgm0E5p7XQkznDWSKG5Sx6XzdJdx2LoPmuKO1A");
+        if(parking_adding_flag == 1) {
+            Postc.get_my_parking_lot(str_Token);
             Handler mHandler = new Handler();
             mHandler.postDelayed(new Runnable() {
                 public void run() {
                     Postc.count_my_parking_lot = Integer.parseInt(my_parking_lot.split(",")[0].split(":")[1]);
-                    Postc.my_parking_lot_id = my_parking_lot.split("\\{")[2].split(",")[0].split("\"")[3];
-                    Postc.my_parking_lot_name = my_parking_lot.split("\\{")[2].split(",")[2].split("\"")[3];
-                    Postc.my_parking_lot_address = my_parking_lot.split("\\{")[2].split(",")[3].split("\"")[3];
-                    Postc.my_parking_lot_price = my_parking_lot.split("\\{")[2].split(",")[4].split(":")[1];
-                    Postc.my_parking_lot_imageurl = my_parking_lot.split("\\{")[2].split(",")[5].split("\"")[3].replace("\\", "");
-                    System.out.println("splited result : " + Postc.count_my_parking_lot + " 개, " + Postc.my_parking_lot_id + ", " + Postc.my_parking_lot_address + ", " + "30분당 " + Postc.my_parking_lot_price + ", " + Postc.my_parking_lot_imageurl + ", ");
-                    parkingList.add(new ParkingList(Postc.my_parking_lot_name, Postc.my_parking_lot_address, "30분당 " + Postc.my_parking_lot_price, Postc.my_parking_lot_imageurl, Postc.my_parking_lot_id));
+                    if (Postc.count_my_parking_lot == 0) {
+                        System.out.println("주차장 없음");
+                    }
+                    else {
+                        for(int i = 0; i < Postc.count_my_parking_lot; i++) {
+                            Postc.my_parking_lot_id = my_parking_lot.split("\\{")[i+2].split(",")[0].split("\"")[3];
+                            Postc.my_parking_lot_name = my_parking_lot.split("\\{")[i+2].split(",")[2].split("\"")[3];
+                            Postc.my_parking_lot_address = my_parking_lot.split("\\{")[i+2].split(",")[3].split("\"")[3];
+                            Postc.my_parking_lot_price = my_parking_lot.split("\\{")[i+2].split(",")[4].split(":")[1];
+                            Postc.my_parking_lot_imageurl = my_parking_lot.split("\\{")[i+2].split(",")[5].split("\"")[3].replace("\\", "");
+                            System.out.println("splited result : " + Postc.count_my_parking_lot + " 개, " + Postc.my_parking_lot_id + ", " + Postc.my_parking_lot_address + ", " + "30분당 " + Postc.my_parking_lot_price + ", " + Postc.my_parking_lot_imageurl + ", ");
+                            if(i == 0){
+                                parkingList.clear();
+                                parkingList = new ArrayList<>();
+                            }
+                            parkingList.add(new ParkingList(Postc.my_parking_lot_name, Postc.my_parking_lot_address, "30분당 " + Postc.my_parking_lot_price, Postc.my_parking_lot_imageurl, Postc.my_parking_lot_id));
+                        }
+                    }
                 }
             }, 1000);
-            adding_flag = 0;
+            parking_adding_flag = 0;
         }
     }
 
