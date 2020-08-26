@@ -97,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("token", loginToken);
                         editor.commit();
 
-                        ProfileFragment.set_afterLoginView();
+                        ProfileFragment.set_afterLoginView(); //프레그먼트 화면 새로고침
 
                     } else {
 //                        Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
@@ -119,10 +119,13 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         });
     }
+
 
     public void Success_Login(){
 
