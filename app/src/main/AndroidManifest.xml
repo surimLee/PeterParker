@@ -71,5 +71,8 @@
         <activity android:name=".activity.AddParkinglotActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
+        <activity android:name=".activity.PointActivity"
+            android:theme="@style/ActionBarTheme">
+        </activity>
     </application>
 </manifest>

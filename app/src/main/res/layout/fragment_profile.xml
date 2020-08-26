@@ -76,21 +76,19 @@
                     android:layout_width="77dp"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
-                    android:background="@drawable/spriderman_icon"
                     android:scaleType="fitXY" />
-
-
 
             </androidx.cardview.widget.CardView>
 
 
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="155dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
@@ -99,6 +97,7 @@
                     android:textColor="@color/darkgray"/>
 
                 <TextView
+                    android:id="@+id/tv_email"
                     android:layout_marginTop="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -127,21 +126,27 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:orientation="horizontal"
-            android:gravity="center_horizontal"
+            android:gravity="center_horizontal|bottom"
             android:background="@drawable/btn_white">
 
-            <TextView
+            <Button
+                android:id="@+id/btn_goMypoint"
                 android:layout_width="129dp"
-                android:layout_height="wrap_content"
+                android:layout_height="20dp"
+                android:elevation="0dp"
+                android:background="@android:color/white"
                 android:layout_gravity="bottom"
                 android:layout_marginLeft="30dp"
+                style="?android:attr/borderlessButtonStyle"
                 android:layout_weight="1"
+                android:gravity="left"
                 android:fontFamily="@font/nanumgothic"
                 android:text="내 포인트 >"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="12sp" />
 
             <TextView
+                android:id="@+id/tv_point"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
@@ -245,6 +250,7 @@
         <!--android:drawableLeft="@drawable/announce"-->
 
         <Button
+            android:id="@+id/test_btn"
             android:layout_marginBottom="1dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

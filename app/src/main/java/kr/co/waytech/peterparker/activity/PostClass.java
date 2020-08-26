@@ -6,6 +6,7 @@ import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.StrictMode;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,8 +21,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.InterfaceAddress;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.sql.Array;
 import java.text.NumberFormat;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
+import kr.co.waytech.peterparker.fragment.ProfileFragment;
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -30,11 +38,13 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static java.lang.Thread.sleep;
+
 
 public class PostClass {
     public static int responseCode = 0; //중복확인에서 리턴되는 코드 확인 위한
     public static int imgcount = 1;
-    protected static String realtoken, bookingbody;
+    protected static String realtoken, bookingbody, body_profile;
     String status = "none";
     int Thread_Status = 3 ;
     int Login_Status = 3;
@@ -176,6 +186,8 @@ public class PostClass {
             }
         }.start();
     }
+
+
     public void send_Location(final String id){
         new Thread() {
             public void run() {
@@ -242,6 +254,18 @@ public class PostClass {
             System.out.println(status);
             System.out.println(realtoken);
     }
+
+    public void send_getcash(String cash, String token) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/point/"+cash)
+                .method("GET", null)
+                .addHeader("Authorization", "Bearer "+token)
+                .build();
+        Response response = client.newCall(request).execute();
+    }
+
     private void Post_Signup(String Email, String ID, String Name, String Password, String Nick_Name, String Phone, String Car) throws IOException {
             OkHttpClient client = new OkHttpClient().newBuilder().build();
             MediaType mediaType = MediaType.parse("text/plain");
@@ -357,6 +381,69 @@ public class PostClass {
         System.out.println("Response Body is " + response.body().string());
 
     }
+
+    public void Get_profile(String token) throws IOException, InterruptedException {
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        while(token.length() < 10) { sleep(1);}
+        System.out.println("Token is " + token);
+
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/auth/user")
+                .method("GET", null)
+                .addHeader("Authorization", "Bearer "+token)
+                .build();
+        Response response = client.newCall(request).execute();
+        body_profile = response.body().string();
+        System.out.println("Response Body is " + body_profile);
+        body_profile = body_profile.replace("{\"", "");
+        body_profile = body_profile.replace("\"}", "");
+        body_profile = body_profile.trim();
+        String[] split = body_profile.split("\":\"|\",\"");
+        System.out.println("split의 사이즈는 두구두구두구 "+split.length);
+
+        if(split.length == 1){
+//            Get_profile(token);
+            return;
+        }
+
+        String user_id = split[1];
+        String nick_name = split[3];
+        String name = split[5];
+        String uuid = split[7];
+        String point = split[9];
+        String email = split[11];
+        String phone_number = split[13];
+        String car_number = split[15];
+        String profile_image = split[17];
+
+        ProfileFragment.user_id = user_id;
+        ProfileFragment.nick_name = nick_name;
+        ProfileFragment.user_name = name;
+        ProfileFragment.uuid = uuid;
+        ProfileFragment.point = point;
+        ProfileFragment.email = email;
+        ProfileFragment.phone_number = phone_number;
+        ProfileFragment.car_number = car_number;
+        ProfileFragment.profile_image = profile_image;
+    }
+
+    public String unicodeToString(String uni) {
+
+        String str = uni.split(" ")[0];
+        str = str.replace("\\","");
+        String[] arr = str.split("u");
+        String text = "";
+        for(int i = 1; i < arr.length; i++){
+            int hexVal = Integer.parseInt(arr[i], 16);
+            text += (char)hexVal;
+        }
+        return text;
+    }
+
     public void Get_Location(String id) throws IOException {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
@@ -531,4 +618,5 @@ public class PostClass {
                 .build();
         Response response = client.newCall(request).execute();
     }
+
 }

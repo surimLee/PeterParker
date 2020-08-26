@@ -82,7 +82,7 @@
                             android:background="@drawable/address_button_style_rounded"
                             android:text="우편번호 찾기"
                             android:textColor="@color/darkgray"
-                            android:textSize="15sp"/>
+                            android:textSize="15sp" />
 
 
 
