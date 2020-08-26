@@ -21,6 +21,9 @@ import java.util.Date;
 import kr.co.waytech.peterparker.DownloadImageTask;
 import kr.co.waytech.peterparker.R;
 
+import static kr.co.waytech.peterparker.activity.CalendarActivity.sDay;
+import static kr.co.waytech.peterparker.activity.CalendarActivity.sMonth;
+import static kr.co.waytech.peterparker.activity.CalendarActivity.sYear;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.address;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.price;
 import static kr.co.waytech.peterparker.activity.BookingActivity.bookingActivity;
@@ -64,9 +67,9 @@ public class ConfirmActivity extends AppCompatActivity {
         onetime.setText(starttime + " ~ " + endtime);
         oneAddress.setText(address);
         oneday.setText(mYear + "년-" + mMonth + "월-" + mDay + "일");
-        startYear =  Integer.toString(mYear);
-        startMonth = Integer.toString(mMonth);
-        startDay = Integer.toString(mDay);
+        startYear =  sYear;
+        startMonth = sMonth;
+        startDay = sDay;
         Imgurl = Postc.Parking_img[0];
         if(mYear == 0){
             oneday.setText(formatDate);
@@ -88,12 +91,12 @@ public class ConfirmActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         System.out.println("예약함");
                         Postc.send_booking(startYear, startMonth, startDay, starttime.split(":")[0], starttime.split(":")[1],
-                                startYear, startMonth, startDay, endtime.split(":")[0], endtime.split(":")[1], parking_ID, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibGF6aW5nY29kZS5hc3VzY29tbS5jb21cL2FwaVwvbG9naW4iLCJpYXQiOjE1OTc3Mzk2MjYsImV4cCI6MTU5Nzc0MzIyNiwibmJmIjoxNTk3NzM5NjI2LCJqdGkiOiI0cVNnWG5maVN4bFIxblIyIiwic3ViIjoyNywicHJ2IjoiODdlMGFmMWVmOWZkMTU4MTJmZGVjOTcxNTNhMTRlMGIwNDc1NDZhYSJ9.r6hdht8VXTjjuIfEbx5_XVO7VJR967G-V_lFV4QJY5k");
+                                startYear, startMonth, startDay, endtime.split(":")[0], endtime.split(":")[1], parking_ID, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibGF6aW5nY29kZS5hc3VzY29tbS5jb21cL2FwaVwvbG9naW4iLCJpYXQiOjE1OTgzNDIwMDAsImV4cCI6MTU5ODM0NTYwMCwibmJmIjoxNTk4MzQyMDAwLCJqdGkiOiI3QjA1Yjl2SmxKc1lsZ1B0Iiwic3ViIjoxNSwicHJ2IjoiODdlMGFmMWVmOWZkMTU4MTJmZGVjOTcxNTNhMTRlMGIwNDc1NDZhYSJ9.PIyDHM5GYIV3ZD5S2_UM4mIjjcPFxDECMFOCh-kKHUY");
                         Handler mHandler = new Handler();
                         mHandler.postDelayed(new Runnable(){
                             public void run() {
-                                if(Postc.bookingbody.split(",")[2].split("=")[1].equals("OK")){
-                                    System.out.println(Postc.bookingbody.split(",")[2].split("=")[1]);
+                                if(Postc.bookingbody.equals("success")){
+                                    System.out.println(Postc.bookingbody);
                                     Toast.makeText(getApplicationContext(), "예약되었습니다.", Toast.LENGTH_LONG).show();
                                     Intent intent = new Intent(getApplicationContext(), BookingSuccessActivity.class);
                                     startActivity(intent);

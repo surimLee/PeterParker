@@ -22,6 +22,10 @@ import kr.co.waytech.peterparker.activity.BookingActivity;
 import kr.co.waytech.peterparker.activity.PostClass;
 import kr.co.waytech.peterparker.model.Data;
 
+import static kr.co.waytech.peterparker.activity.CalendarActivity.mYear;
+import static kr.co.waytech.peterparker.activity.CalendarActivity.sDay;
+import static kr.co.waytech.peterparker.activity.CalendarActivity.sMonth;
+import static kr.co.waytech.peterparker.activity.CalendarActivity.sYear;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.address;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.phone;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.price;
@@ -97,7 +101,12 @@ public class RecyclerAdapter extends BaseAdapter {
                 price = data.getContent_Price();
                 distance = data.getDistance();
                 ID = data.getId();
-                Postc.send_booking_time_id(data.getId(), formatDate.split("-")[0], formatDate.split("-")[1], formatDate.split("-")[2]);
+                if(mYear != 0){
+                    Postc.send_booking_time_id(data.getId(), sYear, sMonth, sDay);
+                }
+                else{
+                    Postc.send_booking_time_id(data.getId(), formatDate.split("-")[0], formatDate.split("-")[1], formatDate.split("-")[2]);
+                }
                 System.out.println(address);
                 Handler mHandler = new Handler();
                 mHandler.postDelayed(new Runnable()  {

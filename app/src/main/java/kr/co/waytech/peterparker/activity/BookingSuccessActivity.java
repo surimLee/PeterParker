@@ -18,6 +18,9 @@ import kr.co.waytech.peterparker.DownloadImageTask;
 import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.fragment.BookingListFragment;
 
+import static kr.co.waytech.peterparker.activity.CalendarActivity.mDay;
+import static kr.co.waytech.peterparker.activity.CalendarActivity.mMonth;
+import static kr.co.waytech.peterparker.activity.CalendarActivity.mYear;
 import static kr.co.waytech.peterparker.activity.ConfirmActivity.Imgurl;
 import static kr.co.waytech.peterparker.activity.ConfirmActivity.confirmActivity;
 import static kr.co.waytech.peterparker.activity.BookingActivity.bookingActivity;
@@ -41,7 +44,7 @@ public class BookingSuccessActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>주차장 예약</font>"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(1);
-
+        mYear = 0; mMonth = 0; mDay = 0;
         success_list_text = findViewById(R.id.success_list_text);
         success_address = findViewById(R.id.success_address);
         success_time = findViewById(R.id.success_time);
@@ -56,13 +59,6 @@ public class BookingSuccessActivity extends AppCompatActivity {
         success_list_text.setText(content);
         bookingActivity.finish();
         confirmActivity.finish();
-        Handler mHandler = new Handler();
-        mHandler.postDelayed(new Runnable(){
-            public void run() {
-                BookingListFragment.addlist("Name", "사용예정", address, success_total_price, success_day + " / " + starttime + " ~ " + endtime, Imgurl);
-                System.out.println("add success");
-            }
-        }, 300);
         success_list_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

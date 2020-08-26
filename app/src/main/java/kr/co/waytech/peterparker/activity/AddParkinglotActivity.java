@@ -4,12 +4,14 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.provider.MediaStore;
 import android.text.Html;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -34,6 +36,7 @@ import com.gun0912.tedpermission.TedPermission;
 
 import com.bumptech.glide.RequestManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +53,10 @@ public class AddParkinglotActivity extends AppCompatActivity {
     private ImageView iv_image;
     private List<Uri> selectedUriList;
     private Uri selectedUri;
-    private EditText et_address;
+    private EditText et_address, et_id, et_address_detail, et_price, et_name;
+    public static double plongitude, platitude;
+    public static Bitmap PL_img1, PL_img2, PL_img3, PL_img4;
+    final PostClass Postc = new PostClass();
 
     private static final int SEARCH_ADDRESS_ACTIVITY = 10000;
 
@@ -72,7 +78,12 @@ public class AddParkinglotActivity extends AppCompatActivity {
 
         setMultiShowButton();
 
+
+        et_id = (EditText)findViewById(R.id.et_id);
         et_address = (EditText)findViewById(R.id.et_address);
+        et_address_detail = (EditText)findViewById(R.id.et_address_detail);
+        et_price = (EditText)findViewById(R.id.et_price);
+        et_name = (EditText)findViewById(R.id.et_name);
         Button btn_search = findViewById(R.id.btn_find_address);
         if (btn_search != null)
             btn_search.setOnClickListener(new View.OnClickListener() {
@@ -96,11 +107,24 @@ public class AddParkinglotActivity extends AppCompatActivity {
                 else {
                     Location location = locationManagerm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                     String provider = location.getProvider();
-                    double longitude = location.getLongitude();
-                    double latitude = location.getLatitude();
+                    plongitude = location.getLongitude();
+                    platitude = location.getLatitude();
+                    try {
+                        PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(0));
+                        PL_img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(1));
+                        PL_img3 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(2));
+                        PL_img4 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(3));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Postc.post_add_parking_lot(et_id.getText().toString(), et_name.getText().toString(), et_address.getText().toString().split(",")[1] + " " + et_address_detail.getText().toString(),
+                            Double.toString(platitude), Double.toString(plongitude), et_price.getText().toString() ,"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibGF6aW5nY29kZS5hc3VzY29tbS5jb21cL2FwaVwvbG9naW4iLCJpYXQiOjE1OTgzNDU4MzIsImV4cCI6MTU5ODM0OTQzMiwibmJmIjoxNTk4MzQ1ODMyLCJqdGkiOiI2M0VWUlBLa1dpeDhYRlJ3Iiwic3ViIjoxNSwicHJ2IjoiODdlMGFmMWVmOWZkMTU4MTJmZGVjOTcxNTNhMTRlMGIwNDc1NDZhYSJ9.LNH9ovgm0E5p7XQkznDWSKG5Sx6XzdJdx2LoPmuKO1A",
+                            PL_img1, PL_img2, PL_img3, PL_img4);
+                    System.out.println(et_id.getText().toString() + ", " + et_name.getText().toString() + ", " + et_address.getText().toString().split(",")[1] + " " + et_address_detail.getText().toString()+ ", " +
+                            Double.toString(platitude)+ ", " +Double.toString(plongitude)+ ", " +et_price.getText().toString() );
+                    Toast.makeText(AddParkinglotActivity.this,"위도 : " + plongitude + "\n" +
+                            "경도 : " + platitude,Toast.LENGTH_SHORT).show();
 
-                    Toast.makeText(AddParkinglotActivity.this,"위도 : " + longitude + "\n" +
-                            "경도 : " + latitude,Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -111,6 +135,7 @@ public class AddParkinglotActivity extends AppCompatActivity {
     //actionbar menu listener
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
+
         switch (item.getItemId()) {
             case R.id.menu_register:
                 Toast.makeText(AddParkinglotActivity.this,"Click Register Button" ,Toast.LENGTH_SHORT).show();
@@ -120,6 +145,9 @@ public class AddParkinglotActivity extends AppCompatActivity {
                 return true;
 
             default:
+                Postc.post_add_parking_lot(et_id.getText().toString(), et_name.getText().toString(), et_address.getText().toString().split(",")[1] + " " + et_address_detail.getText().toString(),
+                        Double.toString(platitude), Double.toString(plongitude), et_price.getText().toString() ,"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibGF6aW5nY29kZS5hc3VzY29tbS5jb21cL2FwaVwvbG9naW4iLCJpYXQiOjE1OTgzNDIwMDAsImV4cCI6MTU5ODM0NTYwMCwibmJmIjoxNTk4MzQyMDAwLCJqdGkiOiI3QjA1Yjl2SmxKc1lsZ1B0Iiwic3ViIjoxNSwicHJ2IjoiODdlMGFmMWVmOWZkMTU4MTJmZGVjOTcxNTNhMTRlMGIwNDc1NDZhYSJ9.PIyDHM5GYIV3ZD5S2_UM4mIjjcPFxDECMFOCh-kKHUY",
+                        PL_img1, PL_img2, PL_img3, PL_img4);
                 return super.onOptionsItemSelected(item);
         }
     }

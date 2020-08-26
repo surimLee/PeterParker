@@ -24,6 +24,9 @@ import java.util.Date;
 import kr.co.waytech.peterparker.adapter.BookingImgAdapter;
 import kr.co.waytech.peterparker.R;
 
+import static kr.co.waytech.peterparker.activity.CalendarActivity.mDay;
+import static kr.co.waytech.peterparker.activity.CalendarActivity.mMonth;
+import static kr.co.waytech.peterparker.activity.CalendarActivity.mYear;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.ID;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.address;
 import static kr.co.waytech.peterparker.adapter.ListAdapter.avaible_time;
@@ -69,7 +72,12 @@ public class BookingActivity extends AppCompatActivity {
         booking_parking_lot_price.setText("30분당 " + price + "원");
         booking_parking_lot_distance.setText(distance);
         booking_parking_lot_phone.setText(phone);
-        CalendarBtn.setText(formatDate);
+        if(mYear == 0) {
+            CalendarBtn.setText(formatDate);
+        }
+        else{
+            CalendarBtn.setText(mYear + "년 " + mMonth + "월 " + mDay + "일 ");
+        }
         CalendarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,7 +94,7 @@ public class BookingActivity extends AppCompatActivity {
                 int tresID = getResources().getIdentifier(textviewid, "id", getPackageName());
                 checkBoxArrayList.add((CheckBox) findViewById(cresID));
                 textviewArrayList.add((TextView)findViewById(tresID));
-                if(avaible_time.charAt(count) == '0') {
+                if(avaible_time.charAt(count) == '0' || avaible_time.charAt(count) == '2') {
                     checkBoxArrayList.get(count).setChecked(false);
                     checkBoxArrayList.get(count).setButtonDrawable(R.drawable.ic_booking_time_cannot);
                     textviewArrayList.get(count).setTextColor(Color.parseColor("#ffffff"));
