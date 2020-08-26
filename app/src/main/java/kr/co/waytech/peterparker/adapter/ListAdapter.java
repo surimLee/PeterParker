@@ -23,6 +23,11 @@ import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.activity.BookingActivity;
 import kr.co.waytech.peterparker.activity.PostClass;
 
+import static kr.co.waytech.peterparker.activity.CalendarActivity.mYear;
+import static kr.co.waytech.peterparker.activity.CalendarActivity.sDay;
+import static kr.co.waytech.peterparker.activity.CalendarActivity.sMonth;
+import static kr.co.waytech.peterparker.activity.CalendarActivity.sYear;
+
 public class ListAdapter extends BaseAdapter {
 
     private Context mContext;
@@ -96,7 +101,12 @@ public class ListAdapter extends BaseAdapter {
                 ID = listViewItem.getId();
                 System.out.println(address);
                 Postc.send_Location(listViewItem.getId());
-                Postc.send_booking_time_id(listViewItem.getId(), formatDate.split("-")[0], formatDate.split("-")[1], formatDate.split("-")[2]);
+                if(mYear != 0){
+                    Postc.send_booking_time_id(listViewItem.getId(), sYear, sMonth, sDay);
+                }
+                else{
+                    Postc.send_booking_time_id(listViewItem.getId(), formatDate.split("-")[0], formatDate.split("-")[1], formatDate.split("-")[2]);
+                }
                 ID = listViewItem.getId();
                 Handler mHandler = new Handler();
                 mHandler.postDelayed(new Runnable()  {

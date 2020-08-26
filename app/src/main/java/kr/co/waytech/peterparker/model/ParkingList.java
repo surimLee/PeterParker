@@ -5,13 +5,21 @@ public class ParkingList {
     String parkinglotName;
     String parkinglotAddress;
     String parkinglotPrice;
-    Integer imageUrl;
+    String imageUrl;
+    String PL_ID;
 
-    public ParkingList(String parkinglotName, String parkinglotAddress, String parkinglotPrice, Integer imageUrl) {
+    public ParkingList(String parkinglotName, String parkinglotAddress, String parkinglotPrice, String imageUrl, String PL_ID) {
         this.parkinglotName = parkinglotName;
         this.parkinglotAddress = parkinglotAddress;
         this.parkinglotPrice = parkinglotPrice;
         this.imageUrl = imageUrl;
+        this.PL_ID = PL_ID;
+    }
+
+    public String getPL_ID() {return PL_ID;}
+
+    public void setPL_ID(String PL_ID) {
+        this.PL_ID = PL_ID;
     }
 
     public String getPLName() {
@@ -34,11 +42,15 @@ public class ParkingList {
 
     public void setPLPrice(String parkinglotPrice) { this.parkinglotPrice = parkinglotPrice; }
 
-    public Integer getPLImageUrl() {
+    public String getPLImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(Integer imageUrl) {
+    public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 }

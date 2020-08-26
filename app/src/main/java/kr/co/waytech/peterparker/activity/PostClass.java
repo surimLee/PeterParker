@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
+import java.time.Year;
 
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -38,13 +39,16 @@ public class PostClass {
     String status = "none";
     int Thread_Status = 3 ;
     int Login_Status = 3;
-    public static int count;
+    public static int count, count_my_parking_lot, count_my_booking_list;
     public static Integer Count_Parkinglot;
     public static int[] ParkingPrice;
     public static double[] ParkingLat, ParkingLng;
     public static String[] Parking_img, Parking_phone;
     public static String[][] All_Parkinglot;
-    public static String Avaible_time;
+    public static String Avaible_time, my_parking_lot, my_parking_lot_id, my_parking_lot_name,
+            my_parking_lot_price, my_parking_lot_imageurl, my_parking_lot_address, my_booking_list,
+            my_booking_name, my_booking_address, my_booking_price, my_booking_time, my_booking_img,
+            status_add_parking_lot;
     public static int b = 7;
     static File tempSelectFile;
     public static Marker ParkingMark;
@@ -218,6 +222,53 @@ public class PostClass {
                     post_avaible_booking_time(ID, year, month, day);
                 } catch (IOException e) {
                     e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+    public void get_my_parking_lot(String token){
+        new Thread() {
+            public void run() {
+                Bundle bun = new Bundle();
+                Message msg = handler.obtainMessage();
+                msg.setData(bun);
+                handler.sendMessage(msg);
+                try {
+                    show_my_parking_lot(token);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+    public void get_my_booking_list(String token){
+        new Thread() {
+            public void run() {
+                Bundle bun = new Bundle();
+                Message msg = handler.obtainMessage();
+                msg.setData(bun);
+                handler.sendMessage(msg);
+                try {
+                    show_my_booking_list(token);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+    public void post_add_parking_lot(String id, String name, String address, String latitude, String longitude, String price, String token, Bitmap img1, Bitmap img2, Bitmap img3, Bitmap img4){
+        new Thread() {
+            public void run() {
+                Bundle bun = new Bundle();
+                Message msg = handler.obtainMessage();
+                msg.setData(bun);
+                handler.sendMessage(msg);
+                try {
+                    add_parking_lot(id, name, address, latitude, longitude, price, token, img1, img2, img3, img4);
+                    System.out.println("do add_parking_lot");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.out.println("do add_parking_lot");
                 }
             }
         }.start();
@@ -484,8 +535,9 @@ public class PostClass {
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
         Response response = client.newCall(request).execute();
-        bookingbody = response.toString();
-        System.out.println(bookingbody);
+        bookingbody = response.body().string();
+        System.out.println(syear + " - " + smonth + " - " + sday + " - " + shour + " - " + smin + " - " +
+                eyear + " - " + emonth + " - " + eday + " - " + ehour + " - " + emin + " - " + ID + " - " +  ": " + bookingbody);
     }
     public int getcountnumber(){
         return count;
@@ -514,7 +566,7 @@ public class PostClass {
                 .build();
         Response response = client.newCall(request).execute();
         Avaible_time = response.body().string();
-        System.out.println("time is .. " + Avaible_time);
+        System.out.println("time is .. "+ year + ", "+ month + ", " + day + ", " + Avaible_time);
     }
 
     public void post_avaible_time(String id) throws IOException {
@@ -530,5 +582,80 @@ public class PostClass {
                 .addHeader("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibGF6aW5nY29kZS5hc3VzY29tbS5jb21cL2FwaVwvbG9naW4iLCJpYXQiOjE1OTgyNDk5NjEsImV4cCI6MTU5ODI1MzU2MSwibmJmIjoxNTk4MjQ5OTYxLCJqdGkiOiIyUDhOUDB1NEdmeVhuWk1FIiwic3ViIjoxNSwicHJ2IjoiODdlMGFmMWVmOWZkMTU4MTJmZGVjOTcxNTNhMTRlMGIwNDc1NDZhYSJ9.GC91Nz26F7bYqg3WgFAXalb7jEQFRuyIF65jpaaZ5mQ")
                 .build();
         Response response = client.newCall(request).execute();
+    }
+    public void cancel_parking(String id) throws IOException {
+
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = RequestBody.create(mediaType, "");
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/booking/cancle/34")
+                .method("DELETE", body)
+                .addHeader("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibGF6aW5nY29kZS5hc3VzY29tbS5jb21cL2FwaVwvbG9naW4iLCJpYXQiOjE1OTgxOTcwNDQsImV4cCI6MTU5ODIwMDY0NCwibmJmIjoxNTk4MTk3MDQ0LCJqdGkiOiJHVTBHcVA2dVMxbkRYbVlZIiwic3ViIjoxNSwicHJ2IjoiODdlMGFmMWVmOWZkMTU4MTJmZGVjOTcxNTNhMTRlMGIwNDc1NDZhYSJ9.5mEshw1qzyO6uEP3BIlhZnUP5TluiOXLeHjJzhA-y1k")
+                .build();
+        Response response = client.newCall(request).execute();
+    }
+    public void show_my_booking_list(String token) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/booking/show")
+                .method("GET", null)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+        Response response = client.newCall(request).execute();
+        my_booking_list = response.body().string();
+        System.out.println(my_booking_list);
+    }
+    public void show_my_parking_lot(String token) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/show/my_parking_lot")
+                .method("GET", null)
+                .addHeader("Authorization", "Bearer " + token )
+                .build();
+        Response response = client.newCall(request).execute();
+        my_parking_lot = response.body().string();
+        System.out.println(my_parking_lot);
+    }
+    public void add_parking_lot(String id, String name, String address, String latitude, String longitude, String price, String token, Bitmap img1, Bitmap img2, Bitmap img3, Bitmap img4) throws IOException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        img1.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+        img2.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+        img3.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+        img4.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+        byte[] ImgByte = stream.toByteArray();
+
+
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("parking_lot_id", id)
+                .addFormDataPart("name", name)
+                .addFormDataPart("address", address)
+                .addFormDataPart("latitude", latitude)
+                .addFormDataPart("longitude", longitude)
+                .addFormDataPart("image1","img1.jpeg",
+                        RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                .addFormDataPart("image2","img2.jpeg",
+                        RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                .addFormDataPart("image3","img3.jpeg",
+                        RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                .addFormDataPart("image4","img4.jpeg",
+                        RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                .addFormDataPart("price", price)
+                .addFormDataPart("time", "000000000000000000000000000000000000000000000000")
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/create")
+                .method("POST", body)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+        Response response = client.newCall(request).execute();
+        status_add_parking_lot = response.body().string();
+        System.out.println(status_add_parking_lot);
     }
 }

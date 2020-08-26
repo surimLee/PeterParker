@@ -5,6 +5,7 @@ import android.bluetooth.le.AdvertiseSettings;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +25,16 @@ import org.altbeacon.beacon.BeaconTransmitter;
 import java.util.Arrays;
 import java.util.List;
 
+import kr.co.waytech.peterparker.DownloadImageTask;
 import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.activity.BookingActivity;
+import kr.co.waytech.peterparker.activity.BookingSuccessActivity;
 import kr.co.waytech.peterparker.activity.ManagementTimeActivity;
+import kr.co.waytech.peterparker.activity.PostClass;
 import kr.co.waytech.peterparker.model.BookingList;
 import kr.co.waytech.peterparker.model.ParkingList;
+
+import static kr.co.waytech.peterparker.activity.PostClass.my_parking_lot;
 
 public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.MyViewHolder> {
 
@@ -47,7 +53,6 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.MyViewHo
         View view = LayoutInflater.from(mContext).inflate(R.layout.row_parkinglot_item, parent, false);
 
         final MyViewHolder vHolder = new MyViewHolder(view);
-
 
         vHolder.edit_info_btn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -68,7 +73,7 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.MyViewHo
         holder.parkinglotName.setText(parkingList.get(position).getPLName());
         holder.parkinglotAddress.setText(parkingList.get(position).getPLAddress());
         holder.parkinglotPrice.setText(parkingList.get(position).getPLPrice());
-        holder.parkinglotImage.setImageResource(parkingList.get(position).getPLImageUrl());
+        new DownloadImageTask(holder.parkinglotImage).execute(parkingList.get(position).getImageUrl());
         holder.set_time_btn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
