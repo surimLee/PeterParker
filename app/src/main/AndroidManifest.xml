@@ -48,11 +48,11 @@
         <activity android:name=".activity.LoginActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
+        <activity android:name=".activity.BookingActivity"/>
         <activity android:name=".activity.BookingSuccessActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
-        <activity android:name=".activity.BookingActivity">
-        </activity>
+        <activity android:name=".activity.FinePWActivity"/>
         <activity android:name=".activity.CalendarActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
@@ -63,9 +63,6 @@
             android:theme="@style/ActionBarTheme">
         </activity>
         <activity android:name=".activity.FineIDActivity"
-            android:theme="@style/ActionBarTheme">
-        </activity>
-        <activity android:name=".activity.FinePWActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
         <activity android:name=".WebViewActivity"
