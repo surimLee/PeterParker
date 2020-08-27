@@ -48,6 +48,7 @@ import kr.co.waytech.peterparker.activity.MainActivity;
 import kr.co.waytech.peterparker.activity.PointActivity;
 import kr.co.waytech.peterparker.activity.PostClass;
 import kr.co.waytech.peterparker.R;
+import kr.co.waytech.peterparker.activity.SignupActivity;
 
 import static android.content.Context.MODE_PRIVATE;
 import static java.lang.Thread.sleep;
@@ -153,27 +154,6 @@ public class ProfileFragment extends android.app.Fragment {
             }
         });
 
-        UploadBtn = (Button)view.findViewById(R.id.UploadButton);
-        UploadBtn.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view) {
-                Postc.send_Img();
-            }
-        });
-
-        btn_getToken = (Button)view.findViewById(R.id.btn_getToken);
-        btn_getToken.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("login", MODE_PRIVATE);
-                str_Token = sharedPreferences.getString("token", "");
-                Toast.makeText(getContext(), "불러오기 하였습니다."+str_Token, Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
 
         test_btn = (Button)view.findViewById(R.id.test_btn);
         test_btn.setOnClickListener(new View.OnClickListener()
@@ -240,7 +220,33 @@ public class ProfileFragment extends android.app.Fragment {
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(getContext(),"Selected Option: YES",Toast.LENGTH_SHORT).show();
+
+                                try {
+                                    Postc.Delete_account(str_Token);
+                                    if(Postc.responseCode == 401) {
+//                        Toast.makeText(SignupActivity.this, "실패", Toast.LENGTH_SHORT).show();
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                        builder.setTitle("회원탈퇴")
+                                                .setMessage("소유 주차장에 예약된 내역이 존재하여 탈퇴할 수 없습니다.")
+                                                .setCancelable(false)
+                                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        // 확인 눌렀을 떄 반응
+                                                    }
+                                                });
+                                        //Creating dialog box
+                                        AlertDialog dialog2  = builder.create();
+                                        dialog2.show();
+                                    }
+                                    else set_afterLogoutView();
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         })
                         .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
@@ -351,9 +357,17 @@ public class ProfileFragment extends android.app.Fragment {
     }
 
         //화면 로그아웃 이후 화면으로 셋팅
-    public static void set_afterLogoutView() {
+    public void set_afterLogoutView() {
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("login", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit(); //SP를 제어할 editor를 선언
+        editor.clear();
+        editor.commit();
+
         view_beforeLogin.setVisibility(View.VISIBLE);
         view_afterLogin.setVisibility(View.GONE);
+
+
     }
 
     public void Success_logout(){

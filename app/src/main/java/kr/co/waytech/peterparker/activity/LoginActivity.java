@@ -127,8 +127,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void Success_Login(){
+    public void Success_Login() throws IOException, InterruptedException {
 
+        ProfileFragment.set_afterLoginView();
         //로그인 액티비티 종료
         loginActivity.finish();
     }

@@ -44,6 +44,7 @@ import static java.lang.Thread.sleep;
 
 public class PostClass {
     public static int responseCode = 0; //중복확인에서 리턴되는 코드 확인 위한
+    public static int responseCode2 = 0; //중복확인에서 리턴되는 코드 확인 위한
     public static int imgcount = 1;
     protected static String realtoken, bookingbody, body_profile;
     String status = "none";
@@ -84,7 +85,14 @@ public class PostClass {
                     Improve_Status();
                 } catch (IOException e) {
                     e.printStackTrace();
-                } Improve_Login();
+                }
+                try {
+                    Improve_Login();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }.start();
     }
@@ -381,7 +389,7 @@ public class PostClass {
             Thread_Status = 2;
         }
     }
-    public synchronized void Improve_Login(){
+    public synchronized void Improve_Login() throws IOException, InterruptedException {
         if(Thread_Status == 1) {
            Login_Status = 1;
            LogA.Success_Login();
@@ -447,6 +455,25 @@ public class PostClass {
                 .build();
         Response response = client.newCall(request).execute();
         System.out.println("Response Body is " + response.body().string());
+
+    }
+
+    public void Delete_account(String token) throws IOException, InterruptedException {
+
+        System.out.println(token);
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = null;
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/withdrawal")
+                .method("DELETE", body)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+        Response response = client.newCall(request).execute();
+        System.out.println(response);
+        responseCode2 = response.code();
+
 
     }
 
@@ -790,4 +817,5 @@ public class PostClass {
         status_add_parking_lot = response.body().string();
         System.out.println(status_add_parking_lot);
     }
+
 }
