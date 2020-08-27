@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
 
-        
+
         Notification noti = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_noti)
                 .setColor(ContextCompat.getColor(this, R.color.colorAccent))
@@ -97,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        startService(new Intent(MainActivity.this, BeaconService.class)); // 서비스 시작
-        System.out.println("서비스 시작");
+//        startService(new Intent(MainActivity.this, BeaconService.class)); // 서비스 시작
+//        System.out.println("서비스 시작");
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.mainactivity_bottomnavigationview);
         bottomNavigationView.setSelectedItemId(R.id.action_map);
         getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new MapFragment()).commit();

@@ -45,6 +45,7 @@ import static java.lang.Thread.sleep;
 public class PostClass {
     public static int responseCode = 0; //중복확인에서 리턴되는 코드 확인 위한
     public static int responseCode2 = 0; //중복확인에서 리턴되는 코드 확인 위한
+    public static int responseCode3 = 0;
     public static int imgcount = 1;
     protected static String realtoken, bookingbody, body_profile;
     String status = "none";
@@ -519,35 +520,36 @@ public class PostClass {
         Response response = client.newCall(request).execute();
         body_profile = response.body().string();
         System.out.println("Response Body is " + body_profile);
+        responseCode3 = response.code();
+        System.out.println("Response Code is " + responseCode3);
         body_profile = body_profile.replace("{\"", "");
         body_profile = body_profile.replace("\"}", "");
         body_profile = body_profile.trim();
         String[] split = body_profile.split("\":\"|\",\"");
         System.out.println("split의 사이즈는 두구두구두구 "+split.length);
 
-        if(split.length == 1){
-            return;
+        if(!(responseCode3 == 401)){
+            String user_id = split[1];
+            String nick_name = split[3];
+            String name = split[5];
+            String uuid = split[7];
+            String point = split[9];
+            String email = split[11];
+            String phone_number = split[13];
+            String car_number = split[15];
+            String profile_image = split[17];
+
+            ProfileFragment.user_id = user_id;
+            ProfileFragment.nick_name = nick_name;
+            ProfileFragment.user_name = name;
+            ProfileFragment.uuid = uuid;
+            ProfileFragment.point = point;
+            ProfileFragment.email = email;
+            ProfileFragment.phone_number = phone_number;
+            ProfileFragment.car_number = car_number;
+            ProfileFragment.profile_image = profile_image;
+
         }
-
-        String user_id = split[1];
-        String nick_name = split[3];
-        String name = split[5];
-        String uuid = split[7];
-        String point = split[9];
-        String email = split[11];
-        String phone_number = split[13];
-        String car_number = split[15];
-        String profile_image = split[17];
-
-        ProfileFragment.user_id = user_id;
-        ProfileFragment.nick_name = nick_name;
-        ProfileFragment.user_name = name;
-        ProfileFragment.uuid = uuid;
-        ProfileFragment.point = point;
-        ProfileFragment.email = email;
-        ProfileFragment.phone_number = phone_number;
-        ProfileFragment.car_number = car_number;
-        ProfileFragment.profile_image = profile_image;
     }
 
     public String unicodeToString(String uni) {

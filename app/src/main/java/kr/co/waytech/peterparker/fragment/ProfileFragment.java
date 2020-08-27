@@ -55,6 +55,7 @@ import static java.lang.Thread.sleep;
 
 public class ProfileFragment extends android.app.Fragment {
 
+    private static SharedPreferences sharedPreferences;
     private File tempFile;
     private static final int PICK_FROM_ALBUM = 10;
     public static String str_Token;
@@ -88,7 +89,7 @@ public class ProfileFragment extends android.app.Fragment {
         tv_point = view.findViewById(R.id.tv_point);
 
 
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("login", MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences("login", MODE_PRIVATE);
         str_Token = sharedPreferences.getString("token", "");
 
 //        SharedPreferences.Editor editor = sharedPreferences.edit(); //SP를 제어할 editor를 선언
@@ -268,32 +269,45 @@ public class ProfileFragment extends android.app.Fragment {
     public static void set_afterLoginView() throws IOException, InterruptedException {
 
         Postc.Get_profile(str_Token);
-        while(profile_image.length() < 5 ){sleep(1);}
-        if (profile_image.length() > 5 ){
-            tv_nickname.setText(nick_name);
-            System.out.println("tv_nickname 변경 완료");
-            profile_image = profile_image.replace("\\/", "/");
-            System.out.println("profile_image 은 " + profile_image);
+        if(Postc.responseCode3 == 401)
+        {
+            SharedPreferences.Editor editor = sharedPreferences.edit(); //SP를 제어할 editor를 선언
+            editor.clear();
+            editor.commit();
 
-            try {
-                URL url = new URL(profile_image);
-                URLConnection conn = url.openConnection();
-                conn.connect();
-                BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
-                Bitmap bm = BitmapFactory.decodeStream(bis);
-                bis.close();
-                iv_icon.setImageBitmap(bm);
-                System.out.println("이미지 변경 완료");
-            } catch (Exception e) {
+            view_beforeLogin.setVisibility(View.VISIBLE);
+            view_afterLogin.setVisibility(View.GONE);
+        }
+        else {
+            while (profile_image.length() < 5) {
+                sleep(1);
             }
+            if (profile_image.length() > 5) {
+                tv_nickname.setText(nick_name);
+                System.out.println("tv_nickname 변경 완료");
+                profile_image = profile_image.replace("\\/", "/");
+                System.out.println("profile_image 은 " + profile_image);
 
-            int origin_point = Integer.parseInt(point);
-            viewpoint = String.format("%,d", origin_point);
+                try {
+                    URL url = new URL(profile_image);
+                    URLConnection conn = url.openConnection();
+                    conn.connect();
+                    BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+                    Bitmap bm = BitmapFactory.decodeStream(bis);
+                    bis.close();
+                    iv_icon.setImageBitmap(bm);
+                    System.out.println("이미지 변경 완료");
+                } catch (Exception e) {
+                }
 
-            tv_email.setText(email);
-            tv_point.setText(viewpoint);
-            view_beforeLogin.setVisibility(View.GONE);
-            view_afterLogin.setVisibility(View.VISIBLE);
+                int origin_point = Integer.parseInt(point);
+                viewpoint = String.format("%,d", origin_point);
+
+                tv_email.setText(email);
+                tv_point.setText(viewpoint);
+                view_beforeLogin.setVisibility(View.GONE);
+                view_afterLogin.setVisibility(View.VISIBLE);
+            }
         }
 
     }
