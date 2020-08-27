@@ -887,7 +887,6 @@ public class PostClass {
         System.out.println(status_add_parking_lot);
     }
 
-<<<<<<< HEAD
     public void set_reserved(String id, String year, String month, String day, String time, String token) throws IOException {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
@@ -976,6 +975,4 @@ public class PostClass {
                 .build();
         Response response = client.newCall(request).execute();
     }
-=======
->>>>>>> 262651ed070856d67ba4c92436d94ce62a42731a
 }

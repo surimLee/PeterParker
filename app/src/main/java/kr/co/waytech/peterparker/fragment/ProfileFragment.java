@@ -55,11 +55,8 @@ import static java.lang.Thread.sleep;
 
 public class ProfileFragment extends android.app.Fragment {
 
-<<<<<<< HEAD
-=======
     private File tempFile;
     private static final int PICK_FROM_ALBUM = 10;
->>>>>>> 262651ed070856d67ba4c92436d94ce62a42731a
     public static String str_Token;
     static final PostClass Postc = new PostClass();
     public static String user_id, nick_name, user_name, uuid, point, email, phone_number, car_number, profile_image, viewpoint;
