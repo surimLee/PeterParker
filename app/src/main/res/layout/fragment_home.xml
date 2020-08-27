@@ -27,28 +27,26 @@
             android:orientation="horizontal"
             android:background="@android:color/transparent"
             >
-            <Button
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:text="필터"
-                android:layout_marginLeft="10dp"
-                android:id="@+id/filter_btn"/>
 
             <EditText
                 android:id="@+id/search_edt"
-                android:layout_width="280dp"
-                android:layout_height="50dp"
-                android:hint=" 어디에 주차하세요?"
+                android:layout_width="340dp"
+                android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
+                android:layout_gravity="center"
+                android:hint="   어디에 주차하세요?"
+                android:background="@drawable/edit_text_box"
                 />
 
             <ImageButton
                 android:id="@+id/search_btn"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/serach_icon"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="8dp"
+                android:src="@drawable/search_icon"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
+                android:layout_gravity="center"
                 android:background="#ffffff"/>
         </LinearLayout>
         <LinearLayout

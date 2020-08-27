@@ -207,19 +207,7 @@
 
             </HorizontalScrollView>
 
-            <Button
-                android:id="@+id/edit_btn_getXY"
-                android:layout_width="337dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:paddingVertical="10dp"
-                android:background="@drawable/btn_orange"
-                android:textColor="@android:color/white"
-                android:fontFamily="@font/nanumgothicbold"
-                android:text="주차장 위치 측정하기"
-                style="?android:attr/borderlessButtonStyle"
-                android:textSize="15sp"
-                />
+
             <Button
                 android:id="@+id/edit_btn_delete_PL"
                 android:layout_width="337dp"
