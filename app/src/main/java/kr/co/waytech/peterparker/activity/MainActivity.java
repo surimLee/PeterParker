@@ -4,18 +4,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Notification;
 import android.bluetooth.BluetoothAdapter;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -27,6 +36,7 @@ import com.gun0912.tedpermission.TedPermission;
 
 import java.util.ArrayList;
 
+import kr.co.waytech.peterparker.BeaconService;
 import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.SessionManager;
 import kr.co.waytech.peterparker.fragment.BookingListFragment;
@@ -45,6 +55,28 @@ public class MainActivity extends AppCompatActivity {
     public static BottomNavigationView bottomNavigationView;
     private androidx.appcompat.widget.Toolbar toolbar;
 
+    private BeaconService bService;
+    private boolean isBind;
+
+    ServiceConnection sconn = new ServiceConnection() {
+        @Override //서비스가 실행될 때 호출
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            BeaconService.MyBinder myBinder = (BeaconService.MyBinder) service;
+            bService = myBinder.getService();
+
+            isBind = true;
+            Log.e("LOG", "onServiceConnected()");
+        }
+
+        @Override //서비스가 종료될 때 호출
+        public void onServiceDisconnected(ComponentName name) {
+            bService = null;
+            isBind = false;
+            Log.e("LOG", "onServiceDisconnected()");
+        }
+    };
+
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +86,19 @@ public class MainActivity extends AppCompatActivity {
         tedPermission();
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
+
+        
+        Notification noti = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.ic_noti)
+                .setColor(ContextCompat.getColor(this, R.color.colorAccent))
+                .setContentTitle("피커파커")
+                .setContentText("자동 입차 시스템 가동중")
+                .build();
+
+
+
+        startService(new Intent(MainActivity.this, BeaconService.class)); // 서비스 시작
+        System.out.println("서비스 시작");
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.mainactivity_bottomnavigationview);
         bottomNavigationView.setSelectedItemId(R.id.action_map);
         getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new MapFragment()).commit();
@@ -61,23 +106,23 @@ public class MainActivity extends AppCompatActivity {
             showBookingList();
         }
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.action_map:
-                                getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new MapFragment()).commit();
-                                return true;
-                            case R.id.action_bookingList:
-                                getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new BookingListFragment()).commit();
-                                return true;
-                            case R.id.action_parking:
-                                getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new ParkingFragment()).commit();
-                                return true;
-                            case R.id.action_profile:
-                                getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new ProfileFragment()).commit();
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_map:
+                        getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new MapFragment()).commit();
+                        return true;
+                    case R.id.action_bookingList:
+                        getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new BookingListFragment()).commit();
+                        return true;
+                    case R.id.action_parking:
+                        getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new ParkingFragment()).commit();
+                        return true;
+                    case R.id.action_profile:
+                        getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new ProfileFragment()).commit();
 
-                                return true;
-                        }
+                        return true;
+                }
                 return false;
             }
         });
