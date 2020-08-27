@@ -73,10 +73,10 @@
 
                 <ImageView
                     android:id="@+id/img_profile"
-                    android:layout_width="77dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="76dp"
+                    android:layout_height="76dp"
                     android:adjustViewBounds="true"
-                    android:scaleType="fitXY" />
+                    android:scaleType="centerCrop" />
 
             </androidx.cardview.widget.CardView>
 
@@ -131,7 +131,7 @@
 
             <Button
                 android:id="@+id/btn_goMypoint"
-                android:layout_width="129dp"
+                android:layout_width="220dp"
                 android:layout_height="20dp"
                 android:elevation="0dp"
                 android:background="@android:color/white"
@@ -150,7 +150,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:layout_marginLeft="100dp"
+                android:layout_marginLeft="20dp"
                 android:fontFamily="@font/nanumgothicbold"
                 android:text="6,000"
                 android:textColor="@android:color/black"
@@ -299,26 +299,5 @@
     </LinearLayout>
 
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp">
-
-        <Button
-            android:id="@+id/UploadButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="사진보내기" />
-
-        <Button
-            android:id="@+id/btn_getToken"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="토큰 불러오기" />
-
-    </LinearLayout>
 
 </LinearLayout>

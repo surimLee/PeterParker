@@ -85,7 +85,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
     public static TextView tab1_text;
     private ListView mListView, mPickedView;
     ImageButton search_btn;
-    Button filter_btn;
     EditText search_edt;
     public static double lat, lng;
     public static int Plus_array;
@@ -132,7 +131,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         mapView.getMapAsync(this);
         search_edt = (EditText) view.findViewById(R.id.search_edt);
         search_btn = (ImageButton) view.findViewById(R.id.search_btn);
-        filter_btn = (Button) view.findViewById(R.id.filter_btn);
         tab1_text = (TextView) view.findViewById(R.id.tab1_text);
         geocoder = new Geocoder(mapFragment);
         search_edt.setOnClickListener(new View.OnClickListener(){

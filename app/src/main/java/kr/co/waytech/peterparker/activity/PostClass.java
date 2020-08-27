@@ -2,33 +2,17 @@ package kr.co.waytech.peterparker.activity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.net.InterfaceAddress;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.sql.Array;
-import java.text.NumberFormat;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.time.Year;
 
 import kr.co.waytech.peterparker.fragment.ProfileFragment;
 import okhttp3.Call;
@@ -44,6 +28,7 @@ import static java.lang.Thread.sleep;
 
 public class PostClass {
     public static int responseCode = 0; //중복확인에서 리턴되는 코드 확인 위한
+    public static int responseCode2 = 0; //중복확인에서 리턴되는 코드 확인 위한
     public static int imgcount = 1;
     protected static String realtoken, bookingbody, body_profile;
     String status = "none";
@@ -58,11 +43,12 @@ public class PostClass {
     public static String Avaible_time, my_parking_lot, my_parking_lot_id, my_parking_lot_name,
             my_parking_lot_price, my_parking_lot_imageurl, my_parking_lot_address, my_booking_list,
             my_booking_name, my_booking_address, my_booking_price, my_booking_time, my_booking_img,
-            status_add_parking_lot, my_booking_id, one_parking_lot_name;
+            status_add_parking_lot, my_booking_id, one_parking_lot_name, my_PL_available_time;
     public static int b = 7;
     static File tempSelectFile;
     public static Marker ParkingMark;
     public static String body_parkinglot = "abc";
+    public static String body_reserved_time_select, body_default_time_select, body_update_parking_lot;
     LoginActivity LogA = new LoginActivity();
     SignupActivity SignupA = new SignupActivity();
     Handler handler = new Handler() {
@@ -84,7 +70,14 @@ public class PostClass {
                     Improve_Status();
                 } catch (IOException e) {
                     e.printStackTrace();
-                } Improve_Login();
+                }
+                try {
+                    Improve_Login();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }.start();
     }
@@ -302,6 +295,87 @@ public class PostClass {
             }
         }.start();
     }
+    public void send_avaible_time(String id, String token){
+        new Thread() {
+            public void run() {
+                Bundle bun = new Bundle();
+                Message msg = handler.obtainMessage();
+                msg.setData(bun);
+                handler.sendMessage(msg);
+                try {
+                    post_avaible_time(id, token);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+    public void post_set_reserved(String id, String year, String month, String day, String time, String token){
+        new Thread() {
+            public void run() {
+                Bundle bun = new Bundle();
+                Message msg = handler.obtainMessage();
+                msg.setData(bun);
+                handler.sendMessage(msg);
+                try {
+                    set_reserved(id, year, month, day, time, token);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    public void post_set_default_time(String id, String time, String token){
+        new Thread() {
+            public void run() {
+                Bundle bun = new Bundle();
+                Message msg = handler.obtainMessage();
+                msg.setData(bun);
+                handler.sendMessage(msg);
+                try {
+                    set_default_time(id, time, token);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    public void post_update_parking_lot(String id, String name, String address, Bitmap img1,
+                                   Bitmap img2, Bitmap img3, Bitmap img4, String price, String token){
+        new Thread() {
+            public void run() {
+                Bundle bun = new Bundle();
+                Message msg = handler.obtainMessage();
+                msg.setData(bun);
+                handler.sendMessage(msg);
+                try {
+                    update_parking_lot(id, name, address,  img1, img2, img3, img4, price, token);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    public void Post_delete_PL(String id, String token){
+        new Thread() {
+            public void run() {
+                Bundle bun = new Bundle();
+                Message msg = handler.obtainMessage();
+                msg.setData(bun);
+                handler.sendMessage(msg);
+                try {
+                    delete_PL(id, token);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+
     private void Post_Login(String ID, String Password) throws IOException{
             OkHttpClient client = new OkHttpClient().newBuilder().build();
             MediaType mediaType = MediaType.parse("text/plain");
@@ -381,7 +455,7 @@ public class PostClass {
             Thread_Status = 2;
         }
     }
-    public synchronized void Improve_Login(){
+    public synchronized void Improve_Login() throws IOException, InterruptedException {
         if(Thread_Status == 1) {
            Login_Status = 1;
            LogA.Success_Login();
@@ -450,6 +524,50 @@ public class PostClass {
 
     }
 
+    public void Delete_account(String token) throws IOException, InterruptedException {
+
+        System.out.println(token);
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = null;
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/withdrawal")
+                .method("DELETE", body)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+        Response response = client.newCall(request).execute();
+        System.out.println(response);
+        responseCode2 = response.code();
+
+
+    }
+
+    public void Change_ProImg(String token, Bitmap proImg) throws IOException, InterruptedException {
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        proImg.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] ImgByte = stream.toByteArray();
+
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("profile_image","file",
+                        RequestBody.create(MediaType.parse("application/octet-stream"),ImgByte))
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/profile/image_upload")
+                .method("POST", body)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+        Response response = client.newCall(request).execute();
+        System.out.println(response);
+
+        ProfileFragment.set_afterLoginView();
+
+    }
+
     public void Get_profile(String token) throws IOException, InterruptedException {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -474,7 +592,6 @@ public class PostClass {
         System.out.println("split의 사이즈는 두구두구두구 "+split.length);
 
         if(split.length == 1){
-//            Get_profile(token);
             return;
         }
 
@@ -688,6 +805,9 @@ public class PostClass {
                 .addHeader("Authorization", "Bearer " +token)
                 .build();
         Response response = client.newCall(request).execute();
+        my_PL_available_time = response.body().string();
+        System.out.println(my_PL_available_time);
+
     }
     public void cancel_parking(String bookingid, String token) throws IOException {
 
@@ -766,4 +886,96 @@ public class PostClass {
         status_add_parking_lot = response.body().string();
         System.out.println(status_add_parking_lot);
     }
+
+<<<<<<< HEAD
+    public void set_reserved(String id, String year, String month, String day, String time, String token) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("parking_lot_id", id)
+                .addFormDataPart("year", year)
+                .addFormDataPart("month", month)
+                .addFormDataPart("day", day)
+                .addFormDataPart("time", time)
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/update/available_time")
+                .method("POST", body)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+        Response response = client.newCall(request).execute();
+        body_reserved_time_select = response.body().string();
+        System.out.println(body_reserved_time_select);
+    }
+
+    public void set_default_time(String id, String time, String token) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("parking_lot_id", id)
+                .addFormDataPart("time", time)
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/update/default_time")
+                .method("POST", body)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+        Response response = client.newCall(request).execute();
+        body_default_time_select = response.body().string();
+        System.out.println(body_default_time_select);
+    }
+
+    public void update_parking_lot(String id, String name, String address, Bitmap img1, Bitmap img2, Bitmap img3, Bitmap img4, String price, String token) throws IOException{
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        img1.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+        img2.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+        img3.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+        img4.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+        byte[] ImgByte = stream.toByteArray();
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("parking_lot_id", id)
+                .addFormDataPart("name", name)
+                .addFormDataPart("address", address)
+                .addFormDataPart("image1","img1.jpeg",
+                        RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                .addFormDataPart("image2","img2.jpeg",
+                        RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                .addFormDataPart("image3","img3.jpeg",
+                        RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                .addFormDataPart("image4","img4.jpeg",
+                        RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                .addFormDataPart("price", price)
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/update/my_parking_lot")
+                .method("POST", body)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+        Response response = client.newCall(request).execute();
+        body_update_parking_lot = response.body().string();
+        System.out.println(body_update_parking_lot);
+
+    }
+
+    public void delete_PL(String id, String token) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("parking_lot_id", id)
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/delete/my_parking_lot")
+                .method("POST", body)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+        Response response = client.newCall(request).execute();
+    }
+=======
+>>>>>>> 262651ed070856d67ba4c92436d94ce62a42731a
 }

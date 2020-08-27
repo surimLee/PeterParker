@@ -213,7 +213,7 @@
                 android:foregroundGravity="left">
 
                 <LinearLayout
-                    android:id="@+id/edit_selected_photos_container"
+                    android:id="@+id/selected_photos_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"

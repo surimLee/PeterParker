@@ -46,13 +46,6 @@ public class PointActivity extends AppCompatActivity {
         getSupportActionBar().setElevation(1);
 
         tv_mypoint = findViewById(R.id.tv_mypoint);
-        while (point.length() < 2){
-            try {
-                sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         System.out.println(point);
 
         int origin_point = Integer.parseInt(point);

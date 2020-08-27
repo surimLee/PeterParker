@@ -41,7 +41,7 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.MyViewHo
 
     Context mContext;
     List<ParkingList> parkingList;
-    public static String manage_parking_lot_img_url, manage_parking_lot_name, manage_parking_lot_address, manage_parking_lot_price;
+    public static String manage_parking_lot_img_url, manage_parking_lot_name, manage_parking_lot_address, manage_parking_lot_price, manage_parking_lot_id;
 
     public ParkingAdapter(Context mContext, List<ParkingList> parkingList) {
         this.mContext = mContext;
@@ -84,6 +84,11 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.MyViewHo
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View view) {
+                manage_parking_lot_img_url = parkingList.get(position).getImageUrl();
+                manage_parking_lot_name = parkingList.get(position).getPLName();
+                manage_parking_lot_address = parkingList.get(position).getPLAddress();
+                manage_parking_lot_price = parkingList.get(position).getPLPrice();
+                manage_parking_lot_id = parkingList.get(position).getPL_ID();
                 Intent intent = new Intent(holder.set_time_btn.getContext(), EditParkinglotActivity.class);
                 holder.set_time_btn.getContext().startActivity(intent);
 
@@ -101,6 +106,7 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.MyViewHo
                 manage_parking_lot_name = parkingList.get(position).getPLName();
                 manage_parking_lot_address = parkingList.get(position).getPLAddress();
                 manage_parking_lot_price = parkingList.get(position).getPLPrice();
+                manage_parking_lot_id = parkingList.get(position).getPL_ID();
                 Intent intent = new Intent(holder.set_time_btn.getContext(), ManagementTimeActivity.class);
                 holder.set_time_btn.getContext().startActivity(intent);
                 //Click Event here

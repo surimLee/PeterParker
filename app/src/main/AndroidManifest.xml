@@ -68,6 +68,9 @@
         <activity android:name=".activity.FineIDActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
+        <activity android:name=".activity.ManageCalendarActivity"
+            android:theme="@style/ActionBarTheme">
+        </activity>
         <activity android:name=".WebViewActivity"
             android:theme="@style/ActionBarTheme">
         </activity>

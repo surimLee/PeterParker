@@ -3,6 +3,7 @@ package kr.co.waytech.peterparker.activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -47,6 +48,7 @@ import static kr.co.waytech.peterparker.fragment.MapFragment.mlatitude;
 import static kr.co.waytech.peterparker.fragment.MapFragment.mlongitude;
 import static kr.co.waytech.peterparker.fragment.ParkingFragment.parking_adding_flag;
 import static kr.co.waytech.peterparker.fragment.ProfileFragment.str_Token;
+import static kr.co.waytech.peterparker.adapter.ParkingAdapter.manage_parking_lot_id;
 
 public class EditParkinglotActivity  extends AppCompatActivity {
 
@@ -74,11 +76,14 @@ public class EditParkinglotActivity  extends AppCompatActivity {
         edit_iv_image = findViewById(R.id.edit_iv_image_);
         edit_mSelectedImagesContainer = findViewById(R.id.edit_selected_photos_container);
         requestManager = Glide.with(this);
+        SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+        str_Token = sharedPreferences.getString("token", "");
 
         getSupportActionBar().setTitle(Html.fromHtml("<font color='#000000'>내 주차장 수정</font>"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setElevation(1);
+
 
         setMultiShowButton();
 
@@ -97,35 +102,11 @@ public class EditParkinglotActivity  extends AppCompatActivity {
                     startActivityForResult(i, SEARCH_ADDRESS_ACTIVITY);
                 }
             });
-
-        Button edit_btn_getXY = findViewById(R.id.edit_btn_getXY);
-        edit_btn_getXY.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if ( Build.VERSION.SDK_INT >= 23 &&
-                        ContextCompat.checkSelfPermission( getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
-                    ActivityCompat.requestPermissions( EditParkinglotActivity.this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
-                            0 );
-                }
-                else {
-                    Location location = locationManagerm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    String provider = location.getProvider();
-                    plongitude = location.getLongitude();
-                    platitude = location.getLatitude();
-
-                    Toast.makeText(EditParkinglotActivity.this,"위도 : " + plongitude + "\n" +
-                            "경도 : " + platitude,Toast.LENGTH_SHORT).show();
-
-
-                }
-            }
-        });
         edit_btn_delete.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View view) {
-                //post delete parking lot
+                Postc.Post_delete_PL(manage_parking_lot_id, str_Token);
             }
         });
 
@@ -136,8 +117,9 @@ public class EditParkinglotActivity  extends AppCompatActivity {
         // Handle item selection
 
         switch (item.getItemId()) {
-            case R.id.menu_register:
-                if(str_Token.length() > 10 && platitude == 0.0) {
+            case R.id.menu_update:
+
+                if(str_Token.length() > 10){
                     try {
                         edit_PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), edit_selectedUriList.get(0));
                         edit_PL_img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), edit_selectedUriList.get(1));
@@ -147,23 +129,11 @@ public class EditParkinglotActivity  extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     parking_adding_flag = 1;
-                    //post
-                    Toast.makeText(EditParkinglotActivity.this,"등록에 성공하였습니다." ,Toast.LENGTH_SHORT).show();
-
-
-                }
-                else if(str_Token.length() > 10 && platitude != 0.0){
-                    try {
-                        edit_PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), edit_selectedUriList.get(0));
-                        edit_PL_img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), edit_selectedUriList.get(1));
-                        edit_PL_img3 = MediaStore.Images.Media.getBitmap(getContentResolver(), edit_selectedUriList.get(2));
-                        edit_PL_img4 = MediaStore.Images.Media.getBitmap(getContentResolver(), edit_selectedUriList.get(3));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    parking_adding_flag = 1;
-                    //Post
-                    Toast.makeText(EditParkinglotActivity.this,"등록에 성공하였습니다." ,Toast.LENGTH_SHORT).show();
+                    Postc.post_update_parking_lot(manage_parking_lot_id, edit_et_name.getText().toString(),
+                            edit_et_address.getText().toString().split(",")[1].replace(" ", "") +
+                            edit_et_address_detail.getText().toString(), edit_PL_img1, edit_PL_img2, edit_PL_img3, edit_PL_img4,
+                            edit_et_price.getText().toString(), str_Token);
+                    Toast.makeText(EditParkinglotActivity.this,"정보 수정이 되었습니다." ,Toast.LENGTH_SHORT).show();
                 }
                 else if(str_Token.length() < 10){
                     Toast.makeText(EditParkinglotActivity.this,"로그인이 필요합니다." ,Toast.LENGTH_SHORT).show();
@@ -183,7 +153,7 @@ public class EditParkinglotActivity  extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.actionbar_menu, menu);
+        getMenuInflater().inflate(R.menu.actionbar_menu2, menu);
         return true;
     }
 

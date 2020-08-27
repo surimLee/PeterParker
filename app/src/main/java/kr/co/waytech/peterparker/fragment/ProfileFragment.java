@@ -3,12 +3,15 @@ package kr.co.waytech.peterparker.fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Network;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +35,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -44,13 +48,19 @@ import kr.co.waytech.peterparker.activity.MainActivity;
 import kr.co.waytech.peterparker.activity.PointActivity;
 import kr.co.waytech.peterparker.activity.PostClass;
 import kr.co.waytech.peterparker.R;
+import kr.co.waytech.peterparker.activity.SignupActivity;
 
 import static android.content.Context.MODE_PRIVATE;
 import static java.lang.Thread.sleep;
 
 public class ProfileFragment extends android.app.Fragment {
 
-    static String str_Token;
+<<<<<<< HEAD
+=======
+    private File tempFile;
+    private static final int PICK_FROM_ALBUM = 10;
+>>>>>>> 262651ed070856d67ba4c92436d94ce62a42731a
+    public static String str_Token;
     static final PostClass Postc = new PostClass();
     public static String user_id, nick_name, user_name, uuid, point, email, phone_number, car_number, profile_image, viewpoint;
     static ImageView iv_icon;
@@ -79,9 +89,10 @@ public class ProfileFragment extends android.app.Fragment {
         tv_nickname = view.findViewById(R.id.tv_nickname);
         tv_email = view.findViewById(R.id.tv_email);
         tv_point = view.findViewById(R.id.tv_point);
-        iv_icon = view.findViewById(R.id.img_profile);
+
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("login", MODE_PRIVATE);
+
         str_Token = sharedPreferences.getString("token", "");
 
 //        SharedPreferences.Editor editor = sharedPreferences.edit(); //SP를 제어할 editor를 선언
@@ -93,6 +104,19 @@ public class ProfileFragment extends android.app.Fragment {
 
         view_beforeLogin = (View) view.findViewById(R.id.view_beforeLogin);
         view_afterLogin = (View) view.findViewById(R.id.view_afterLogin);
+
+        iv_icon = view.findViewById(R.id.img_profile);
+        iv_icon.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_PICK); //ACTION_PICK 사진 가져오는 것
+                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                startActivityForResult(intent, PICK_FROM_ALBUM); // 리퀘스트코드값을 넘겨줌, 내가 원하는 부분으로 이벤트 이동
+                //결과값은 onActivityResult로
+
+            }
+        });
 
         if (str_Token.length() > 20){
             Toast.makeText(getContext(), "토큰이 존재", Toast.LENGTH_SHORT).show();
@@ -134,25 +158,6 @@ public class ProfileFragment extends android.app.Fragment {
             }
         });
 
-        UploadBtn = (Button)view.findViewById(R.id.UploadButton);
-        UploadBtn.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view) {
-                Postc.send_Img();
-            }
-        });
-
-        btn_getToken = (Button)view.findViewById(R.id.btn_getToken);
-        btn_getToken.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("login", MODE_PRIVATE);
-                str_Token = sharedPreferences.getString("token", "");
-                Toast.makeText(getContext(), "불러오기 하였습니다."+str_Token, Toast.LENGTH_SHORT).show();
-            }
-        });
 
         test_btn = (Button)view.findViewById(R.id.test_btn);
         test_btn.setOnClickListener(new View.OnClickListener()
@@ -219,7 +224,33 @@ public class ProfileFragment extends android.app.Fragment {
                         .setPositiveButton("네", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(getContext(),"Selected Option: YES",Toast.LENGTH_SHORT).show();
+
+                                try {
+                                    Postc.Delete_account(str_Token);
+                                    if(Postc.responseCode == 401) {
+//                        Toast.makeText(SignupActivity.this, "실패", Toast.LENGTH_SHORT).show();
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                        builder.setTitle("회원탈퇴")
+                                                .setMessage("소유 주차장에 예약된 내역이 존재하여 탈퇴할 수 없습니다.")
+                                                .setCancelable(false)
+                                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        // 확인 눌렀을 떄 반응
+                                                    }
+                                                });
+                                        //Creating dialog box
+                                        AlertDialog dialog2  = builder.create();
+                                        dialog2.show();
+                                    }
+                                    else set_afterLogoutView();
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         })
                         .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
@@ -272,10 +303,75 @@ public class ProfileFragment extends android.app.Fragment {
     }
 
 
-    //화면 로그아웃 이후 화면으로 셋팅
-    public static void set_afterLogoutView() {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == PICK_FROM_ALBUM) {
+
+            Uri photoUri = data.getData();
+
+            Cursor cursor = null;
+
+            try {
+
+                /*
+                 *  Uri 스키마를
+                 *  content:/// 에서 file:/// 로  변경한다.
+                 */
+                String[] proj = {MediaStore.Images.Media.DATA};
+
+                assert photoUri != null;
+                cursor = getActivity().getContentResolver().query(photoUri, proj, null, null, null);
+
+                assert cursor != null;
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+                cursor.moveToFirst();
+
+                tempFile = new File(cursor.getString(column_index));
+
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+
+            try {
+                setImage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private void setImage() throws IOException, InterruptedException {
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
+
+        while(originalBm == null) {sleep(1);}
+        System.out.println(originalBm);
+
+        Postc.Change_ProImg(str_Token, originalBm);
+
+
+    }
+
+        //화면 로그아웃 이후 화면으로 셋팅
+    public void set_afterLogoutView() {
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("login", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit(); //SP를 제어할 editor를 선언
+        editor.clear();
+        editor.commit();
+
         view_beforeLogin.setVisibility(View.VISIBLE);
         view_afterLogin.setVisibility(View.GONE);
+
+
     }
 
     public void Success_logout(){
