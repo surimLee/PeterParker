@@ -3,12 +3,15 @@ package kr.co.waytech.peterparker.fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Network;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +35,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -50,7 +54,9 @@ import static java.lang.Thread.sleep;
 
 public class ProfileFragment extends android.app.Fragment {
 
-    static String str_Token;
+    private File tempFile;
+    private static final int PICK_FROM_ALBUM = 10;
+    public static String str_Token;
     static final PostClass Postc = new PostClass();
     public static String user_id, nick_name, user_name, uuid, point, email, phone_number, car_number, profile_image, viewpoint;
     static ImageView iv_icon;
@@ -79,7 +85,7 @@ public class ProfileFragment extends android.app.Fragment {
         tv_nickname = view.findViewById(R.id.tv_nickname);
         tv_email = view.findViewById(R.id.tv_email);
         tv_point = view.findViewById(R.id.tv_point);
-        iv_icon = view.findViewById(R.id.img_profile);
+
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("login", MODE_PRIVATE);
         str_Token = sharedPreferences.getString("token", "");
@@ -93,6 +99,19 @@ public class ProfileFragment extends android.app.Fragment {
 
         view_beforeLogin = (View) view.findViewById(R.id.view_beforeLogin);
         view_afterLogin = (View) view.findViewById(R.id.view_afterLogin);
+
+        iv_icon = view.findViewById(R.id.img_profile);
+        iv_icon.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_PICK); //ACTION_PICK 사진 가져오는 것
+                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                startActivityForResult(intent, PICK_FROM_ALBUM); // 리퀘스트코드값을 넘겨줌, 내가 원하는 부분으로 이벤트 이동
+                //결과값은 onActivityResult로
+
+            }
+        });
 
         if (str_Token.length() > 20){
             Toast.makeText(getContext(), "토큰이 존재", Toast.LENGTH_SHORT).show();
@@ -153,6 +172,8 @@ public class ProfileFragment extends android.app.Fragment {
                 Toast.makeText(getContext(), "불러오기 하였습니다."+str_Token, Toast.LENGTH_SHORT).show();
             }
         });
+
+
 
         test_btn = (Button)view.findViewById(R.id.test_btn);
         test_btn.setOnClickListener(new View.OnClickListener()
@@ -272,7 +293,64 @@ public class ProfileFragment extends android.app.Fragment {
     }
 
 
-    //화면 로그아웃 이후 화면으로 셋팅
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == PICK_FROM_ALBUM) {
+
+            Uri photoUri = data.getData();
+
+            Cursor cursor = null;
+
+            try {
+
+                /*
+                 *  Uri 스키마를
+                 *  content:/// 에서 file:/// 로  변경한다.
+                 */
+                String[] proj = {MediaStore.Images.Media.DATA};
+
+                assert photoUri != null;
+                cursor = getActivity().getContentResolver().query(photoUri, proj, null, null, null);
+
+                assert cursor != null;
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+                cursor.moveToFirst();
+
+                tempFile = new File(cursor.getString(column_index));
+
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+
+            try {
+                setImage();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private void setImage() throws IOException, InterruptedException {
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap originalBm = BitmapFactory.decodeFile(tempFile.getAbsolutePath(), options);
+
+        while(originalBm == null) {sleep(1);}
+        System.out.println(originalBm);
+
+        Postc.Change_ProImg(str_Token, originalBm);
+
+
+    }
+
+        //화면 로그아웃 이후 화면으로 셋팅
     public static void set_afterLogoutView() {
         view_beforeLogin.setVisibility(View.VISIBLE);
         view_afterLogin.setVisibility(View.GONE);

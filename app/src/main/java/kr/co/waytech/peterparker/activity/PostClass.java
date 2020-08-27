@@ -450,6 +450,31 @@ public class PostClass {
 
     }
 
+    public void Change_ProImg(String token, Bitmap proImg) throws IOException, InterruptedException {
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        proImg.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] ImgByte = stream.toByteArray();
+
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("profile_image","file",
+                        RequestBody.create(MediaType.parse("application/octet-stream"),ImgByte))
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/profile/image_upload")
+                .method("POST", body)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+        Response response = client.newCall(request).execute();
+        System.out.println(response);
+
+        ProfileFragment.set_afterLoginView();
+
+    }
+
     public void Get_profile(String token) throws IOException, InterruptedException {
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -474,7 +499,6 @@ public class PostClass {
         System.out.println("split의 사이즈는 두구두구두구 "+split.length);
 
         if(split.length == 1){
-//            Get_profile(token);
             return;
         }
 
