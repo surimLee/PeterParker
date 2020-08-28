@@ -38,21 +38,26 @@ public class PostClass {
     int Login_Status = 3;
     public static int count, count_my_parking_lot, count_my_booking_list, count_my_parking_lot_reservation;
     public static Integer Count_Parkinglot;
+    public static byte[] ImgByte1, ImgByte2, ImgByte3, ImgByte4;
     public static int[] ParkingPrice;
     public static double[] ParkingLat, ParkingLng;
     public static String[] Parking_img, Parking_phone;
     public static String[][] All_Parkinglot;
-    public static String Avaible_time, my_parking_lot, my_parking_lot_id, my_parking_lot_name,
-            my_parking_lot_price, my_parking_lot_imageurl, my_parking_lot_address, my_booking_list,
+    public static String Avaible_time,  my_parking_lot_id, my_parking_lot_name,
+            my_parking_lot_price, my_parking_lot_imageurl, my_parking_lot_address,
             my_booking_name, my_booking_address, my_booking_price, my_booking_time, my_booking_img,
-            status_add_parking_lot, my_booking_id, one_parking_lot_name, my_PL_available_time,
+            my_booking_id, one_parking_lot_name, my_PL_available_time,
             my_PL_reserved_id, my_PL_reserved_price, my_PL_reserved_time, my_PL_reserved_in, my_PL_reserved_out,
             my_PL_reserved_nick, my_PL_reserved_phone, my_PL_reserved_car, my_PL_reserved_add_price;
+    public static String my_parking_lot = "A";
+    public static String my_booking_list = "B";
+    public static String status_add_parking_lot = "c";
+    public static String body_update_parking_lot = "d";
     public static int b = 7;
     static File tempSelectFile;
     public static Marker ParkingMark;
     public static String body_parkinglot = "abc";
-    public static String body_reserved_time_select, body_default_time_select, body_update_parking_lot, body_list_reserved_pl;
+    public static String body_reserved_time_select, body_default_time_select, body_list_reserved_pl;
     LoginActivity LogA = new LoginActivity();
     SignupActivity SignupA = new SignupActivity();
     Handler handler = new Handler() {
@@ -870,12 +875,52 @@ public class PostClass {
         System.out.println("my parking lot : " + my_parking_lot);
     }
     public void add_parking_lot(String id, String name, String address, String latitude, String longitude, String price, String token, Bitmap img1, Bitmap img2, Bitmap img3, Bitmap img4) throws IOException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        img1.compress(Bitmap.CompressFormat.JPEG, 0, stream);
-        img2.compress(Bitmap.CompressFormat.JPEG, 0, stream);
-        img3.compress(Bitmap.CompressFormat.JPEG, 0, stream);
-        img4.compress(Bitmap.CompressFormat.JPEG, 0, stream);
-        byte[] ImgByte = stream.toByteArray();
+        ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
+        ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
+        ByteArrayOutputStream stream3 = new ByteArrayOutputStream();
+        ByteArrayOutputStream stream4 = new ByteArrayOutputStream();
+        img1.compress(Bitmap.CompressFormat.JPEG, 0, stream1);
+        img2.compress(Bitmap.CompressFormat.JPEG, 0, stream2);
+        img3.compress(Bitmap.CompressFormat.JPEG, 0, stream3);
+        img4.compress(Bitmap.CompressFormat.JPEG, 0, stream4);
+        ImgByte1 = stream1.toByteArray();
+        ImgByte2 = stream2.toByteArray();
+        ImgByte3 = stream3.toByteArray();
+        ImgByte4 = stream4.toByteArray();
+        if(img1 != null && img2 != null && img3 != null && img4 != null) {
+            img1.compress(Bitmap.CompressFormat.JPEG, 0, stream1);
+            img2.compress(Bitmap.CompressFormat.JPEG, 0, stream2);
+            img3.compress(Bitmap.CompressFormat.JPEG, 0, stream3);
+            img4.compress(Bitmap.CompressFormat.JPEG, 0, stream4);
+        }
+        else if (img1 == null && img2 != null && img3 != null && img4 != null) {
+            img2.compress(Bitmap.CompressFormat.JPEG, 0, stream2);
+            img3.compress(Bitmap.CompressFormat.JPEG, 0, stream3);
+            img4.compress(Bitmap.CompressFormat.JPEG, 0, stream4);
+        }
+        else if (img1 != null && img2 == null && img3 != null && img4 != null) {
+            img1.compress(Bitmap.CompressFormat.JPEG, 0, stream1);
+            img3.compress(Bitmap.CompressFormat.JPEG, 0, stream3);
+            img4.compress(Bitmap.CompressFormat.JPEG, 0, stream4);
+        }
+        else if (img1 != null && img2 != null && img3 == null && img4 != null) {
+            img1.compress(Bitmap.CompressFormat.JPEG, 0, stream1);
+            img2.compress(Bitmap.CompressFormat.JPEG, 0, stream2);
+            img4.compress(Bitmap.CompressFormat.JPEG, 0, stream4);
+        }
+        else if (img1 != null && img2 != null && img3 != null && img4 == null) {
+            img1.compress(Bitmap.CompressFormat.JPEG, 0, stream1);
+            img2.compress(Bitmap.CompressFormat.JPEG, 0, stream2);
+            img3.compress(Bitmap.CompressFormat.JPEG, 0, stream3);
+        }
+        else{
+            img1.compress(Bitmap.CompressFormat.JPEG, 0, stream1);
+        }
+
+        ImgByte1 = stream1.toByteArray();
+        ImgByte2 = stream2.toByteArray();
+        ImgByte3 = stream3.toByteArray();
+        ImgByte4 = stream4.toByteArray();
 
 
         OkHttpClient client = new OkHttpClient().newBuilder()
@@ -888,13 +933,13 @@ public class PostClass {
                 .addFormDataPart("latitude", latitude)
                 .addFormDataPart("longitude", longitude)
                 .addFormDataPart("image1","img1.jpeg",
-                        RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                        RequestBody.create(MediaType.parse("image/*"), ImgByte1))
                 .addFormDataPart("image2","img2.jpeg",
-                        RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                        RequestBody.create(MediaType.parse("image/*"), ImgByte2))
                 .addFormDataPart("image3","img3.jpeg",
-                        RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                        RequestBody.create(MediaType.parse("image/*"), ImgByte3))
                 .addFormDataPart("image4","img4.jpeg",
-                        RequestBody.create(MediaType.parse("image/*"), ImgByte))
+                        RequestBody.create(MediaType.parse("image/*"), ImgByte4))
                 .addFormDataPart("price", price)
                 .addFormDataPart("time", "000000000000000000000000000000000000000000000000")
                 .build();

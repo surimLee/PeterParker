@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
+import static java.lang.Thread.sleep;
 import static kr.co.waytech.peterparker.activity.PostClass.my_booking_list;
 import static kr.co.waytech.peterparker.activity.PostClass.my_parking_lot;
 import static kr.co.waytech.peterparker.fragment.ProfileFragment.str_Token;
@@ -64,10 +65,7 @@ public class BookingListFragment extends Fragment {
             bookingList = new ArrayList<>();
         }
         if(adding_booking_flag == 1) {
-            Postc.get_my_booking_list(str_Token);
-            Handler mHandler = new Handler();
-            mHandler.postDelayed(new Runnable() {
-                public void run() {
+            set_afterBookingView(str_Token);
                     if (Postc.my_booking_list.length() < 15) {
                         Toast.makeText(bookinglistFragment, "로그인이 필요합니다." ,Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(getActivity(), LoginActivity.class);
@@ -75,12 +73,18 @@ public class BookingListFragment extends Fragment {
                         startActivity(intent);
                     } else {
                         Postc.count_my_booking_list = Integer.parseInt(my_booking_list.split(",")[0].split(":")[1]);
+                        int b = Postc.count_my_booking_list;
+                        if (b == 0) {
+                            Toast.makeText(bookinglistFragment, "예약이 없습니다." ,Toast.LENGTH_LONG).show();
+                        }
                         for (int i = 2; i < Postc.count_my_booking_list + 2; i++) {
+
                             if (my_booking_list.split("\\{")[i].split(",")[15].split("\"")[3] == null) {
                                 break;
                             } else if (my_booking_list.split("\\{")[i].split(",")[14].split(":")[1].equals("\"cancel\"")) {
 
-                            } else {
+                            }
+                            else {
                                 Postc.my_booking_id = my_booking_list.split("\\{")[i].split(",")[0].split(":")[1];
                                 Postc.my_booking_name = my_booking_list.split("\\{")[i].split(",")[15].split("\"")[3];
                                 Postc.my_booking_address = my_booking_list.split("\\{")[i].split(",")[16].split("\"")[3];
@@ -107,20 +111,17 @@ public class BookingListFragment extends Fragment {
                             }
                         }
                     }
-                }
-            }, 600);
-
             adding_booking_flag = 0;
         }
     }
-        //Add dummy data in Booking class here
-        //bookingList.add(new BookingList("산기대 종합관 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "3,000원", "2020년 07월 20일(월) 12:00\n~2020년 07월 20일(월) 14:00", R.drawable.parkinglot4));
-        //bookingList.add(new BookingList("산기대 E동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "2,000원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot5));
-        //bookingList.add(new BookingList("산기대 A동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "4,000원", "2020년 07월 15일(금) 14:00\n~2020년 07월 15일(금) 15:00", R.drawable.parkinglot1));
-        //bookingList.add(new BookingList("산기대 B동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "1,000원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot4));
-        //bookingList.add(new BookingList("산기대 C동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "1,400원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot2));
-        //bookingList.add(new BookingList("산기대 D동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "2,500원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot5));
-        //bookingList.add(new BookingList("시흥비즈니스센터","사용완료","경기도 시흥시 정왕동 2121-1", "2,000원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot3));
+    //Add dummy data in Booking class here
+    //bookingList.add(new BookingList("산기대 종합관 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "3,000원", "2020년 07월 20일(월) 12:00\n~2020년 07월 20일(월) 14:00", R.drawable.parkinglot4));
+    //bookingList.add(new BookingList("산기대 E동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "2,000원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot5));
+    //bookingList.add(new BookingList("산기대 A동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "4,000원", "2020년 07월 15일(금) 14:00\n~2020년 07월 15일(금) 15:00", R.drawable.parkinglot1));
+    //bookingList.add(new BookingList("산기대 B동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "1,000원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot4));
+    //bookingList.add(new BookingList("산기대 C동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "1,400원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot2));
+    //bookingList.add(new BookingList("산기대 D동 뒤","사용완료","경기도 시흥시 정왕동 2121-1", "2,500원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot5));
+    //bookingList.add(new BookingList("시흥비즈니스센터","사용완료","경기도 시흥시 정왕동 2121-1", "2,000원", "2020년 07월 17일(금) 14:00\n~2020년 07월 17일(금) 15:00", R.drawable.parkinglot3));
 
 
 
@@ -148,5 +149,17 @@ public class BookingListFragment extends Fragment {
             bookingList = new ArrayList<>();
         }
         bookingList.add(new BookingList(id, name,use,address, price, time, img));
+    }
+
+    public void set_afterBookingView(String token)  {
+        Postc.get_my_booking_list(str_Token);
+        while (Postc.my_booking_list.length() < 5) {
+            try {
+                sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }
