@@ -45,6 +45,7 @@ import kr.co.waytech.peterparker.R;
 import io.reactivex.disposables.Disposable;
 import kr.co.waytech.peterparker.WebViewActivity;
 
+import static java.lang.Thread.sleep;
 import static kr.co.waytech.peterparker.fragment.MapFragment.mlatitude;
 import static kr.co.waytech.peterparker.fragment.MapFragment.mlongitude;
 import static kr.co.waytech.peterparker.fragment.ParkingFragment.parking_adding_flag;
@@ -133,10 +134,34 @@ public class AddParkinglotActivity extends AppCompatActivity {
             case R.id.menu_register:
                 if(str_Token.length() > 10 && platitude == 0.0) {
                     try {
-                        PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(0));
-                        PL_img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(1));
-                        PL_img3 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(2));
-                        PL_img4 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(3));
+                        switch (selectedUriList.size()) {
+                            case 1:
+                                PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(0));
+                                PL_img2 = null;
+                                PL_img3 = null;
+                                PL_img4 = null;
+                                break;
+                            case 2:
+                                PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(0));
+                                PL_img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(1));
+                                PL_img3 = null;
+                                PL_img4 = null;
+                                break;
+                            case 3:
+                                PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(0));
+                                PL_img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(1));
+                                PL_img3 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(2));
+                                PL_img4 = null;
+                                break;
+                            case 4:
+                                PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(0));
+                                PL_img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(1));
+                                PL_img3 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(2));
+                                PL_img4 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(3));
+                                break;
+                            default:
+                                break;
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -145,15 +170,37 @@ public class AddParkinglotActivity extends AppCompatActivity {
                             Double.toString(mlatitude), Double.toString(mlongitude), et_price.getText().toString(), str_Token,
                             PL_img1, PL_img2, PL_img3, PL_img4);
                     Toast.makeText(AddParkinglotActivity.this,"등록에 성공하였습니다." ,Toast.LENGTH_SHORT).show();
-
-
                 }
                 else if(str_Token.length() > 10 && platitude != 0.0){
                     try {
-                        PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(0));
-                        PL_img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(1));
-                        PL_img3 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(2));
-                        PL_img4 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(3));
+                        switch (selectedUriList.size()) {
+                            case 1:
+                                PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(0));
+                                PL_img2 = null;
+                                PL_img3 = null;
+                                PL_img4 = null;
+                                break;
+                            case 2:
+                                PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(0));
+                                PL_img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(1));
+                                PL_img3 = null;
+                                PL_img4 = null;
+                                break;
+                            case 3:
+                                PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(0));
+                                PL_img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(1));
+                                PL_img3 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(2));
+                                PL_img4 = null;
+                                break;
+                            case 4:
+                                PL_img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(0));
+                                PL_img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(1));
+                                PL_img3 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(2));
+                                PL_img4 = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedUriList.get(3));
+                                break;
+                            default:
+                                break;
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -171,6 +218,7 @@ public class AddParkinglotActivity extends AppCompatActivity {
                 }
                 //Add Register Button Listener Here
                 //Send Data to Server Here
+                set_afteraddParkingView();
                 AddParkinglotActivity.this.finish();
                 return true;
 
@@ -276,5 +324,16 @@ public class AddParkinglotActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    public void set_afteraddParkingView()  {
+        while (Postc.status_add_parking_lot.length() < 5) {
+            try {
+                sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }

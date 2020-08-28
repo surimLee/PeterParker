@@ -44,6 +44,7 @@ import io.reactivex.disposables.Disposable;
 import kr.co.waytech.peterparker.R;
 import kr.co.waytech.peterparker.WebViewActivity;
 
+import static java.lang.Thread.sleep;
 import static kr.co.waytech.peterparker.fragment.MapFragment.mlatitude;
 import static kr.co.waytech.peterparker.fragment.MapFragment.mlongitude;
 import static kr.co.waytech.peterparker.fragment.ParkingFragment.parking_adding_flag;
@@ -107,6 +108,7 @@ public class EditParkinglotActivity  extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Postc.Post_delete_PL(manage_parking_lot_id, str_Token);
+                finish();
             }
         });
 
@@ -133,6 +135,7 @@ public class EditParkinglotActivity  extends AppCompatActivity {
                             edit_et_address.getText().toString().split(",")[1].replace(" ", "") +
                             edit_et_address_detail.getText().toString(), edit_PL_img1, edit_PL_img2, edit_PL_img3, edit_PL_img4,
                             edit_et_price.getText().toString(), str_Token);
+                    set_aftereditParkingView();
                     Toast.makeText(EditParkinglotActivity.this,"정보 수정이 되었습니다." ,Toast.LENGTH_SHORT).show();
                 }
                 else if(str_Token.length() < 10){
@@ -248,5 +251,15 @@ public class EditParkinglotActivity  extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+    public void set_aftereditParkingView()  {
+        while (Postc.body_update_parking_lot.length() < 5) {
+            try {
+                sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }

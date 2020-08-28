@@ -82,5 +82,8 @@
         <activity android:name=".activity.PointActivity"
             android:theme="@style/ActionBarTheme">
         </activity>
+        <activity android:name=".activity.ReservedParkinglotActivity"
+            android:theme="@style/ActionBarTheme">
+        </activity>
     </application>
 </manifest>

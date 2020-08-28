@@ -57,7 +57,8 @@ public class ManagementTimeActivity extends AppCompatActivity {
     public static ArrayList<CheckBox> Manage_checkBoxArrayList_all_time;
     public static ArrayList<TextView> Manage_textviewArrayList_day_text;
     public static ArrayList<TextView> Manage_textviewArrayList_all_time;
-    String default_time, reserved_count, temp_time_data;
+    String default_time = "000000000000000000000000000000000000000000000000";
+    String reserved_count, temp_time_data;
     public static int count_data_format;
     public static String[] reserved_count_month, reserved_count_day, reserved_count_time;
     public String[][] manage_Day;
@@ -98,6 +99,40 @@ public class ManagementTimeActivity extends AppCompatActivity {
         manage_PL_address.setText(manage_parking_lot_address);
         manage_PL_price.setText(manage_parking_lot_price + "원");
         Button management_confirm_btn = findViewById(R.id.management_confirm_btn);
+        for (count_time_all = 0; count_time_all < 48; count_time_all++) {
+            final String checkboxid_time = "management_checkbox_all_time_" + (count_time_all + 1);
+            String textviewid_time = "management_checkbox_all_text_" + (count_time_all + 1);
+            int cresID_time = getResources().getIdentifier(checkboxid_time, "id", getPackageName());
+            int tresID_time = getResources().getIdentifier(textviewid_time, "id", getPackageName());
+            Manage_checkBoxArrayList_all_time.add((CheckBox)findViewById(cresID_time));
+            Manage_textviewArrayList_all_time.add((TextView)findViewById(tresID_time));
+            Manage_checkBoxArrayList_all_time.get(count_time_all).setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
+                int a = count_time_all;
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean bool) {
+                    if (bool == true) {
+                        compoundButton.setButtonDrawable(R.drawable.ic_booking_time_enable);
+                        Manage_textviewArrayList_all_time.get(a).setTextColor(Color.parseColor("#ffffff"));
+                        StringBuilder change_time = new StringBuilder(default_time);
+                        change_time.setCharAt(a, 'A');
+                        default_time = change_time.toString();
+                        System.out.println(change_time.toString());
+                    }
+                    else{
+                        compoundButton.setButtonDrawable(R.drawable.ic_booking_time_disable);
+                        Manage_textviewArrayList_all_time.get(a).setTextColor(Color.parseColor("#000000"));
+                        tabbtn_tool = 0;
+                        checkall.setChecked(false);
+                        tabbtn_tool = 1;
+                        StringBuilder change_time = new StringBuilder(default_time);
+                        change_time.setCharAt(a, 'B');
+                        default_time = change_time.toString();
+                        System.out.println(change_time.toString());
+                    }
+                }
+            });
+
+        }
         show_all_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -141,40 +176,7 @@ public class ManagementTimeActivity extends AppCompatActivity {
                 }
 
 
-                for (count_time_all = 0; count_time_all < 48; count_time_all++) {
-                    final String checkboxid_time = "management_checkbox_all_time_" + (count_time_all + 1);
-                    String textviewid_time = "management_checkbox_all_text_" + (count_time_all + 1);
-                    int cresID_time = getResources().getIdentifier(checkboxid_time, "id", getPackageName());
-                    int tresID_time = getResources().getIdentifier(textviewid_time, "id", getPackageName());
-                    Manage_checkBoxArrayList_all_time.add((CheckBox)findViewById(cresID_time));
-                    Manage_textviewArrayList_all_time.add((TextView)findViewById(tresID_time));
-                    Manage_checkBoxArrayList_all_time.get(count_time_all).setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener() {
-                        int a = count_time_all;
-                        @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean bool) {
-                            if (bool == true) {
-                                compoundButton.setButtonDrawable(R.drawable.ic_booking_time_enable);
-                                Manage_textviewArrayList_all_time.get(a).setTextColor(Color.parseColor("#ffffff"));
-                                StringBuilder change_time = new StringBuilder(default_time);
-                                change_time.setCharAt(a, 'A');
-                                default_time = change_time.toString();
-                                System.out.println(change_time.toString());
-                            }
-                            else{
-                                compoundButton.setButtonDrawable(R.drawable.ic_booking_time_disable);
-                                Manage_textviewArrayList_all_time.get(a).setTextColor(Color.parseColor("#000000"));
-                                tabbtn_tool = 0;
-                                checkall.setChecked(false);
-                                tabbtn_tool = 1;
-                                StringBuilder change_time = new StringBuilder(default_time);
-                                change_time.setCharAt(a, 'B');
-                                default_time = change_time.toString();
-                                System.out.println(change_time.toString());
-                            }
-                        }
-                    });
 
-                }
                 if (Integer.parseInt(reserved_count) == 0) {
                     Toast.makeText(ManagementTimeActivity.this,"예약된 날짜가 없으므로" + "\n" + "기본 시간 설정으로 이동합니다.", Toast.LENGTH_LONG).show();
                     show_all_btn.setBackgroundResource(R.drawable.btn_white);
