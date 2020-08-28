@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
                     Postc.send_login(VID, VPW);
                     System.out.println("send_login 완료");
                     System.out.println("loginStatus = "+Postc.status);
-                    while (Postc.status.equals("error") | Postc.status.equals("none")){ sleep(1);}
+                    while (Postc.status.equals("none")){ sleep(1);}
                     System.out.println("토큰 받아옴");
                     loginToken = Postc.realtoken;
                     loginStatus = Postc.status;
@@ -119,6 +119,7 @@ public class LoginActivity extends AppCompatActivity {
                                         // 확인 눌렀을 떄 반응
                                         loginToken = "";
                                         loginStatus = "";
+                                        Postc.status = "none";
                                     }
                                 });
                         //Creating dialog box

@@ -132,7 +132,7 @@ public class PostClass {
                 .addFormDataPart("user_id", ID)
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/check/id")
+                .url("http://pickerparker.waytech.co.kr/api/check/id")
                 .method("POST", body)
                 .build();
         responseCode = 0;
@@ -409,7 +409,7 @@ public class PostClass {
                     .addFormDataPart("password", Password)
                     .build();
             Request request = new Request.Builder()
-                    .url("http://blazingcode.asuscomm.com/api/login")
+                    .url("http://pickerparker.waytech.co.kr/api/login")
                     .method("POST", body)
                     .build();
             Response response = client.newCall(request).execute();
@@ -425,7 +425,7 @@ public class PostClass {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/point/"+cash)
+                .url("http://pickerparker.waytech.co.kr/api/point/"+cash)
                 .method("GET", null)
                 .addHeader("Authorization", "Bearer "+token)
                 .build();
@@ -446,7 +446,7 @@ public class PostClass {
                     .addFormDataPart("car_number", Car)
                     .build();
             Request request = new Request.Builder()
-                    .url("http://blazingcode.asuscomm.com/api/register")
+                    .url("http://pickerparker.waytech.co.kr/api/register")
                     .post(requestBody)
                     .build();
             Call call = client.newCall(request);
@@ -459,7 +459,7 @@ public class PostClass {
 
         OkHttpClient client = new OkHttpClient().newBuilder().build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/")
+                .url("http://pickerparker.waytech.co.kr/")
                 .method("GET", null)
                 .addHeader("Authorization", token)
                 .build();
@@ -492,7 +492,7 @@ public class PostClass {
         String token = "Bearer " + realtoken;
         Bitmap orgImage = BitmapFactory.decodeFile("/sdcard/DCIM/Camera/20160528_115613.jpg");
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        orgImage.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+        orgImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] ImgByte = stream.toByteArray();
 
         OkHttpClient client = new OkHttpClient().newBuilder()
@@ -539,7 +539,7 @@ public class PostClass {
             default:
         }
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/profile/image_upload")
+                .url("http://pickerparker.waytech.co.kr/api/profile/image_upload")
                 .method("POST", body)
                 .addHeader("Authorization", token)
                 .build();
@@ -556,7 +556,7 @@ public class PostClass {
         MediaType mediaType = MediaType.parse("text/plain");
         RequestBody body = null;
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/withdrawal")
+                .url("http://pickerparker.waytech.co.kr/api/withdrawal")
                 .method("DELETE", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -581,7 +581,7 @@ public class PostClass {
                         RequestBody.create(MediaType.parse("application/octet-stream"),ImgByte))
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/profile/image_upload")
+                .url("http://pickerparker.waytech.co.kr/api/profile/image_upload")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -602,7 +602,7 @@ public class PostClass {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/auth/user")
+                .url("http://pickerparker.waytech.co.kr/api/auth/user")
                 .method("GET", null)
                 .addHeader("Authorization", "Bearer "+token)
                 .build();
@@ -659,7 +659,7 @@ public class PostClass {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/parking-lot/"+ id)
+                .url("http://pickerparker.waytech.co.kr/api/parking-lot/"+ id)
                 .method("GET", null)
                 .build();
         Response response = client.newCall(request).execute();
@@ -724,7 +724,7 @@ public class PostClass {
         MediaType mediaType = MediaType.parse("text/plain");
         RequestBody body = RequestBody.create(mediaType, "");
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/parking-lot/show")
+                .url("http://pickerparker.waytech.co.kr/api/parking-lot/show")
                 .method("POST", body)
                 .build();
         Response response = client.newCall(request).execute();
@@ -779,7 +779,7 @@ public class PostClass {
                 .addFormDataPart("parking_lot_id", ID)
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/booking")
+                .url("http://pickerparker.waytech.co.kr/api/booking")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -810,7 +810,7 @@ public class PostClass {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/show/time/" + id + '-' + year + '-' + month + '-' + day)
+                .url("http://pickerparker.waytech.co.kr/api/show/time/" + id + '-' + year + '-' + month + '-' + day)
                 .method("GET", null)
                 .build();
         Response response = client.newCall(request).execute();
@@ -826,7 +826,7 @@ public class PostClass {
                 .addFormDataPart("parking_lot_id", id)
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/parking-lot/show/time")
+                .url("http://pickerparker.waytech.co.kr/api/parking-lot/show/time")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " +token)
                 .build();
@@ -842,7 +842,7 @@ public class PostClass {
         MediaType mediaType = MediaType.parse("text/plain");
         RequestBody body = RequestBody.create(mediaType, "");
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/booking/cancel/" + bookingid)
+                .url("http://pickerparker.waytech.co.kr/api/booking/cancel/" + bookingid)
                 .method("DELETE", body)
                 .addHeader("Authorization", "Bearer " +token)
                 .build();
@@ -854,7 +854,7 @@ public class PostClass {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/booking/show")
+                .url("http://pickerparker.waytech.co.kr/api/booking/show")
                 .method("GET", null)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -866,7 +866,7 @@ public class PostClass {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/parking-lot/show/my_parking_lot")
+                .url("http://pickerparker.waytech.co.kr/api/parking-lot/show/my_parking_lot")
                 .method("GET", null)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -879,42 +879,42 @@ public class PostClass {
         ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
         ByteArrayOutputStream stream3 = new ByteArrayOutputStream();
         ByteArrayOutputStream stream4 = new ByteArrayOutputStream();
-        img1.compress(Bitmap.CompressFormat.JPEG, 0, stream1);
-        img2.compress(Bitmap.CompressFormat.JPEG, 0, stream2);
-        img3.compress(Bitmap.CompressFormat.JPEG, 0, stream3);
-        img4.compress(Bitmap.CompressFormat.JPEG, 0, stream4);
+        img1.compress(Bitmap.CompressFormat.JPEG, 100, stream1);
+        img2.compress(Bitmap.CompressFormat.JPEG, 100, stream2);
+        img3.compress(Bitmap.CompressFormat.JPEG, 100, stream3);
+        img4.compress(Bitmap.CompressFormat.JPEG, 100, stream4);
         ImgByte1 = stream1.toByteArray();
         ImgByte2 = stream2.toByteArray();
         ImgByte3 = stream3.toByteArray();
         ImgByte4 = stream4.toByteArray();
         if(img1 != null && img2 != null && img3 != null && img4 != null) {
-            img1.compress(Bitmap.CompressFormat.JPEG, 0, stream1);
-            img2.compress(Bitmap.CompressFormat.JPEG, 0, stream2);
-            img3.compress(Bitmap.CompressFormat.JPEG, 0, stream3);
-            img4.compress(Bitmap.CompressFormat.JPEG, 0, stream4);
+            img1.compress(Bitmap.CompressFormat.JPEG, 100, stream1);
+            img2.compress(Bitmap.CompressFormat.JPEG, 100, stream2);
+            img3.compress(Bitmap.CompressFormat.JPEG, 100, stream3);
+            img4.compress(Bitmap.CompressFormat.JPEG, 100, stream4);
         }
         else if (img1 == null && img2 != null && img3 != null && img4 != null) {
-            img2.compress(Bitmap.CompressFormat.JPEG, 0, stream2);
-            img3.compress(Bitmap.CompressFormat.JPEG, 0, stream3);
-            img4.compress(Bitmap.CompressFormat.JPEG, 0, stream4);
+            img2.compress(Bitmap.CompressFormat.JPEG, 100, stream2);
+            img3.compress(Bitmap.CompressFormat.JPEG, 100, stream3);
+            img4.compress(Bitmap.CompressFormat.JPEG, 100, stream4);
         }
         else if (img1 != null && img2 == null && img3 != null && img4 != null) {
-            img1.compress(Bitmap.CompressFormat.JPEG, 0, stream1);
-            img3.compress(Bitmap.CompressFormat.JPEG, 0, stream3);
-            img4.compress(Bitmap.CompressFormat.JPEG, 0, stream4);
+            img1.compress(Bitmap.CompressFormat.JPEG, 100, stream1);
+            img3.compress(Bitmap.CompressFormat.JPEG, 100, stream3);
+            img4.compress(Bitmap.CompressFormat.JPEG, 100, stream4);
         }
         else if (img1 != null && img2 != null && img3 == null && img4 != null) {
-            img1.compress(Bitmap.CompressFormat.JPEG, 0, stream1);
-            img2.compress(Bitmap.CompressFormat.JPEG, 0, stream2);
-            img4.compress(Bitmap.CompressFormat.JPEG, 0, stream4);
+            img1.compress(Bitmap.CompressFormat.JPEG, 100, stream1);
+            img2.compress(Bitmap.CompressFormat.JPEG, 100, stream2);
+            img4.compress(Bitmap.CompressFormat.JPEG, 100, stream4);
         }
         else if (img1 != null && img2 != null && img3 != null && img4 == null) {
-            img1.compress(Bitmap.CompressFormat.JPEG, 0, stream1);
-            img2.compress(Bitmap.CompressFormat.JPEG, 0, stream2);
-            img3.compress(Bitmap.CompressFormat.JPEG, 0, stream3);
+            img1.compress(Bitmap.CompressFormat.JPEG, 100, stream1);
+            img2.compress(Bitmap.CompressFormat.JPEG, 100, stream2);
+            img3.compress(Bitmap.CompressFormat.JPEG, 100, stream3);
         }
         else{
-            img1.compress(Bitmap.CompressFormat.JPEG, 0, stream1);
+            img1.compress(Bitmap.CompressFormat.JPEG, 100, stream1);
         }
 
         ImgByte1 = stream1.toByteArray();
@@ -944,7 +944,7 @@ public class PostClass {
                 .addFormDataPart("time", "000000000000000000000000000000000000000000000000")
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/parking-lot/create")
+                .url("http://pickerparker.waytech.co.kr/api/parking-lot/create")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -965,7 +965,7 @@ public class PostClass {
                 .addFormDataPart("time", time)
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/parking-lot/update/available_time")
+                .url("http://pickerparker.waytech.co.kr/api/parking-lot/update/available_time")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -983,7 +983,7 @@ public class PostClass {
                 .addFormDataPart("time", time)
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/parking-lot/update/default_time")
+                .url("http://pickerparker.waytech.co.kr/api/parking-lot/update/default_time")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -994,10 +994,10 @@ public class PostClass {
 
     public void update_parking_lot(String id, String name, String address, Bitmap img1, Bitmap img2, Bitmap img3, Bitmap img4, String price, String token) throws IOException{
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        img1.compress(Bitmap.CompressFormat.JPEG, 0, stream);
-        img2.compress(Bitmap.CompressFormat.JPEG, 0, stream);
-        img3.compress(Bitmap.CompressFormat.JPEG, 0, stream);
-        img4.compress(Bitmap.CompressFormat.JPEG, 0, stream);
+        img1.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        img2.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        img3.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        img4.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] ImgByte = stream.toByteArray();
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
@@ -1017,7 +1017,7 @@ public class PostClass {
                 .addFormDataPart("price", price)
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/parking-lot/update/my_parking_lot")
+                .url("http://pickerparker.waytech.co.kr/api/parking-lot/update/my_parking_lot")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -1035,7 +1035,7 @@ public class PostClass {
                 .addFormDataPart("parking_lot_id", id)
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/parking-lot/delete/my_parking_lot")
+                .url("http://pickerparker.waytech.co.kr/api/parking-lot/delete/my_parking_lot")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -1050,7 +1050,7 @@ public class PostClass {
                 .addFormDataPart("parking_lot_id", id)
                 .build();
         Request request = new Request.Builder()
-                .url("http://blazingcode.asuscomm.com/api/booking/show/offer")
+                .url("http://pickerparker.waytech.co.kr/api/booking/show/offer")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();

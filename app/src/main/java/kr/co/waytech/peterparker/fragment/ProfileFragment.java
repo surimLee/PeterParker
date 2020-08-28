@@ -27,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.kyleduo.switchbutton.SwitchButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,7 +42,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.kyleduo.switchbutton.SwitchButton;
 
 import java.io.BufferedInputStream;
 import java.io.File;
