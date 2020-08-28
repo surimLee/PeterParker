@@ -32,6 +32,7 @@ import kr.co.waytech.peterparker.activity.BookingSuccessActivity;
 import kr.co.waytech.peterparker.activity.EditParkinglotActivity;
 import kr.co.waytech.peterparker.activity.ManagementTimeActivity;
 import kr.co.waytech.peterparker.activity.PostClass;
+import kr.co.waytech.peterparker.activity.ReservedParkinglotActivity;
 import kr.co.waytech.peterparker.model.BookingList;
 import kr.co.waytech.peterparker.model.ParkingList;
 
@@ -90,8 +91,21 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.MyViewHo
                 manage_parking_lot_price = parkingList.get(position).getPLPrice();
                 manage_parking_lot_id = parkingList.get(position).getPL_ID();
                 Intent intent = new Intent(holder.set_time_btn.getContext(), EditParkinglotActivity.class);
-                holder.set_time_btn.getContext().startActivity(intent);
+                holder.edit_info_btn.getContext().startActivity(intent);
+            }
+        });
 
+        holder.show_list_reserve.setOnClickListener(new View.OnClickListener(){
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View view) {
+                manage_parking_lot_img_url = parkingList.get(position).getImageUrl();
+                manage_parking_lot_name = parkingList.get(position).getPLName();
+                manage_parking_lot_address = parkingList.get(position).getPLAddress();
+                manage_parking_lot_price = parkingList.get(position).getPLPrice();
+                manage_parking_lot_id = parkingList.get(position).getPL_ID();
+                Intent intent = new Intent(holder.set_time_btn.getContext(), ReservedParkinglotActivity.class);
+                holder.show_list_reserve.getContext().startActivity(intent);
             }
         });
 
@@ -120,7 +134,7 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.MyViewHo
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        Button set_time_btn, edit_info_btn;
+        Button set_time_btn, edit_info_btn, show_list_reserve;
         ImageView parkinglotImage;
         TextView parkinglotName, parkinglotAddress, parkinglotPrice;
 
@@ -129,6 +143,7 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.MyViewHo
 
             set_time_btn = itemView.findViewById(R.id.btn_setting_sharetime);
             edit_info_btn = itemView.findViewById(R.id.btn_edit_info);
+            show_list_reserve = itemView.findViewById(R.id.btn_reservation);
             parkinglotImage = itemView.findViewById(R.id.Parking_parkinglotImage);
             parkinglotName = itemView.findViewById(R.id.Parking_parkinglotName);
             parkinglotAddress = itemView.findViewById(R.id.Parking_parkinglotAddress);

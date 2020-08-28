@@ -35,7 +35,7 @@ public class PostClass {
     String status = "none";
     int Thread_Status = 3 ;
     int Login_Status = 3;
-    public static int count, count_my_parking_lot, count_my_booking_list;
+    public static int count, count_my_parking_lot, count_my_booking_list, count_my_parking_lot_reservation;
     public static Integer Count_Parkinglot;
     public static int[] ParkingPrice;
     public static double[] ParkingLat, ParkingLng;
@@ -44,12 +44,14 @@ public class PostClass {
     public static String Avaible_time, my_parking_lot, my_parking_lot_id, my_parking_lot_name,
             my_parking_lot_price, my_parking_lot_imageurl, my_parking_lot_address, my_booking_list,
             my_booking_name, my_booking_address, my_booking_price, my_booking_time, my_booking_img,
-            status_add_parking_lot, my_booking_id, one_parking_lot_name, my_PL_available_time;
+            status_add_parking_lot, my_booking_id, one_parking_lot_name, my_PL_available_time,
+            my_PL_reserved_id, my_PL_reserved_price, my_PL_reserved_time, my_PL_reserved_in, my_PL_reserved_out,
+            my_PL_reserved_nick, my_PL_reserved_phone, my_PL_reserved_car, my_PL_reserved_add_price;
     public static int b = 7;
     static File tempSelectFile;
     public static Marker ParkingMark;
     public static String body_parkinglot = "abc";
-    public static String body_reserved_time_select, body_default_time_select, body_update_parking_lot;
+    public static String body_reserved_time_select, body_default_time_select, body_update_parking_lot, body_list_reserved_pl;
     LoginActivity LogA = new LoginActivity();
     SignupActivity SignupA = new SignupActivity();
     Handler handler = new Handler() {
@@ -369,6 +371,21 @@ public class PostClass {
                 handler.sendMessage(msg);
                 try {
                     delete_PL(id, token);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+    public void post_list_reservation(String id, String token){
+        new Thread() {
+            public void run() {
+                Bundle bun = new Bundle();
+                Message msg = handler.obtainMessage();
+                msg.setData(bun);
+                handler.sendMessage(msg);
+                try {
+                    get_list_reservation(id, token);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -976,5 +993,21 @@ public class PostClass {
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
         Response response = client.newCall(request).execute();
+    }
+
+    public void get_list_reservation(String id, String token) throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+                .addFormDataPart("parking_lot_id", id)
+                .build();
+        Request request = new Request.Builder()
+                .url("http://blazingcode.asuscomm.com/api/booking/show/offer")
+                .method("POST", body)
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+        Response response = client.newCall(request).execute();
+        body_list_reserved_pl = response.body().string();
     }
 }
