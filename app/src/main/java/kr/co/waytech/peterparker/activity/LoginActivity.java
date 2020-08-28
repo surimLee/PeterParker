@@ -82,22 +82,30 @@ public class LoginActivity extends AppCompatActivity {
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                System.out.println("로그인 버튼 클릭");
                 VID = EdID.getText().toString();
                 VPW = EdPW.getText().toString();
+                System.out.println("get Text 완료");
                 try {
                     Postc.send_login(VID, VPW);
-                    while (Postc.status.equals("none")){ sleep(1);}
+                    System.out.println("send_login 완료");
+                    System.out.println("loginStatus = "+Postc.status);
+                    while (Postc.status.equals("error") | Postc.status.equals("none")){ sleep(1);}
+                    System.out.println("토큰 받아옴");
                     loginToken = Postc.realtoken;
                     loginStatus = Postc.status;
+                    System.out.println("토큰 저장함");
+                    System.out.println("loginStatus = "+loginStatus);
                     if (loginStatus.equals("success")) {
+                        System.out.println("loginStatus success 뜸");
                         Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
                         //SharedPreferences에 값 저장.
                         SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit(); //SP를 제어할 editor를 선언
                         editor.putString("token", loginToken);
                         editor.commit();
-
-                        ProfileFragment.set_afterLoginView(); //프레그먼트 화면 새로고침
+                        ProfileFragment.set_afterLoginView(loginToken); //프레그먼트 화면 새로고침
+                        System.out.println("프레그먼트 화면 새로고침");
 
                     } else {
 //                        Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
@@ -119,8 +127,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
         });
@@ -129,9 +135,9 @@ public class LoginActivity extends AppCompatActivity {
 
     public void Success_Login() throws IOException, InterruptedException {
 
-        ProfileFragment.set_afterLoginView();
         //로그인 액티비티 종료
         loginActivity.finish();
+
     }
 
     @Override

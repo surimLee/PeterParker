@@ -74,10 +74,8 @@ public class PointActivity extends AppCompatActivity {
                                 }
 
                                 try {
-                                    ProfileFragment.set_afterLoginView();
+                                    ProfileFragment.set_afterLoginView(str_Token);
                                 } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
 
@@ -124,10 +122,8 @@ public class PointActivity extends AppCompatActivity {
                                 }
 
                                 try {
-                                    ProfileFragment.set_afterLoginView();
+                                    ProfileFragment.set_afterLoginView(str_Token);
                                 } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
 
@@ -174,10 +170,8 @@ public class PointActivity extends AppCompatActivity {
                                 }
 
                                 try {
-                                    ProfileFragment.set_afterLoginView();
+                                    ProfileFragment.set_afterLoginView(str_Token);
                                 } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
 
@@ -224,10 +218,8 @@ public class PointActivity extends AppCompatActivity {
                                 }
 
                                 try {
-                                    ProfileFragment.set_afterLoginView();
+                                    ProfileFragment.set_afterLoginView(str_Token);
                                 } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
 

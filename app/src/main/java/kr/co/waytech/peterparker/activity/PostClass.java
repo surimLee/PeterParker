@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.View;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -565,7 +566,7 @@ public class PostClass {
         Response response = client.newCall(request).execute();
         System.out.println(response);
 
-        ProfileFragment.set_afterLoginView();
+        ProfileFragment.set_afterLoginView(token);
 
     }
 
@@ -614,6 +615,7 @@ public class PostClass {
             ProfileFragment.phone_number = phone_number;
             ProfileFragment.car_number = car_number;
             ProfileFragment.profile_image = profile_image;
+
 
         }
     }

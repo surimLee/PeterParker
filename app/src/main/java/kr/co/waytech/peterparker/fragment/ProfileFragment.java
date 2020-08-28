@@ -1,5 +1,6 @@
 package kr.co.waytech.peterparker.fragment;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,6 +32,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -55,7 +58,9 @@ import static java.lang.Thread.sleep;
 
 public class ProfileFragment extends android.app.Fragment {
 
+
     private static SharedPreferences sharedPreferences;
+    private static FragmentActivity activity;
     private File tempFile;
     private static final int PICK_FROM_ALBUM = 10;
     public static String str_Token;
@@ -63,6 +68,8 @@ public class ProfileFragment extends android.app.Fragment {
     public static String user_id, nick_name, user_name, uuid, point, email, phone_number, car_number, profile_image, viewpoint;
     static ImageView iv_icon;
     public static TextView tv_nickname, tv_email, tv_point;
+    public static View view_beforeLogin;
+    public static View view_afterLogin;
 
     public ProfileFragment()
     {
@@ -77,12 +84,14 @@ public class ProfileFragment extends android.app.Fragment {
     }
 
     Button LoginBtn, UploadBtn, btn_getToken, DeleteAccountBtn, btn_logout, test_btn, btn_goMypoint;
-    static View view_beforeLogin;
-    static View view_afterLogin;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container,false);
+
+        activity = (FragmentActivity)view.getContext();
+        FragmentManager manager = activity.getSupportFragmentManager();
 
         tv_nickname = view.findViewById(R.id.tv_nickname);
         tv_email = view.findViewById(R.id.tv_email);
@@ -116,17 +125,15 @@ public class ProfileFragment extends android.app.Fragment {
         });
 
         if (str_Token.length() > 20){
-            Toast.makeText(getContext(), "토큰이 존재", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "토큰이 존재", Toast.LENGTH_SHORT).show();
             try {
-                set_afterLoginView();
+                set_afterLoginView(str_Token);
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         else {
-            Toast.makeText(getContext(), "토큰이 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "토큰이 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
             view_beforeLogin.setVisibility(View.VISIBLE);
             view_afterLogin.setVisibility(View.GONE);
         }
@@ -189,7 +196,7 @@ public class ProfileFragment extends android.app.Fragment {
                                 SharedPreferences.Editor editor = sharedPreferences.edit(); //SP를 제어할 editor를 선언
                                 editor.clear();
                                 editor.commit();
-                                Toast.makeText(getContext(), "토큰을 삭제하였습니다", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getContext(), "토큰을 삭제하였습니다", Toast.LENGTH_SHORT).show();
                                 Success_logout();
                                 set_afterLogoutView();
                             }
@@ -266,21 +273,29 @@ public class ProfileFragment extends android.app.Fragment {
     }
 
     //화면 로그인 이후 화면으로 셋팅
-    public static void set_afterLoginView() throws IOException, InterruptedException {
+    public static void set_afterLoginView(String token) throws IOException{
 
-        Postc.Get_profile(str_Token);
-        if(Postc.responseCode3 == 401)
-        {
+        try {
+            Postc.Get_profile(token);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        if (Postc.responseCode3 == 401) {
             SharedPreferences.Editor editor = sharedPreferences.edit(); //SP를 제어할 editor를 선언
             editor.clear();
             editor.commit();
 
             view_beforeLogin.setVisibility(View.VISIBLE);
             view_afterLogin.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             while (profile_image.length() < 5) {
-                sleep(1);
+                try {
+                    sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
             if (profile_image.length() > 5) {
                 tv_nickname.setText(nick_name);
@@ -288,30 +303,37 @@ public class ProfileFragment extends android.app.Fragment {
                 profile_image = profile_image.replace("\\/", "/");
                 System.out.println("profile_image 은 " + profile_image);
 
-                try {
-                    URL url = new URL(profile_image);
-                    URLConnection conn = url.openConnection();
-                    conn.connect();
-                    BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
-                    Bitmap bm = BitmapFactory.decodeStream(bis);
-                    bis.close();
-                    iv_icon.setImageBitmap(bm);
-                    System.out.println("이미지 변경 완료");
-                } catch (Exception e) {
-                }
+
+                URL url = new URL(profile_image);
+                URLConnection conn = url.openConnection();
+                conn.connect();
+                BufferedInputStream bis = new BufferedInputStream(conn.getInputStream());
+                Bitmap bm = BitmapFactory.decodeStream(bis);
+                bis.close();
+                iv_icon.setImageBitmap(bm);
+                System.out.println("이미지 변경 완료");
 
                 int origin_point = Integer.parseInt(point);
                 viewpoint = String.format("%,d", origin_point);
 
                 tv_email.setText(email);
                 tv_point.setText(viewpoint);
-                view_beforeLogin.setVisibility(View.GONE);
-                view_afterLogin.setVisibility(View.VISIBLE);
+
+                activity.runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+
+                        view_beforeLogin.setVisibility(View.GONE);
+                        view_afterLogin.setVisibility(View.VISIBLE);
+
+                    }
+                });
+
+
             }
         }
-
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -372,6 +394,16 @@ public class ProfileFragment extends android.app.Fragment {
 
         //화면 로그아웃 이후 화면으로 셋팅
     public void set_afterLogoutView() {
+
+        user_id = null;
+        nick_name = null;
+        user_name = null;
+        uuid = null;
+        point = null;
+        email = null;
+        phone_number = null;
+        car_number = null;
+        profile_image = null;
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("login", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit(); //SP를 제어할 editor를 선언
