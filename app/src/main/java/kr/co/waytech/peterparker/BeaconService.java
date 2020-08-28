@@ -84,18 +84,17 @@ public class BeaconService extends Service {
         beaconTransmitter.startAdvertising(beacon, new AdvertiseCallback() {
             @Override
             public void onStartFailure(int errorCode) {
-                Toast.makeText(getApplicationContext(), "Advertisement start failed with code:" +errorCode, Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
             public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-                Toast.makeText(getApplicationContext(), "Advertisement start succeeded.", Toast.LENGTH_SHORT).show();
             }
         });
 
         // QQQ: notification 에 보여줄 타이틀, 내용을 수정한다.
-        clsBuilder.setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentTitle("서비스 앱").setContentText("서비스 앱")
+        clsBuilder.setSmallIcon(R.drawable.ic_noti)
+                .setContentTitle("자동 입차 시스템 작동중").setContentText("주차장에 차를 주차시켜주세요.")
                 .setContentIntent(pendingIntent);
 
         // foreground 서비스로 실행한다.

@@ -55,27 +55,6 @@ public class MainActivity extends AppCompatActivity {
     public static BottomNavigationView bottomNavigationView;
     private androidx.appcompat.widget.Toolbar toolbar;
 
-    private BeaconService bService;
-    private boolean isBind;
-
-    ServiceConnection sconn = new ServiceConnection() {
-        @Override //서비스가 실행될 때 호출
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            BeaconService.MyBinder myBinder = (BeaconService.MyBinder) service;
-            bService = myBinder.getService();
-
-            isBind = true;
-            Log.e("LOG", "onServiceConnected()");
-        }
-
-        @Override //서비스가 종료될 때 호출
-        public void onServiceDisconnected(ComponentName name) {
-            bService = null;
-            isBind = false;
-            Log.e("LOG", "onServiceDisconnected()");
-        }
-    };
-
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -88,17 +67,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        Notification noti = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_noti)
-                .setColor(ContextCompat.getColor(this, R.color.colorAccent))
-                .setContentTitle("피커파커")
-                .setContentText("자동 입차 시스템 가동중")
-                .build();
 
-
-
-//        startService(new Intent(MainActivity.this, BeaconService.class)); // 서비스 시작
-//        System.out.println("서비스 시작");
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.mainactivity_bottomnavigationview);
         bottomNavigationView.setSelectedItemId(R.id.action_map);
         getFragmentManager().beginTransaction().replace(R.id.mainactivity_framelayout, new MapFragment()).commit();

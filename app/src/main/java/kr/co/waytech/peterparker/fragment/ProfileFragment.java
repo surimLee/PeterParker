@@ -1,9 +1,12 @@
 package kr.co.waytech.peterparker.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,15 +15,19 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.kyleduo.switchbutton.SwitchButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +43,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.kyleduo.switchbutton.SwitchButton;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -45,6 +53,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.BreakIterator;
 
+import kr.co.waytech.peterparker.BeaconService;
 import kr.co.waytech.peterparker.DownloadImageTask;
 import kr.co.waytech.peterparker.activity.LoginActivity;
 import kr.co.waytech.peterparker.activity.MainActivity;
@@ -56,8 +65,16 @@ import kr.co.waytech.peterparker.activity.SignupActivity;
 import static android.content.Context.MODE_PRIVATE;
 import static java.lang.Thread.sleep;
 
+
 public class ProfileFragment extends android.app.Fragment {
 
+    private boolean Auto;
+    private boolean auto = false;
+    public boolean isChecked;
+    private BeaconService bService;
+    private boolean isBind;
+    public static final String PREFS_NAME = "vibration";
+    public static final String PREF_VIBRATION = "TicVib";
 
     private static SharedPreferences sharedPreferences;
     private static FragmentActivity activity;
@@ -71,6 +88,21 @@ public class ProfileFragment extends android.app.Fragment {
     public static View view_beforeLogin;
     public static View view_afterLogin;
 
+    ServiceConnection sconn = new ServiceConnection() {
+        @Override //서비스가 실행될 때 호출
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            BeaconService.MyBinder myBinder = (BeaconService.MyBinder) service;
+            bService = myBinder.getService();
+            isBind = true;
+        }
+
+        @Override //서비스가 종료될 때 호출
+        public void onServiceDisconnected(ComponentName name) {
+            bService = null;
+            isBind = false;
+        }
+    };
+
     public ProfileFragment()
     {
 
@@ -82,6 +114,7 @@ public class ProfileFragment extends android.app.Fragment {
         super.onCreate(savedInstanceState);
 
     }
+
 
     Button LoginBtn, UploadBtn, btn_getToken, DeleteAccountBtn, btn_logout, test_btn, btn_goMypoint;
 
@@ -106,10 +139,31 @@ public class ProfileFragment extends android.app.Fragment {
 //        editor.commit();
 //        Toast.makeText(getContext(), "토큰을 삭제하였습니다", Toast.LENGTH_SHORT).show();
 
+        SharedPreferences preferences = getActivity().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        Auto = preferences.getBoolean(PREF_VIBRATION, true);
 
+        Switch sw = (Switch) view.findViewById(R.id.switch1);
 
-        view_beforeLogin = (View) view.findViewById(R.id.view_beforeLogin);
-        view_afterLogin = (View) view.findViewById(R.id.view_afterLogin);
+        sw.setChecked(Auto);
+        sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    getActivity().startService(new Intent(getActivity(), BeaconService.class)); // 서비스 시작
+                    SharedPreferences.Editor editor=getActivity().getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
+                    editor.putBoolean(PREF_VIBRATION, isChecked);
+                    editor.apply();
+
+                } else {
+                    getActivity().stopService(new Intent(getActivity(), BeaconService.class)); // 서비스 시작
+                    SharedPreferences.Editor editor=getActivity().getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
+                    editor.putBoolean(PREF_VIBRATION, isChecked);
+                    editor.apply();
+                }
+            }
+        });
+
+        view_beforeLogin = view.findViewById(R.id.view_beforeLogin);
+        view_afterLogin = view.findViewById(R.id.view_afterLogin);
 
         iv_icon = view.findViewById(R.id.img_profile);
         iv_icon.setOnClickListener(new View.OnClickListener()
@@ -139,7 +193,7 @@ public class ProfileFragment extends android.app.Fragment {
         }
 
 
-        LoginBtn = (Button)view.findViewById(R.id.LoginButton);
+        LoginBtn = view.findViewById(R.id.LoginButton);
         LoginBtn.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -163,7 +217,7 @@ public class ProfileFragment extends android.app.Fragment {
         });
 
 
-        test_btn = (Button)view.findViewById(R.id.test_btn);
+        test_btn = view.findViewById(R.id.test_btn);
         test_btn.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -179,7 +233,7 @@ public class ProfileFragment extends android.app.Fragment {
         });
 
 
-        btn_logout = (Button)view.findViewById(R.id.btn_logout);
+        btn_logout = view.findViewById(R.id.btn_logout);
         btn_logout.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -215,7 +269,7 @@ public class ProfileFragment extends android.app.Fragment {
         });
 
 
-        DeleteAccountBtn = (Button)view.findViewById(R.id.delete_account_Button);
+        DeleteAccountBtn = view.findViewById(R.id.delete_account_Button);
         DeleteAccountBtn.setOnClickListener(new View.OnClickListener()
         {
             @RequiresApi(api = Build.VERSION_CODES.M)
@@ -231,7 +285,7 @@ public class ProfileFragment extends android.app.Fragment {
 
                                 try {
                                     Postc.Delete_account(str_Token);
-                                    if(Postc.responseCode == 401) {
+                                    if(PostClass.responseCode == 401) {
 //                        Toast.makeText(SignupActivity.this, "실패", Toast.LENGTH_SHORT).show();
                                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                                         builder.setTitle("회원탈퇴")
@@ -282,7 +336,7 @@ public class ProfileFragment extends android.app.Fragment {
         }
 
 
-        if (Postc.responseCode3 == 401) {
+        if (PostClass.responseCode3 == 401) {
             SharedPreferences.Editor editor = sharedPreferences.edit(); //SP를 제어할 editor를 선언
             editor.clear();
             editor.commit();

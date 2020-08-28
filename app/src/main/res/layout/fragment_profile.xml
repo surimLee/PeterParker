@@ -243,7 +243,8 @@
             android:textColor="@android:color/black"
             android:fontFamily="@font/nanumgothic"
             android:paddingVertical="8dp"
-            android:gravity="center"
+            android:gravity="center_vertical"
+            android:paddingLeft="55dp"
             android:text="공지사항                                                                 >"
             style="?android:attr/borderlessButtonStyle"
             android:textSize="13sp"/>
@@ -258,7 +259,8 @@
             android:textColor="@android:color/black"
             android:fontFamily="@font/nanumgothic"
             android:paddingVertical="8dp"
-            android:gravity="center"
+            android:gravity="center_vertical"
+            android:paddingLeft="55dp"
             android:text="환경설정                                                                 >"
             style="?android:attr/borderlessButtonStyle"
             android:textSize="13sp"/>
@@ -272,7 +274,8 @@
             android:textColor="@android:color/black"
             android:fontFamily="@font/nanumgothic"
             android:paddingVertical="8dp"
-            android:gravity="center"
+            android:gravity="center_vertical"
+            android:paddingLeft="55dp"
             android:text="회원 정보 수정                                                        >"
             style="?android:attr/borderlessButtonStyle"
             android:textSize="13sp"/>
@@ -287,13 +290,45 @@
             android:textColor="@android:color/black"
             android:fontFamily="@font/nanumgothic"
             android:paddingVertical="8dp"
-            android:gravity="center"
+            android:gravity="center_vertical"
+            android:paddingLeft="55dp"
             android:text="회원 탈퇴                                                                >"
             style="?android:attr/borderlessButtonStyle"
             android:textSize="13sp"/>
         <!--android:drawableLeft="@drawable/deleteuser"-->
 
 
+
+        <LinearLayout
+            android:layout_marginBottom="1dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:paddingVertical="8dp"
+            android:gravity="left"
+
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nanumgothic"
+                android:textColor="@android:color/black"
+                android:text="자동 입차"
+                android:textSize="13sp"
+                android:layout_weight="1"
+                android:layout_marginLeft="55dp"/>
+
+            <Switch
+                android:id="@+id/switch1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="30dp"
+                android:textColorLink="@color/colorAccent" />
+
+            </LinearLayout>
 
 
     </LinearLayout>
