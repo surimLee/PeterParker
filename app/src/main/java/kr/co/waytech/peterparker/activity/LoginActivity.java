@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     Postc.send_login(VID, VPW);
                     System.out.println("send_login 완료");
-                    System.out.println("loginStatus = "+Postc.status);
+                    System.out.println("loginStatus = "+ Postc.status);
                     while (Postc.status.equals("none")){ sleep(1);}
                     System.out.println("토큰 받아옴");
                     loginToken = Postc.realtoken;

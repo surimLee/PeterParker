@@ -132,7 +132,7 @@ public class PostClass {
                 .addFormDataPart("user_id", ID)
                 .build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/check/id")
+                .url("http://blazingcode.asuscomm.com/api/check/id")
                 .method("POST", body)
                 .build();
         responseCode = 0;
@@ -409,7 +409,7 @@ public class PostClass {
                     .addFormDataPart("password", Password)
                     .build();
             Request request = new Request.Builder()
-                    .url("http://pickerparker.waytech.co.kr/api/login")
+                    .url("http://blazingcode.asuscomm.com/api/login")
                     .method("POST", body)
                     .build();
             Response response = client.newCall(request).execute();
@@ -417,7 +417,7 @@ public class PostClass {
             String[] split_token = body2.split("\"");
             realtoken = split_token[7];
             status = split_token[3];
-            System.out.println(status);
+            System.out.println("Login status is.. " + status);
             System.out.println(realtoken);
     }
 
@@ -425,7 +425,7 @@ public class PostClass {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/point/"+cash)
+                .url("http://blazingcode.asuscomm.com/api/point/"+cash)
                 .method("GET", null)
                 .addHeader("Authorization", "Bearer "+token)
                 .build();
@@ -446,7 +446,7 @@ public class PostClass {
                     .addFormDataPart("car_number", Car)
                     .build();
             Request request = new Request.Builder()
-                    .url("http://pickerparker.waytech.co.kr/api/register")
+                    .url("http://blazingcode.asuscomm.com/api/register")
                     .post(requestBody)
                     .build();
             Call call = client.newCall(request);
@@ -459,7 +459,7 @@ public class PostClass {
 
         OkHttpClient client = new OkHttpClient().newBuilder().build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/")
+                .url("http://blazingcode.asuscomm.com/")
                 .method("GET", null)
                 .addHeader("Authorization", token)
                 .build();
@@ -539,7 +539,7 @@ public class PostClass {
             default:
         }
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/profile/image_upload")
+                .url("http://blazingcode.asuscomm.com/api/profile/image_upload")
                 .method("POST", body)
                 .addHeader("Authorization", token)
                 .build();
@@ -556,7 +556,7 @@ public class PostClass {
         MediaType mediaType = MediaType.parse("text/plain");
         RequestBody body = null;
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/withdrawal")
+                .url("http://blazingcode.asuscomm.com/api/withdrawal")
                 .method("DELETE", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -581,7 +581,7 @@ public class PostClass {
                         RequestBody.create(MediaType.parse("application/octet-stream"),ImgByte))
                 .build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/profile/image_upload")
+                .url("http://blazingcode.asuscomm.com/api/profile/image_upload")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -598,11 +598,10 @@ public class PostClass {
         StrictMode.setThreadPolicy(policy);
         while(token.length() < 10) { sleep(1);}
         System.out.println("Token is " + token);
-
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/auth/user")
+                .url("http://blazingcode.asuscomm.com/api/auth/user")
                 .method("GET", null)
                 .addHeader("Authorization", "Bearer "+token)
                 .build();
@@ -615,7 +614,6 @@ public class PostClass {
         body_profile = body_profile.replace("\"}", "");
         body_profile = body_profile.trim();
         String[] split = body_profile.split("\":\"|\",\"");
-        System.out.println("split의 사이즈는 두구두구두구 "+split.length);
 
         if(!(responseCode3 == 401)){
             String user_id = split[1];
@@ -627,6 +625,18 @@ public class PostClass {
             String phone_number = split[13];
             String car_number = split[15];
             String profile_image = split[17];
+            /*
+            String user_id = split[7];
+            String nick_name = split[9];
+            String name = split[3];
+            String uuid = split[1];
+            String point = split[17];
+            String email = split[5];
+            String phone_number = split[11];
+            String car_number = split[13];
+            String profile_image = split[15];
+
+             */
 
             ProfileFragment.user_id = user_id;
             ProfileFragment.nick_name = nick_name;
@@ -659,7 +669,7 @@ public class PostClass {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/parking-lot/"+ id)
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/"+ id)
                 .method("GET", null)
                 .build();
         Response response = client.newCall(request).execute();
@@ -724,7 +734,7 @@ public class PostClass {
         MediaType mediaType = MediaType.parse("text/plain");
         RequestBody body = RequestBody.create(mediaType, "");
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/parking-lot/show")
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/show")
                 .method("POST", body)
                 .build();
         Response response = client.newCall(request).execute();
@@ -779,7 +789,7 @@ public class PostClass {
                 .addFormDataPart("parking_lot_id", ID)
                 .build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/booking")
+                .url("http://blazingcode.asuscomm.com/api/booking")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -810,7 +820,7 @@ public class PostClass {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/show/time/" + id + '-' + year + '-' + month + '-' + day)
+                .url("http://blazingcode.asuscomm.com/api/show/time/" + id + '-' + year + '-' + month + '-' + day)
                 .method("GET", null)
                 .build();
         Response response = client.newCall(request).execute();
@@ -826,7 +836,7 @@ public class PostClass {
                 .addFormDataPart("parking_lot_id", id)
                 .build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/parking-lot/show/time")
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/show/time")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " +token)
                 .build();
@@ -842,7 +852,7 @@ public class PostClass {
         MediaType mediaType = MediaType.parse("text/plain");
         RequestBody body = RequestBody.create(mediaType, "");
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/booking/cancel/" + bookingid)
+                .url("http://blazingcode.asuscomm.com/api/booking/cancel/" + bookingid)
                 .method("DELETE", body)
                 .addHeader("Authorization", "Bearer " +token)
                 .build();
@@ -854,7 +864,7 @@ public class PostClass {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/booking/show")
+                .url("http://blazingcode.asuscomm.com/api/booking/show")
                 .method("GET", null)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -866,7 +876,7 @@ public class PostClass {
         OkHttpClient client = new OkHttpClient().newBuilder()
                 .build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/parking-lot/show/my_parking_lot")
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/show/my_parking_lot")
                 .method("GET", null)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -944,7 +954,7 @@ public class PostClass {
                 .addFormDataPart("time", "000000000000000000000000000000000000000000000000")
                 .build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/parking-lot/create")
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/create")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -965,7 +975,7 @@ public class PostClass {
                 .addFormDataPart("time", time)
                 .build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/parking-lot/update/available_time")
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/update/available_time")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -983,7 +993,7 @@ public class PostClass {
                 .addFormDataPart("time", time)
                 .build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/parking-lot/update/default_time")
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/update/default_time")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -1017,7 +1027,7 @@ public class PostClass {
                 .addFormDataPart("price", price)
                 .build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/parking-lot/update/my_parking_lot")
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/update/my_parking_lot")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -1035,7 +1045,7 @@ public class PostClass {
                 .addFormDataPart("parking_lot_id", id)
                 .build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/parking-lot/delete/my_parking_lot")
+                .url("http://blazingcode.asuscomm.com/api/parking-lot/delete/my_parking_lot")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -1050,7 +1060,7 @@ public class PostClass {
                 .addFormDataPart("parking_lot_id", id)
                 .build();
         Request request = new Request.Builder()
-                .url("http://pickerparker.waytech.co.kr/api/booking/show/offer")
+                .url("http://blazingcode.asuscomm.com/api/booking/show/offer")
                 .method("POST", body)
                 .addHeader("Authorization", "Bearer " + token)
                 .build();

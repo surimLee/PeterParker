@@ -116,8 +116,8 @@ public class AddParkinglotActivity extends AppCompatActivity {
                     plongitude = location.getLongitude();
                     platitude = location.getLatitude();
 
-                   Toast.makeText(AddParkinglotActivity.this,"위도 : " + plongitude + "\n" +
-                            "경도 : " + platitude,Toast.LENGTH_SHORT).show();
+                   Toast.makeText(AddParkinglotActivity.this,"위도 : " + platitude + "\n" +
+                            "경도 : " + plongitude,Toast.LENGTH_SHORT).show();
 
 
                 }

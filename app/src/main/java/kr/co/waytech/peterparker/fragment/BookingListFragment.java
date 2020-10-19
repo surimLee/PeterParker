@@ -150,5 +150,5 @@ public class BookingListFragment extends Fragment {
         bookingList.add(new BookingList(id, name,use,address, price, time, img));
     }
 
-    
+
 }

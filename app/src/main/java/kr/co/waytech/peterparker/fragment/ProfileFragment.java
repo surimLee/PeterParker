@@ -342,6 +342,8 @@ public class ProfileFragment extends android.app.Fragment {
             view_beforeLogin.setVisibility(View.VISIBLE);
             view_afterLogin.setVisibility(View.GONE);
         } else {
+            view_beforeLogin.setVisibility(View.GONE);
+            view_afterLogin.setVisibility(View.VISIBLE);
             while (profile_image.length() < 5) {
                 try {
                     sleep(1);
@@ -354,7 +356,11 @@ public class ProfileFragment extends android.app.Fragment {
                 System.out.println("tv_nickname 변경 완료");
                 profile_image = profile_image.replace("\\/", "/");
                 System.out.println("profile_image 은 " + profile_image);
-
+                int origin_point = Integer.parseInt(point);
+                viewpoint = String.format("%,d", origin_point);
+                tv_email.setText(email);
+                System.out.println(email + ", " + viewpoint);
+                tv_point.setText(viewpoint);
 
                 URL url = new URL(profile_image);
                 URLConnection conn = url.openConnection();
@@ -365,11 +371,7 @@ public class ProfileFragment extends android.app.Fragment {
                 iv_icon.setImageBitmap(bm);
                 System.out.println("이미지 변경 완료");
 
-                int origin_point = Integer.parseInt(point);
-                viewpoint = String.format("%,d", origin_point);
 
-                tv_email.setText(email);
-                tv_point.setText(viewpoint);
 
                 activity.runOnUiThread(new Runnable() {
 
